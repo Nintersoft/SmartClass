@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/buttons/Close.PNG</file>
+        <file>images/buttons/Details.PNG</file>
+        <file>images/buttons/Down_Arrow.PNG</file>
+        <file>images/buttons/Help.PNG</file>
+        <file>images/buttons/New.PNG</file>
+        <file>images/buttons/Retrieve.PNG</file>
+        <file>images/buttons/Save.PNG</file>
+        <file>images/buttons/SaveAs.PNG</file>
+        <file>images/buttons/SaveCript.PNG</file>
+        <file>images/buttons/Search.PNG</file>
+        <file>images/buttons/Spin.PNG</file>
+        <file>images/buttons/Up_Arrow.PNG</file>
+        <file>images/logos/ns-watermark-old.png</file>
+        <file>images/logos/ns-watermark.png</file>
+        <file>images/scrollbar/slide_down.PNG</file>
+        <file>images/scrollbar/slide_left.PNG</file>
+        <file>images/scrollbar/slide_right.PNG</file>
+        <file>images/scrollbar/slide_up.PNG</file>
+        <file>images/buttons/AddClasses.PNG</file>
+        <file>images/buttons/AddStudent.PNG</file>
+        <file>images/buttons/BackUpDatabase.PNG</file>
+        <file>images/buttons/Classes.PNG</file>
+        <file>images/buttons/ExportDatabase.PNG</file>
+        <file>images/buttons/ImportDatabase.PNG</file>
+        <file>images/buttons/LogOut.PNG</file>
+        <file>images/buttons/Parent.PNG</file>
+        <file>images/buttons/RemoveClasses.PNG</file>
+        <file>images/buttons/RemoveStudent.PNG</file>
+        <file>images/buttons/UpdateClasses.PNG</file>
+        <file>images/buttons/UpdateStudent.PNG</file>
+        <file>images/buttons/User.PNG</file>
+        <file>images/buttons/Receipt.png</file>
+        <file>images/buttons/ImportDatabaseFromFile.png</file>
+        <file>images/buttons/ResetDB.png</file>
+        <file>images/buttons/PrintStudentTerm.png</file>
+        <file>images/buttons/Settings.png</file>
+        <file>images/buttons/AlternateTable.png</file>
+        <file>images/logos/Logo.png</file>
+        <file>images/logos/Logo.ico</file>
+        <file>images/logos/Logo_64.png</file>
+    </qresource>
+</RCC>

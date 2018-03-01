@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmAbout</class>
+ <widget class="QMainWindow" name="frmAbout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>450</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>550</width>
+    <height>450</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>550</width>
+    <height>550</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/logos/Logo.png</normaloff>:/images/logos/Logo.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#titleBar{
+	background-color: #FFF;
+	border-top: 1px solid orange;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+	color: #000;
+}
+
+QWidget#centralWidget, QStatusBar{
+	background-color: #FFF;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+}
+
+QStatusBar{
+	border-bottom: 1px solid orange;
+}
+
+/*QTabWidget::pane {
+    border-top: 1px solid orange;
+}*/
+
+QSlider::handle:horizontal {
+    background: orange;
+}
+
+/* Vertical and horizontal line customization */
+
+QFrame[frameShape=&quot;4&quot;]
+{
+    color: orange;
+}
+
+QFrame[frameShape=&quot;5&quot;]
+{
+    color: orange;
+}
+
+/* QTabWidget elements customization */
+
+QTabWidget::pane {
+/*	border-top: 1px solid orange;*/
+	background: white;
+}
+
+QTabWidget::tab-bar {
+    left: 5px;
+}
+
+QTabBar::tab {
+	background: white;
+    min-width: 120px;
+    min-height: 20px;
+    padding: 2px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-top: 6px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+	background: white;
+	border-top: 1px solid orange;
+	border-right: 1px solid orange;
+	border-left: 1px solid orange;
+}
+
+QTabBar::tab:selected {
+	background: white;
+	border-top: 2px solid orange;
+	border-right: 2px solid orange;
+	border-left: 2px solid orange;
+}
+
+QTabBar::tab:!selected {
+    margin-bottom: 3px;
+}
+
+QTabBar QToolButton{
+	background-color: white;
+	border: none;
+	color: black;
+}
+
+QTabBar QToolButton::hover{
+	background-color: darkorange;
+}
+
+QTabBar QToolButton::pressed{
+	background-color: orange;
+}
+
+QTabBar QToolButton::!enabled{
+	background-color: orange;
+}
+
+QWidget#tabFile, QWidget#tabManagement, QWidget#tabTools, QWidget#tabHelp, QWidget#tabFileLayout, QWidget#tabManagementLayout, QWidget#tabToolsLayout, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
+	background: white;
+}
+
+QLineEdit{
+	border: 1px solid orange;
+	min-height: 20px;
+}
+
+QPlainTextEdit{
+	border: 1px solid orange;
+	min-height: 40px;
+}
+
+QPushButton{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+	color: white;
+}
+
+QPushButton::hover{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+QPushButton::pressed{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+}
+
+QPushButton::!enabled{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+/*
+	QScroll Area
+*/
+
+QScrollArea{
+	border: none;
+}
+
+QScrollArea#scrollManager{
+	border: 1px solid orange;
+	border-radius: 5px;
+}
+
+/* QScrollBar Horizontal*/
+
+QScrollBar:horizontal {
+    background: lightgray;
+    height: 10px;
+    margin: 0px 40px 0 0px;
+	border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: orange;
+	border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+    background: blue;
+    width: 20px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+QScrollBar::sub-line:horizontal {
+    background: red;
+    width: 20px;
+    subcontrol-position: top right;
+    subcontrol-origin: margin;
+    position: absolute;
+    right: 20px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+QScrollBar::sub-line:horizontal:hover {
+    background: darkred;
+}
+
+QScrollBar::sub-line:horizontal:pressed {
+    background: red;
+}
+
+QScrollBar::add-line:horizontal:hover {
+    background: darkblue;
+}
+
+QScrollBar::add-line:horizontal:pressed {
+    background: blue;
+}
+
+QScrollBar:left-arrow:horizontal{
+	image: url(:/images/scrollbar/slide_left.PNG);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar::right-arrow:horizontal {
+	image: url(:/images/scrollbar/slide_right.PNG);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* QScrollBar Vertical*/
+
+QScrollBar:vertical {
+    background: lightgray;
+    width: 10px;
+    margin: 0px 0px 40px 0px;
+	border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: orange;
+	border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::add-line:vertical {
+    background: blue;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+QScrollBar::sub-line:vertical {
+    background: red;
+    height: 20px;
+    subcontrol-position: bottom right;
+    subcontrol-origin: margin;
+    position: absolute;
+    bottom: 20px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+QScrollBar::sub-line:vertical:hover {
+    background: darkred;
+}
+
+QScrollBar::sub-line:vertical:pressed {
+    background: red;
+}
+
+QScrollBar::add-line:vertical:hover {
+    background: darkblue;
+}
+
+QScrollBar::add-line:vertical:pressed {
+    background: blue;
+}
+
+QScrollBar:up-arrow:vertical{
+	image: url(:/images/scrollbar/slide_up.PNG);
+	width: 10px;
+    height: 10px;
+}
+
+ QScrollBar::down-arrow:vertical{
+	image: url(:/images/scrollbar/slide_down.PNG);
+	width: 10px;
+    height: 10px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/*QComboBox*/
+
+QComboBox {
+    border: 1px solid orange;
+	background: white;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox:editable {
+    background: white;
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+	background: white;
+}
+
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: white;
+}
+
+QComboBox:on {
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: orange;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::drop-down:hover {
+    background: orange;
+}
+
+QComboBox::down-arrow {
+    image: url(&quot;:/images/buttons/Down_Arrow.PNG&quot;);
+	width: 10px;
+	height: 10px;
+}
+
+QComboBox::down-arrow:on {
+    top: 1px;
+    left: 1px;
+}
+
+QComboBox QAbstractItemView {
+    border: 1px solid orange;
+    selection-background-color: orange;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox QAbstractItemView:hover {
+	color: orange;
+}
+
+/*
+ * QToolButton
+ */
+
+QToolButton {
+	background: transparent;
+	border: 1px solid transparent;
+	color: black;
+}
+
+QToolButton::hover {
+	background: darkorange;
+	border: 1px solid darkorange;
+	color: white;
+}
+
+QToolButton::pressed {
+	background: orange;
+	border: 1px solid orange;
+	color: white;
+}
+
+/* QSpinBox  QDateEdit*/
+
+QSpinBox, QDoubleSpinBox, QDateEdit, QDateTimeEdit {
+	border: 1px solid orange;
+	background: white;
+    padding-right: 15px; /* make room for the arrows */
+	border-radius: 5px;
+}
+
+QSpinBox::up-button:disabled,  QSpinBox::up-button:off,
+QSpinBox::down-button:disabled,  QSpinBox::down-button:off,
+QDoubleSpinBox::up-button:disabled,  QDoubleSpinBox::up-button:off,
+QDoubleSpinBox::down-button:disabled,  QDoubleSpinBox::down-button:off,
+QDateEdit::up-button:disabled,  QDateEdit::up-button:off,
+QDateEdit::down-button:disabled,  QDateEdit::down-button:off,
+QDateTimeEdit::up-button:disabled,  QDateTimeEdit::up-button:off,
+QDateTimeEdit::down-button:disabled,  QDateTimeEdit::down-button:off{
+	background: orange;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button, QDateEdit::up-button, QDateTimeEdit::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+
+    width: 16px;
+	border: 1px solid orange;
+	border-top-right-radius: 5px;
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QDateEdit::up-button:hover, QDateTimeEdit::up-button:hover {
+	background: darkorange;
+}
+
+QSpinBox::up-button:pressed, QDoubleSpinBox::up-button:pressed, QDateEdit::up-button:pressed, QDateTimeEdit::up-button:pressed {
+	background: orange;
+}
+
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QDateEdit::up-arrow, QDateTimeEdit::up-arrow {
+    border-image: url(:/images/buttons/Up_Arrow.PNG) 1;
+    width: 7px;
+    height: 7px;
+}
+
+QSpinBox::up-arrow:disabled,
+QSpinBox::up-arrow:off,
+QDoubleSpinBox::up-arrow:disabled,
+QDoubleSpinBox::up-arrow:off,
+QDateEdit::up-arrow:disabled,
+QDateEdit::up-arrow:off,
+QDateTimeEdit::up-arrow:disabled,
+QDateTimeEdit::up-arrow:off {
+   background: transparent;
+}
+
+QSpinBox::down-button,
+QDoubleSpinBox::down-button,
+QDateEdit::down-button,
+QDateTimeEdit::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+
+    width: 16px;
+	border: 1px solid orange;
+	border-bottom-right-radius: 5px;
+}
+
+QSpinBox::down-button:hover,
+QDoubleSpinBox::down-button:hover,
+QDateEdit::down-button:hover,
+QDateTimeEdit::down-button:hover {
+	background: darkorange;
+}
+
+QSpinBox::down-button:pressed,
+QDoubleSpinBox::down-button:pressed,
+QDateEdit::down-button:pressed,
+QDateTimeEdit::down-button:pressed {
+	background: orange;
+}
+
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow,
+QDateEdit::down-arrow,
+QDateTimeEdit::down-arrow {
+    border-image: url(:/images/buttons/Down_Arrow.PNG) 1;
+    width: 7px;
+    height: 7px;
+}
+
+QSpinBox::down-arrow:disabled,
+QSpinBox::down-arrow:off,
+QDoubleSpinBox::down-arrow:disabled,
+QDoubleSpinBox::down-arrow:off,
+QDateEdit::down-arrow:disabled,
+QDateEdit::down-arrow:off,
+QDateTimeEdit::down-arrow:disabled,
+QDateTimeEdit::down-arrow:off {
+   background: transparent;
+}
+
+/*QCheckBox*/
+
+QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+}
+
+QCheckBox::indicator:unchecked {
+    border: 1px solid orange;
+}
+
+QCheckBox::indicator:unchecked:hover {
+    border: 2px solid darkorange;
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    border: 2px solid orange;
+}
+
+QCheckBox::indicator:checked {
+    border: 1px solid orange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:checked:hover {
+    border: 2px solid darkorange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:checked:pressed {
+    border: 2px solid orange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:indeterminate:hover {
+    border: 2px solid darkorange;
+}
+
+QCheckBox::indicator:indeterminate:pressed {
+    border: 2px solid orange;
+}
+
+/*
+ * QTableWidget
+ */
+
+QTableWidget{
+	border: 1px solid orange;
+}
+
+/*
+ * QGroupBox
+ */
+
+QGroupBox {
+    border: 1px solid orange;
+    border-radius: 2px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top middle; /* position at the top center */
+    padding: 5px;
+    background-color: white;
+	border: 1px solid orange;
+	border-radius: 2px;
+}
+
+/*
+ * QListWidget
+ */
+
+QListWidget {
+    border: 1px solid orange;
+}
+
+/*
+ * QTextBrowser
+ */
+
+QTextBrowser {
+	border : 1px solid darkorange;
+	color: black;
+	border-radius: 2px;
+}
+
+QTextBrowser:disabled {
+	border : 1px solid orange;
+	color: darkgray;
+}
+
+/*
+ * QProgressBar
+ */
+
+QProgressBar{
+	border : 2px solid orange;
+	border-radius: 5px;
+}
+
+QProgressBar::chunk {
+    background-color: #B7F4C1;
+    width: 20px;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="TitleBar" name="titleBar" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>10</number>
+      </property>
+      <item row="5" column="1">
+       <widget class="QLabel" name="lblLicencedTo">
+        <property name="text">
+         <string>Nintersoft Team</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lblLicence">
+        <property name="text">
+         <string>Product licensed to:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="lblProgVersion">
+        <property name="text">
+         <string>0.9.1.1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="lblDeveloperName">
+        <property name="text">
+         <string>Mauro Mascarenhas (Nintersoft)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btShowLicence">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Show licence</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btUpgrade">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Upgrade</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btOpenNSWebsite">
+          <property name="text">
+           <string>Nintersoft (Website)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblVersion">
+        <property name="text">
+         <string>Version:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QLabel" name="lblLicenceDetails">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Licence details</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="lblProgramName">
+        <property name="text">
+         <string>SmartClass</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="2">
+       <widget class="QTextBrowser" name="txtLicenceDetails">
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Thanks to:&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:8pt;&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Mauro Mascarenhas (program developer and designer) - mauro.mascarenhas@nintersoft.com&lt;/li&gt;&lt;/ul&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This program is partialy licenced under Nintersoft Open Souce Code Licence and Nintersoft Commercial Licence (contact the developer for details). It also uses third party libraries which may be under GNU LGPL or GPLv3 licence.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Do not distribute the commercial party without authorization of the developers and be careful when distributing the open source code and the third party resources of this program, there may be clauses which forbids the redistribution or impose some limitations on the process.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright notice: All the text and images displayed in this program are under Creative Commons Atribution-Share Alike Licence 4.0 (CC-BY-SA), unless otherwise specified.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright © Nintersoft - 2018 | All rights reserved&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="openLinks">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblProgram">
+        <property name="text">
+         <string>Program:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblCompanyLogo">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="resources.qrc">:/images/logos/ns-watermark.png</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="lblDeveloper">
+        <property name="text">
+         <string>Developer:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0" colspan="2">
+       <widget class="QLabel" name="lblProgStep">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+          <kerning>true</kerning>
+         </font>
+        </property>
+        <property name="text">
+         <string>Upgrading...</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0" colspan="2">
+       <widget class="QProgressBar" name="pbUpgrade">
+        <property name="maximum">
+         <number>0</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>false</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="format">
+         <string>%p%</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TitleBar</class>
+   <extends>QWidget</extends>
+   <header>titlebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

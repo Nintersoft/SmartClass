@@ -1,0 +1,1380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmSettings</class>
+ <widget class="QMainWindow" name="frmSettings">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>464</width>
+    <height>517</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Settings | SmartClass</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/logos/Logo.png</normaloff>:/images/logos/Logo.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#titleBar{
+	background-color: #FFF;
+	border-top: 1px solid orange;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+	color: #000;
+}
+
+QWidget#centralWidget, QStatusBar{
+	background-color: #FFF;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+}
+
+QStatusBar{
+	border-bottom: 1px solid orange;
+}
+
+/*QTabWidget::pane {
+    border-top: 1px solid orange;
+}*/
+
+QSlider::handle:horizontal {
+    background: orange;
+}
+
+/* Vertical and horizontal line customization */
+
+QFrame[frameShape=&quot;4&quot;]
+{
+    color: orange;
+}
+
+QFrame[frameShape=&quot;5&quot;]
+{
+    color: orange;
+}
+
+/* QTabWidget elements customization */
+
+QTabWidget::pane {
+/*	border-top: 1px solid orange;*/
+	background: white;
+}
+
+QTabWidget::tab-bar {
+    left: 5px;
+}
+
+QTabBar::tab {
+	background: white;
+    min-width: 120px;
+    min-height: 20px;
+    padding: 2px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-top: 6px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+	background: white;
+	border-top: 1px solid orange;
+	border-right: 1px solid orange;
+	border-left: 1px solid orange;
+}
+
+QTabBar::tab:selected {
+	background: white;
+	border-top: 2px solid orange;
+	border-right: 2px solid orange;
+	border-left: 2px solid orange;
+}
+
+QTabBar::tab:!selected {
+    margin-bottom: 3px;
+}
+
+QTabBar QToolButton{
+	background-color: white;
+	border: none;
+	color: black;
+}
+
+QTabBar QToolButton::hover{
+	background-color: darkorange;
+}
+
+QTabBar QToolButton::pressed{
+	background-color: orange;
+}
+
+QTabBar QToolButton::!enabled{
+	background-color: orange;
+}
+
+QWidget#tabInfo, QWidget#tabInfoLayout, QWidget#tabGeneral, QWidget#tabGeneralLayout, QWidget#tabFileLayout, QWidget#tabBackupLayout, QWidget#tabBackup, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
+	background: white;
+}
+
+QLineEdit{
+	border: 1px solid orange;
+	min-height: 20px;
+}
+
+QPlainTextEdit{
+	border: 1px solid orange;
+	min-height: 40px;
+}
+
+QPushButton{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+	color: white;
+}
+
+QPushButton::hover{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+QPushButton::pressed{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+}
+
+QPushButton::!enabled{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+/*
+	QScroll Area
+*/
+
+QScrollArea{
+	border: none;
+}
+
+QScrollArea#scrollManager{
+	border: 1px solid orange;
+	border-radius: 5px;
+}
+
+/* QScrollBar Horizontal*/
+
+QScrollBar:horizontal {
+    background: lightgray;
+    height: 10px;
+    margin: 0px 40px 0 0px;
+	border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: orange;
+	border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+    background: blue;
+    width: 20px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+QScrollBar::sub-line:horizontal {
+    background: red;
+    width: 20px;
+    subcontrol-position: top right;
+    subcontrol-origin: margin;
+    position: absolute;
+    right: 20px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+QScrollBar::sub-line:horizontal:hover {
+    background: darkred;
+}
+
+QScrollBar::sub-line:horizontal:pressed {
+    background: red;
+}
+
+QScrollBar::add-line:horizontal:hover {
+    background: darkblue;
+}
+
+QScrollBar::add-line:horizontal:pressed {
+    background: blue;
+}
+
+QScrollBar:left-arrow:horizontal{
+	image: url(:/images/scrollbar/slide_left.PNG);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar::right-arrow:horizontal {
+	image: url(:/images/scrollbar/slide_right.PNG);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* QScrollBar Vertical*/
+
+QScrollBar:vertical {
+    background: lightgray;
+    width: 10px;
+    margin: 0px 0px 40px 0px;
+	border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: orange;
+	border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::add-line:vertical {
+    background: blue;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+QScrollBar::sub-line:vertical {
+    background: red;
+    height: 20px;
+    subcontrol-position: bottom right;
+    subcontrol-origin: margin;
+    position: absolute;
+    bottom: 20px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+QScrollBar::sub-line:vertical:hover {
+    background: darkred;
+}
+
+QScrollBar::sub-line:vertical:pressed {
+    background: red;
+}
+
+QScrollBar::add-line:vertical:hover {
+    background: darkblue;
+}
+
+QScrollBar::add-line:vertical:pressed {
+    background: blue;
+}
+
+QScrollBar:up-arrow:vertical{
+	image: url(:/images/scrollbar/slide_up.PNG);
+	width: 10px;
+    height: 10px;
+}
+
+ QScrollBar::down-arrow:vertical{
+	image: url(:/images/scrollbar/slide_down.PNG);
+	width: 10px;
+    height: 10px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/*QComboBox*/
+
+QComboBox {
+    border: 1px solid orange;
+	background: white;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox:editable {
+    background: white;
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+	background: white;
+}
+
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: white;
+}
+
+QComboBox:on {
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: orange;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::drop-down:hover {
+    background: orange;
+}
+
+QComboBox::down-arrow {
+    image: url(&quot;:/images/buttons/Down_Arrow.PNG&quot;);
+	width: 10px;
+	height: 10px;
+}
+
+QComboBox::down-arrow:on {
+    top: 1px;
+    left: 1px;
+}
+
+QComboBox QAbstractItemView {
+    border: 1px solid orange;
+    selection-background-color: orange;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox QAbstractItemView:hover {
+	color: orange;
+}
+
+/*
+ * QToolButton
+ */
+
+QToolButton {
+	background: transparent;
+	border: 1px solid transparent;
+	color: black;
+}
+
+QToolButton::hover {
+	background: darkorange;
+	border: 1px solid darkorange;
+	color: white;
+}
+
+QToolButton::pressed {
+	background: orange;
+	border: 1px solid orange;
+	color: white;
+}
+
+/* QSpinBox  QDateEdit*/
+
+QSpinBox, QDoubleSpinBox, QDateEdit, QDateTimeEdit {
+	border: 1px solid orange;
+	background: white;
+    padding-right: 15px; /* make room for the arrows */
+	border-radius: 5px;
+}
+
+QSpinBox::up-button:disabled,  QSpinBox::up-button:off,
+QSpinBox::down-button:disabled,  QSpinBox::down-button:off,
+QDoubleSpinBox::up-button:disabled,  QDoubleSpinBox::up-button:off,
+QDoubleSpinBox::down-button:disabled,  QDoubleSpinBox::down-button:off,
+QDateEdit::up-button:disabled,  QDateEdit::up-button:off,
+QDateEdit::down-button:disabled,  QDateEdit::down-button:off,
+QDateTimeEdit::up-button:disabled,  QDateTimeEdit::up-button:off,
+QDateTimeEdit::down-button:disabled,  QDateTimeEdit::down-button:off{
+	background: orange;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button, QDateEdit::up-button, QDateTimeEdit::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+
+    width: 16px;
+	border: 1px solid orange;
+	border-top-right-radius: 5px;
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QDateEdit::up-button:hover, QDateTimeEdit::up-button:hover {
+	background: darkorange;
+}
+
+QSpinBox::up-button:pressed, QDoubleSpinBox::up-button:pressed, QDateEdit::up-button:pressed, QDateTimeEdit::up-button:pressed {
+	background: orange;
+}
+
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QDateEdit::up-arrow, QDateTimeEdit::up-arrow {
+    border-image: url(:/images/buttons/Up_Arrow.PNG) 1;
+    width: 7px;
+    height: 7px;
+}
+
+QSpinBox::up-arrow:disabled,
+QSpinBox::up-arrow:off,
+QDoubleSpinBox::up-arrow:disabled,
+QDoubleSpinBox::up-arrow:off,
+QDateEdit::up-arrow:disabled,
+QDateEdit::up-arrow:off,
+QDateTimeEdit::up-arrow:disabled,
+QDateTimeEdit::up-arrow:off {
+   background: transparent;
+}
+
+QSpinBox::down-button,
+QDoubleSpinBox::down-button,
+QDateEdit::down-button,
+QDateTimeEdit::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+
+    width: 16px;
+	border: 1px solid orange;
+	border-bottom-right-radius: 5px;
+}
+
+QSpinBox::down-button:hover,
+QDoubleSpinBox::down-button:hover,
+QDateEdit::down-button:hover,
+QDateTimeEdit::down-button:hover {
+	background: darkorange;
+}
+
+QSpinBox::down-button:pressed,
+QDoubleSpinBox::down-button:pressed,
+QDateEdit::down-button:pressed,
+QDateTimeEdit::down-button:pressed {
+	background: orange;
+}
+
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow,
+QDateEdit::down-arrow,
+QDateTimeEdit::down-arrow {
+    border-image: url(:/images/buttons/Down_Arrow.PNG) 1;
+    width: 7px;
+    height: 7px;
+}
+
+QSpinBox::down-arrow:disabled,
+QSpinBox::down-arrow:off,
+QDoubleSpinBox::down-arrow:disabled,
+QDoubleSpinBox::down-arrow:off,
+QDateEdit::down-arrow:disabled,
+QDateEdit::down-arrow:off,
+QDateTimeEdit::down-arrow:disabled,
+QDateTimeEdit::down-arrow:off {
+   background: transparent;
+}
+
+/*QCheckBox*/
+
+QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+}
+
+QCheckBox::indicator:unchecked {
+    border: 1px solid orange;
+}
+
+QCheckBox::indicator:unchecked:hover {
+    border: 2px solid darkorange;
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    border: 2px solid orange;
+}
+
+QCheckBox::indicator:checked {
+    border: 1px solid orange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:checked:hover {
+    border: 2px solid darkorange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:checked:pressed {
+    border: 2px solid orange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:indeterminate:hover {
+    border: 2px solid darkorange;
+}
+
+QCheckBox::indicator:indeterminate:pressed {
+    border: 2px solid orange;
+}
+
+/*
+ * QTableWidget
+ */
+
+QTableWidget{
+	border: 1px solid orange;
+}
+
+/*
+ * QGroupBox
+ */
+
+QGroupBox {
+    border: 1px solid orange;
+    border-radius: 2px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top middle; /* position at the top center */
+    padding: 5px;
+    background-color: white;
+	border: 1px solid orange;
+	border-radius: 2px;
+}
+
+/*
+ * QListWidget
+ */
+
+QListWidget {
+    border: 1px solid orange;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="TitleBar" name="titleBar" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btResetSettings">
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btSaveSettings">
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btCancel">
+          <property name="text">
+           <string>Cancel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tabGeneral">
+         <attribute name="title">
+          <string>General</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QScrollArea" name="scrollTabGeneral">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="tabGeneralLayout">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>454</width>
+               <height>392</height>
+              </rect>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="grpContract">
+                <property name="title">
+                 <string>Contract info</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_11">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="lblContractDesc">
+                   <property name="text">
+                    <string>Contract text (no HTML, i.e, plain text only)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPlainTextEdit" name="edtContractText"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="lblLegend">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;%1 ~ Name of the parent&lt;br/&gt;%2 ~ ID of the parent&lt;br/&gt;%3 ~ CPG of the parent&lt;br/&gt;%4 ~ Name of the student&lt;br/&gt;%5 ~ Name of the course (+ details)&lt;br/&gt;%6 ~ Name of the company&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="grpLanguageSettings">
+                <property name="title">
+                 <string>Language settings</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_6">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Current language</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="cbLanguageSelector">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="editable">
+                    <bool>false</bool>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>English (UK)</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Portuguese (BR)</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabBackup">
+         <attribute name="title">
+          <string>Backup/External</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QScrollArea" name="scrollTabBackup">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="tabBackupLayout">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>444</width>
+               <height>546</height>
+              </rect>
+             </property>
+             <layout class="QGridLayout" name="tabBackupLayout_2">
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="grbBackupSettings">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>Backup Settings</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_12">
+                 <item row="7" column="1" colspan="3">
+                  <widget class="QComboBox" name="cbBackupInterval">
+                   <property name="currentIndex">
+                    <number>2</number>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>5</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>10</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>15</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>30</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>45</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>60</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>120</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>240</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item row="9" column="0" colspan="4">
+                  <widget class="QLabel" name="lblBackupIntervalDesc">
+                   <property name="text">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You should be careful when choosing the timer interval. Choosing a short interval may affect the performance of this program, once the backup may be a long process depending on the database size.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0" colspan="4">
+                  <widget class="QRadioButton" name="rbSheduleTime">
+                   <property name="text">
+                    <string>Scheduled time</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0" colspan="4">
+                  <widget class="QListWidget" name="listSchedules">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="4">
+                  <widget class="QCheckBox" name="cbEnableDBBackup">
+                   <property name="text">
+                    <string>Enable database backup (Recommended)</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="4">
+                  <widget class="QLabel" name="lblBackupUnavailable">
+                   <property name="text">
+                    <string>You are currently using a MySQL database to store your data. Unfortunately this program does not provide support to MySQL backup.</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="2">
+                  <widget class="QPushButton" name="btAddSchedule">
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0" colspan="2">
+                  <widget class="QRadioButton" name="rbScheduleInterval">
+                   <property name="text">
+                    <string>Scheduled interval</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="lblScheduleTime">
+                   <property name="text">
+                    <string>Manage schedules</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QTimeEdit" name="edtSchedule"/>
+                 </item>
+                 <item row="4" column="3">
+                  <widget class="QPushButton" name="btRemoveSchedule">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="lblBackupInterval">
+                   <property name="text">
+                    <string>Interval (minutes):</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="lblBackupPath">
+                   <property name="text">
+                    <string>Path:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="1" colspan="2">
+                  <widget class="QLineEdit" name="edtBackupPath">
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="3">
+                  <widget class="QPushButton" name="btSearchBackupPath">
+                   <property name="text">
+                    <string>Search</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="groupBox">
+                <property name="title">
+                 <string>Third party program settings</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_13">
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="lblClArgs">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Command line arguments</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QToolButton" name="btClArgsHelper">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="lblExternalProgramPath">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>External program path:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="btSearchExternalProgram">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Search</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="edtExternalProgramPath">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QCheckBox" name="cbUseExternalProgram">
+                   <property name="text">
+                    <string>Enable external program exportation</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0" colspan="3">
+                  <widget class="QPlainTextEdit" name="edtClArgs">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>90</height>
+                    </size>
+                   </property>
+                   <property name="plainText">
+                    <string>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $s_address $p_cost $p_discount $p_installments</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabInfo">
+         <attribute name="title">
+          <string>Info</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QScrollArea" name="scrollTabInfo">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="tabInfoLayout">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>454</width>
+               <height>392</height>
+              </rect>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="grpDatabaseInfo">
+                <property name="title">
+                 <string>Database info</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_9">
+                 <item row="4" column="1">
+                  <widget class="QLabel" name="lblDBUsername">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="lblDBNameDesc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Database name:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="lblDbTypeDesc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Database type:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="lblDBName">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="lblDbType">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="lblDBHost">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="lblDBPortDesc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Database port:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLabel" name="lblDBPasswordDesc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Database Password:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="lblDBUsernameDesc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Database username:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLabel" name="lblDBPort">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="lblDBPassword">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="lblDBHostDesc">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Database host:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="lblDBPreficDesc">
+                   <property name="text">
+                    <string>Database Prefix:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="1">
+                  <widget class="QLabel" name="lblDBPrefix">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="grpBranding">
+                <property name="title">
+                 <string>Branding</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_7">
+                 <item row="0" column="1" colspan="2">
+                  <widget class="QLineEdit" name="edtCompanyName"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="lblCompanyLogo">
+                   <property name="text">
+                    <string>Company logo:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="edtCompanyLogo">
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="btSearchCompanyLogo">
+                   <property name="text">
+                    <string>Search</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="lblCompanyName">
+                   <property name="text">
+                    <string>Company name:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0" colspan="3">
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <item>
+                    <widget class="QLabel" name="lblLogoImage">
+                     <property name="minimumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>100</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="pixmap">
+                      <pixmap resource="resources.qrc">:/images/logos/ns-watermark-old.png</pixmap>
+                     </property>
+                     <property name="scaledContents">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TitleBar</class>
+   <extends>QWidget</extends>
+   <header>titlebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

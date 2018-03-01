@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmLogin</class>
+ <widget class="QMainWindow" name="frmLogin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>610</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>700</width>
+    <height>610</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>700</width>
+    <height>610</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Login | SmartClass</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/logos/Logo.png</normaloff>:/images/logos/Logo.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#titleBar{
+	background-color: #FFF;
+	border-top: 1px solid orange;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+	color: #000;
+}
+
+QWidget#centralWidget, QStatusBar{
+	background-color: #FFF;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+}
+
+QStatusBar{
+	border-bottom: 1px solid orange;
+}
+
+QWidget{
+	font-size: 14px;
+}
+
+QLineEdit{
+	border: 1px solid orange;
+	min-height: 20px;
+}
+
+QPushButton{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+	color: white;
+}
+
+QPushButton::hover{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+QPushButton::pressed{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+}
+
+QPushButton::!enabled{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+/*QTabWidget::pane {
+    border-top: 1px solid orange;
+}*/
+
+QSlider::handle:horizontal {
+    background: orange;
+}
+
+/* Vertical and horizontal line customization */
+
+QFrame[frameShape=&quot;4&quot;]
+{
+    color: orange;
+}
+
+QFrame[frameShape=&quot;5&quot;]
+{
+    color: orange;
+}
+
+/* QTabWidget elements customization */
+
+QTabWidget::pane {
+/*	border-top: 1px solid orange;*/
+	background: white;
+}
+
+QTabWidget::tab-bar {
+    left: 5px;
+}
+
+QTabBar::tab {
+	background: white;
+    min-height: 120px;
+    min-width: 20px;
+    padding: 2px;
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-right: 6px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+	background: white;
+	border-top: 1px solid orange;
+	border-right: 1px solid orange;
+	border-bottom: 1px solid orange;
+}
+
+QTabBar::tab:selected {
+	background: white;
+	border-top: 2px solid orange;
+	border-right: 2px solid orange;
+	border-bottom: 2px solid orange;
+}
+
+QTabBar::tab:!selected {
+    margin-left: 3px;
+}
+
+QWidget#tabLogin, QWidget#tabRegister, QWidget#tabRecover{
+	background: white;
+}
+</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_5">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="TitleBar" name="titleBar" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QGridLayout" name="centralLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QTabWidget" name="tabManager">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="tabPosition">
+         <enum>QTabWidget::East</enum>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tabLogin">
+         <attribute name="title">
+          <string>Login</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="4" column="1" colspan="2">
+           <widget class="QLineEdit" name="edtPasswordFLogin">
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QLabel" name="lblUsernameFLogin">
+            <property name="text">
+             <string>Username</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QLineEdit" name="edtUsernameFLogin">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>22</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QLabel" name="lblPasswordFLogin">
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QPushButton" name="btRegisterFLogin">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Register</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" colspan="2">
+           <widget class="QPushButton" name="btRecoverFLogin">
+            <property name="text">
+             <string>Forgot your password?</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>297</width>
+              <height>185</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>135</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" rowspan="8">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>160</width>
+              <height>526</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="1">
+           <widget class="QPushButton" name="btLoginFLogin">
+            <property name="text">
+             <string>Login</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" rowspan="8">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>159</width>
+              <height>526</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabRegister">
+         <attribute name="title">
+          <string>Register</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="4" rowspan="16">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1" colspan="3">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>351</width>
+              <height>95</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtUsernameFRegister">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>22</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="3">
+           <widget class="QLabel" name="lblCompleteNameFRegister">
+            <property name="text">
+             <string>Complete name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="3">
+           <widget class="QLabel" name="lblPasswordConfirmationFRegister">
+            <property name="text">
+             <string>Password confirmation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtPasswordConfirmationFRegister">
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtCompleteNameFRegister"/>
+          </item>
+          <item row="11" column="1" colspan="3">
+           <widget class="QLabel" name="lblAnswerFRegister">
+            <property name="text">
+             <string>Asnwer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtPasswordFRegister">
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtQuestionFRegister"/>
+          </item>
+          <item row="13" column="3">
+           <widget class="QPushButton" name="btLoginFRegister">
+            <property name="text">
+             <string>Login</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" colspan="3">
+           <widget class="QLabel" name="lblPasswordFRegister">
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item row="14" column="1" colspan="3">
+           <widget class="QPushButton" name="btRecoverFRegister">
+            <property name="text">
+             <string>Forgot your password?</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtAnswerFRegister"/>
+          </item>
+          <item row="9" column="1" colspan="3">
+           <widget class="QLabel" name="lblQuestionFRegister">
+            <property name="text">
+             <string>Security question (in order to recover the password - can even be empty (type 'space' for that))</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="13" column="1" colspan="2">
+           <widget class="QPushButton" name="btRegisterFRegister">
+            <property name="text">
+             <string>Register</string>
+            </property>
+           </widget>
+          </item>
+          <item row="15" column="1" colspan="3">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>351</width>
+              <height>94</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" rowspan="16">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <widget class="QLabel" name="lblUsernameFRegister">
+            <property name="text">
+             <string>Username</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabRecover">
+         <attribute name="title">
+          <string>Recover password</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="4" column="1" colspan="3">
+           <widget class="QLabel" name="lblQuestionFRecover">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>There is no question for this user...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="3">
+           <widget class="QPushButton" name="btLoginFRecover">
+            <property name="text">
+             <string>Login</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1" colspan="2">
+           <widget class="QPushButton" name="btRecoverFRecover">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Redefine</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" colspan="3">
+           <widget class="QLabel" name="lblNewPasswordFRecover">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>New password:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtAnswerFRecover">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="placeholderText">
+             <string>Your answer goes here</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="3">
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>297</width>
+              <height>174</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="10" column="1" colspan="3">
+           <spacer name="verticalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>297</width>
+              <height>173</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="9" column="1" colspan="3">
+           <widget class="QPushButton" name="btRegisterFRecover">
+            <property name="text">
+             <string>Register</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" rowspan="11">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>160</width>
+              <height>526</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="4" rowspan="11">
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>159</width>
+              <height>526</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <widget class="QLabel" name="lblUsernameFRecover">
+            <property name="text">
+             <string>Username</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QLineEdit" name="edtUsernameFRecover"/>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="btAskFRecover">
+            <property name="text">
+             <string>Ask (retrieve question)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="3">
+           <widget class="QLabel" name="lblQuestionLabelFRecover">
+            <property name="text">
+             <string>Question:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtNewPasswordFRecover">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TitleBar</class>
+   <extends>QWidget</extends>
+   <header>titlebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>edtUsernameFLogin</tabstop>
+  <tabstop>edtPasswordFLogin</tabstop>
+  <tabstop>btLoginFLogin</tabstop>
+  <tabstop>btRegisterFLogin</tabstop>
+  <tabstop>btRecoverFLogin</tabstop>
+  <tabstop>edtUsernameFRegister</tabstop>
+  <tabstop>edtCompleteNameFRegister</tabstop>
+  <tabstop>edtPasswordFRegister</tabstop>
+  <tabstop>edtPasswordConfirmationFRegister</tabstop>
+  <tabstop>edtQuestionFRegister</tabstop>
+  <tabstop>edtAnswerFRegister</tabstop>
+  <tabstop>btRegisterFRegister</tabstop>
+  <tabstop>btLoginFRegister</tabstop>
+  <tabstop>btRecoverFRegister</tabstop>
+  <tabstop>edtUsernameFRecover</tabstop>
+  <tabstop>btAskFRecover</tabstop>
+  <tabstop>edtAnswerFRecover</tabstop>
+  <tabstop>edtNewPasswordFRecover</tabstop>
+  <tabstop>btRecoverFRecover</tabstop>
+  <tabstop>btLoginFRecover</tabstop>
+  <tabstop>btRegisterFRecover</tabstop>
+  <tabstop>tabManager</tabstop>
+ </tabstops>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
