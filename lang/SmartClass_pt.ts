@@ -2435,7 +2435,7 @@ O nome da empresa não pode estar vazio;</translation>
     <message>
         <location filename="../frmprintcontract.cpp" line="40"/>
         <source>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments</source>
-        <translation>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments</translation>
+        <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_endereco $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $p_custo $p_desconto $p_parcelas</translation>
     </message>
     <message>
         <location filename="../frmprintcontract.cpp" line="79"/>
@@ -2890,9 +2890,8 @@ Dado autogerado SmartClass</translation>
         <translation>Ativar exportação para programa externo</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1055"/>
         <source>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $s_address $p_cost $p_discount $p_installments</source>
-        <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $s_endereco $p_custo $p_desconto $p_parcelas</translation>
+        <translation type="vanished">$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $s_endereco $p_custo $p_desconto $p_parcelas</translation>
     </message>
     <message>
         <location filename="../frmsettings.ui" line="1199"/>
@@ -2936,6 +2935,12 @@ Dado autogerado SmartClass</translation>
         <translation>Busca</translation>
     </message>
     <message>
+        <location filename="../frmsettings.ui" line="1055"/>
+        <location filename="../frmsettings.cpp" line="190"/>
+        <source>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments</source>
+        <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_endereco $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $p_custo $p_desconto $p_parcelas</translation>
+    </message>
+    <message>
         <location filename="../frmsettings.ui" line="1271"/>
         <source>Database Prefix:</source>
         <translation>Prefixo do banco de dados:</translation>
@@ -2953,7 +2958,6 @@ Dado autogerado SmartClass</translation>
     </message>
     <message>
         <location filename="../frmsettings.cpp" line="126"/>
-        <location filename="../frmsettings.cpp" line="190"/>
         <source>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_address $p_cost $p_discount $p_installments</source>
         <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $s_endereco $p_custo $p_desconto $p_parcelas</translation>
     </message>

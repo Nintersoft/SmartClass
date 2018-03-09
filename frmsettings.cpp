@@ -187,7 +187,7 @@ void frmSettings::saveOptions(){
     programSettings.setValue("use external tool", ui->cbUseExternalProgram->isChecked());
     programSettings.setValue("program path", ui->edtExternalProgramPath->text());
     programSettings.setValue("command", ui->edtClArgs->toPlainText().isEmpty() ?
-                                 tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_address $p_cost $p_discount $p_installments") :
+                                 tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments") :
                                  ui->edtClArgs->toPlainText());
     programSettings.endGroup();
 
