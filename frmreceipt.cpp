@@ -36,9 +36,9 @@ frmReceipt::frmReceipt(QWidget *parent, QStringList *paymentData, QStringList *c
 
     ui->lblDate->setText(QDate::currentDate().toString("dd/MM/yyyy"));
 
-    for (int i = 0; i < 25; ++i)
+    for (int i = -24; i < 25; ++i)
         ui->cbCustomMonthNYear->addItem(QDate::currentDate().addMonths(i).toString("MM/yyyy"));
-    ui->cbCustomMonthNYear->setCurrentIndex(0);
+    ui->cbCustomMonthNYear->setCurrentIndex(24);
 
     connect(ui->cbCustomMonthNYear, SIGNAL(currentIndexChanged(int)), this, SLOT(generateTable()));
 

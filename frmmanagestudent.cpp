@@ -34,7 +34,7 @@ frmManageStudent::frmManageStudent(QWidget *parent, Role role, const QString &st
      */
 
     myDB = new DBManager(dbData, DBManager::getUniqueConnectionName("importExport"),
-                         dbData.length() == 1 ? "SQLITE" : "MYSQL");
+                         dbData.length() == 2 ? "SQLITE" : "MYSQL");
 
     blockPaymentUpdate = false;
 

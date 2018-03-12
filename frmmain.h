@@ -45,6 +45,8 @@ public:
     explicit frmMain(QWidget *parent = 0);
     ~frmMain();
 
+    int returnCode;
+
 private slots:
     void setSessionRole(const QStringList &userInfo);
     void logOut();

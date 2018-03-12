@@ -23,6 +23,8 @@ frmMain::frmMain(QWidget *parent) :
      *  End of GUI implementation
      */
 
+    returnCode = -1;
+
     myDB = NULL;
     firstRunScr = NULL;
     loginScr = NULL;
@@ -39,16 +41,17 @@ frmMain::frmMain(QWidget *parent) :
     connect(ui->btSearchPrevious, SIGNAL(clicked(bool)), this, SLOT(searchPrevious()));
     connect(ui->btSearchNext, SIGNAL(clicked(bool)), this, SLOT(searchNext()));
 
-    bool isMySQL = false;
+    bool isMySQL = false, dbData;
     if (settings->childGroups().contains("dbinfo", Qt::CaseInsensitive)){
         settings->beginGroup("dbinfo");
         isMySQL = (settings->value("database type", "").toString() == "MYSQL");
         settings->endGroup();
+        dbData = true;
     }
 
-    if ((settings->childGroups().contains("dbinfo", Qt::CaseInsensitive) && QFile::exists(frmLogin::getDBPath()))
-            || QFile::exists(frmLogin::getDBPath()) || isMySQL){
+    if (dbData && (QFile::exists(frmLogin::getDBPath()) || isMySQL)){
         setupDBConnection();
+        if (returnCode != -1) goto end;
 
         if (settings->childGroups().contains("language options", Qt::CaseInsensitive)){
             settings->beginGroup("language options");
@@ -109,6 +112,7 @@ frmMain::frmMain(QWidget *parent) :
     backupPath = QDir::homePath() + QDir::separator() + ".SmartClassBKP" + QDir::separator();
     if (!QDir(backupPath).exists()) QDir(backupPath).mkpath(backupPath);
 
+    end:
     frmImportExport = NULL;
     manageStudent = NULL;
     frmContract = NULL;
@@ -174,8 +178,36 @@ void frmMain::createTables(){
                  << "dayNTime TEXT NOT NULL" << "beginningDate TEXT NOT NULL" << "endDate TEXT NOT NULL"
                  << "price TEXT NOT NULL" << "students TEXT";
 
-    myDB->openDB();
-    myDB->createTable("myclass_parents", parentsTable); // Thread safe
+    if (!myDB->openDB()){
+        QMessageBox dbWarning;
+        dbWarning.setWindowTitle(tr("Connection issue | SmartClass"));
+        dbWarning.setIcon(QMessageBox::Critical);
+        dbWarning.setStandardButtons(QMessageBox::Discard | QMessageBox::Abort);
+        dbWarning.setButtonText(QMessageBox::Discard, tr("Clean settings"));
+        dbWarning.setButtonText(QMessageBox::Abort, tr("Quit"));
+        dbWarning.setText(tr("It was not possible to establish connection to the database. Unfortunately it will not be possible to continue with the execution of this program. Please, try again later."
+                             "\nIf you keep having trouble while trying to connect, please, consider to clean the program settings (the database is not going to be affected)."));
+        if (dbWarning.exec() == QMessageBox::Discard){
+            QString feedback = "";
+            if (QMessageBox::warning(NULL, tr("Confirmation | SmartClass"),
+                                     tr("You are about to remove every information about the database connection of this program.\n"
+                                        "This step cannot be undone. Do you still want to proceed?"),
+                                     QMessageBox::Yes, QMessageBox::No)
+                    == QMessageBox::Yes){
+                settings->beginGroup("dbinfo");
+                settings->remove("");
+                settings->endGroup();
+                feedback = tr("Settings removed. Please, restart SmartClass.");
+            }
+            else feedback = tr("Closing SmartClass.");
+            if (QMessageBox::information(NULL, tr("Info | SmartClass"), feedback,
+                                     QMessageBox::Ok, QMessageBox::NoButton))
+                returnCode = 0;
+        }
+        else returnCode = 1;
+    }
+
+    myDB->createTable("myclass_parents", parentsTable);
     myDB->createTable("myclass_students", studentsTable);
     myDB->createTable("myclass_simages", studentImagesTable);
     myDB->createTable("myclass_pimages", parentImagesTable);
