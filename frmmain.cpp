@@ -51,22 +51,22 @@ frmMain::frmMain(QWidget *parent) :
 
     if (dbData && (QFile::exists(frmLogin::getDBPath()) || isMySQL)){
         setupDBConnection();
-        if (returnCode != -1) goto end;
+        if (returnCode == -1){
+            if (settings->childGroups().contains("language options", Qt::CaseInsensitive)){
+                settings->beginGroup("language options");
+                if (settings->value("current language index").toInt() != 0) changeLanguage("pt");
+                settings->endGroup();
+            }
 
-        if (settings->childGroups().contains("language options", Qt::CaseInsensitive)){
-            settings->beginGroup("language options");
-            if (settings->value("current language index").toInt() != 0) changeLanguage("pt");
-            settings->endGroup();
+            loginScr = new frmLogin(NULL, db_SETTINGS);
+            connect(loginScr, SIGNAL(dataReady(QStringList)), this, SLOT(setSessionRole(QStringList)));
+            loginScr->show();
+
+            createTables();
+
+            frmAbt = new frmAbout();
+            connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbt, SLOT(show()));
         }
-
-        loginScr = new frmLogin(NULL, db_SETTINGS);
-        connect(loginScr, SIGNAL(dataReady(QStringList)), this, SLOT(setSessionRole(QStringList)));
-        loginScr->show();
-
-        createTables();
-
-        frmAbt = new frmAbout();
-        connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbt, SLOT(show()));
     }
     else {
         firstRunScr = new frmFirstRun();
@@ -74,51 +74,52 @@ frmMain::frmMain(QWidget *parent) :
         firstRunScr->show();
     }
 
-    this->hide();
+    if (returnCode == -1){
+        this->hide();
 
-    connect(ui->btLogOff, SIGNAL(clicked(bool)), this, SLOT(logOut()));
-    connect(ui->rbStudentsTable, SIGNAL(toggled(bool)), this, SLOT(changeTable(bool)));
+        connect(ui->btLogOff, SIGNAL(clicked(bool)), this, SLOT(logOut()));
+        connect(ui->rbStudentsTable, SIGNAL(toggled(bool)), this, SLOT(changeTable(bool)));
 
-    connect(ui->btAddStudent, SIGNAL(clicked(bool)), this, SLOT(openStudentManager()));
-    connect(ui->btUpdateStudent, SIGNAL(clicked(bool)), this, SLOT(openStudentManager()));
-    connect(ui->btRemoveStudent, SIGNAL(clicked(bool)), this, SLOT(removeStudent()));
-    connect(ui->btAddCourse, SIGNAL(clicked(bool)), this, SLOT(openClassesManager()));
-    connect(ui->btUpdateCourse, SIGNAL(clicked(bool)), this, SLOT(openClassesManager()));
-    connect(ui->btRemoveCourse, SIGNAL(clicked(bool)), this, SLOT(removeCourse()));
+        connect(ui->btAddStudent, SIGNAL(clicked(bool)), this, SLOT(openStudentManager()));
+        connect(ui->btUpdateStudent, SIGNAL(clicked(bool)), this, SLOT(openStudentManager()));
+        connect(ui->btRemoveStudent, SIGNAL(clicked(bool)), this, SLOT(removeStudent()));
+        connect(ui->btAddCourse, SIGNAL(clicked(bool)), this, SLOT(openClassesManager()));
+        connect(ui->btUpdateCourse, SIGNAL(clicked(bool)), this, SLOT(openClassesManager()));
+        connect(ui->btRemoveCourse, SIGNAL(clicked(bool)), this, SLOT(removeCourse()));
 
-    connect(ui->btSettings, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
-    connect(ui->btInfo, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
+        connect(ui->btSettings, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
+        connect(ui->btInfo, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
 
-    connect(ui->btPrintStudentForms, SIGNAL(clicked(bool)), this, SLOT(openContractForm()));
-    connect(ui->btGetReceipt, SIGNAL(clicked(bool)), this, SLOT(openReceiptForm()));
+        connect(ui->btPrintStudentForms, SIGNAL(clicked(bool)), this, SLOT(openContractForm()));
+        connect(ui->btGetReceipt, SIGNAL(clicked(bool)), this, SLOT(openReceiptForm()));
 
-    deleteDBStatus = 0;
+        deleteDBStatus = 0;
 
-    connect(ui->btRemoveUser, SIGNAL(clicked(bool)), this, SLOT(removeUser()));
-    connect(ui->btUpgradeRole, SIGNAL(clicked(bool)), this, SLOT(upgradeUserPermissions()));
-    connect(ui->btRevokeRole, SIGNAL(clicked(bool)), this, SLOT(revokeUserPermissions()));
+        connect(ui->btRemoveUser, SIGNAL(clicked(bool)), this, SLOT(removeUser()));
+        connect(ui->btUpgradeRole, SIGNAL(clicked(bool)), this, SLOT(upgradeUserPermissions()));
+        connect(ui->btRevokeRole, SIGNAL(clicked(bool)), this, SLOT(revokeUserPermissions()));
 
-    connect(ui->btRestoreDB, SIGNAL(clicked(bool)), this, SLOT(restoreDataBase()));
-    connect(ui->btBackUpDB, SIGNAL(clicked(bool)), this, SLOT(backupDataBase()));
-    connect(ui->btResetDB, SIGNAL(clicked(bool)), this, SLOT(removeDataBase()));
-    connect(ui->btImportDB, SIGNAL(clicked(bool)), this, SLOT(openImportExportTool()));
-    connect(ui->btExportDB, SIGNAL(clicked(bool)), this, SLOT(openImportExportTool()));
+        connect(ui->btRestoreDB, SIGNAL(clicked(bool)), this, SLOT(restoreDataBase()));
+        connect(ui->btBackUpDB, SIGNAL(clicked(bool)), this, SLOT(backupDataBase()));
+        connect(ui->btResetDB, SIGNAL(clicked(bool)), this, SLOT(removeDataBase()));
+        connect(ui->btImportDB, SIGNAL(clicked(bool)), this, SLOT(openImportExportTool()));
+        connect(ui->btExportDB, SIGNAL(clicked(bool)), this, SLOT(openImportExportTool()));
 
-    connect(ui->btOpenNSDocwiki, SIGNAL(clicked(bool)), this, SLOT(openNSDocwiki()));
-    connect(ui->btOpenNSWebsite, SIGNAL(clicked(bool)), this, SLOT(openNSWebSite()));
-    connect(ui->btSupportEmail, SIGNAL(clicked(bool)), this, SLOT(openSupportEmail()));
-    connect(ui->btOpenOnlineSupport, SIGNAL(clicked(bool)), this, SLOT(openOnlineSupport()));
+        connect(ui->btOpenNSDocwiki, SIGNAL(clicked(bool)), this, SLOT(openNSDocwiki()));
+        connect(ui->btOpenNSWebsite, SIGNAL(clicked(bool)), this, SLOT(openNSWebSite()));
+        connect(ui->btSupportEmail, SIGNAL(clicked(bool)), this, SLOT(openSupportEmail()));
+        connect(ui->btOpenOnlineSupport, SIGNAL(clicked(bool)), this, SLOT(openOnlineSupport()));
 
-    backupPath = QDir::homePath() + QDir::separator() + ".SmartClassBKP" + QDir::separator();
-    if (!QDir(backupPath).exists()) QDir(backupPath).mkpath(backupPath);
+        backupPath = QDir::homePath() + QDir::separator() + ".SmartClassBKP" + QDir::separator();
+        if (!QDir(backupPath).exists()) QDir(backupPath).mkpath(backupPath);
 
-    end:
-    frmImportExport = NULL;
-    manageStudent = NULL;
-    frmContract = NULL;
-    frmPayment = NULL;
-    frmConfig= NULL;
-    addClass = NULL;
+        frmImportExport = NULL;
+        manageStudent = NULL;
+        frmContract = NULL;
+        frmPayment = NULL;
+        frmConfig= NULL;
+        addClass = NULL;
+    }
 }
 
 frmMain::~frmMain()
