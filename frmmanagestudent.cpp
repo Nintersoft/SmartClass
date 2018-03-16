@@ -63,9 +63,6 @@ frmManageStudent::frmManageStudent(QWidget *parent, Role role, const QString &st
 
     connect(ui->listPaymentCourses, SIGNAL(currentRowChanged(int)), this, SLOT(changePaymentDetails()));
 
-    connect(ui->btParentPreloadedData, SIGNAL(clicked(bool)), this, SLOT(retrieveParentData()));
-    if (CURRENT_ROLE == frmManageStudent::Create) connect(ui->edtParentName, SIGNAL(textEdited(QString)), this, SLOT(parentNameChanged()));
-
     connect(ui->listCourses, SIGNAL(currentRowChanged(int)), this, SLOT(enableRegistrationDetails(int)));
 
     myDB->openDB();
@@ -84,6 +81,10 @@ frmManageStudent::frmManageStudent(QWidget *parent, Role role, const QString &st
     courseData = NULL;
     paymentData = NULL;
     this->retrieveData();
+
+    if (role == frmManageStudent::Create) ui->edtParentName->setCurrentText("");
+    if (CURRENT_ROLE != frmManageStudent::View)
+        connect(ui->edtParentName, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateParentInfo(QString)));
 }
 
 frmManageStudent::~frmManageStudent()
@@ -154,7 +155,7 @@ void frmManageStudent::saveData(){
         errorMessage += tr("\n->The birthday of the student is invalid;");
         error = true;
     }
-    if (ui->edtParentName->text().isEmpty()){
+    if (ui->edtParentName->currentText().isEmpty()){
         errorMessage += tr("\n->The name of the parent cannot be empty;");
         error = true;
     }
@@ -184,7 +185,7 @@ void frmManageStudent::saveData(){
                 << courses.join("|")
                 << ui->edtRegistrationAddress->text();
 
-    parentInfo << ui->edtParentName->text()
+    parentInfo << ui->edtParentName->currentText()
                << ui->edtParentPhone->text()
                << QString::number(ui->cbParentMobileOperator->currentIndex())
                << ui->edtParentMobile->text()
@@ -343,7 +344,7 @@ void frmManageStudent::resetData(){
     ui->edtExperimentalClassDateTime->setDateTime(QDateTime(QDate(2000, 01, 91), QTime(00, 00)));
     ui->edtExperimentalClassObservations->setPlainText("");
 
-    ui->edtParentName->setText("");
+    ui->edtParentName->setCurrentText("");
     ui->edtParentPhone->setText("");
     ui->cbParentMobileOperator->setCurrentIndex(0);
     ui->edtParentMobile->setText("");
@@ -391,6 +392,12 @@ void frmManageStudent::retrieveData(){
         }
     }
 
+    QStringList *allParentData = myDB->retrieveAll("myclass_parents", QStringList() << "parent");
+    if (allParentData){
+        allParentData[0].sort(Qt::CaseInsensitive);
+        ui->edtParentName->addItems(allParentData[0]);
+    }
+
     if (CURRENT_ROLE == frmManageStudent::Create) return;
     if (CURRENT_ROLE == frmManageStudent::View) ui->screenManagerLayout->setEnabled(false);
 
@@ -428,7 +435,7 @@ void frmManageStudent::retrieveData(){
     ui->edtExperimentalClassObservations->setPlainText(studentData.at(7));
     ui->edtRegistrationAddress->setText(studentData.at(9));
 
-    ui->edtParentName->setText(parentalData.at(0));
+    ui->edtParentName->setCurrentText(parentalData.at(0));
     ui->edtParentPhone->setText(parentalData.at(2));
     ui->cbParentMobileOperator->setCurrentIndex(QString(parentalData.at(3)).toInt());
     ui->edtParentMobile->setText(parentalData.at(4));
@@ -463,73 +470,6 @@ void frmManageStudent::retrieveData(){
     }
 
     this->courseQuantityChanged();
-    this->setParentGroupEnabled(CURRENT_ROLE != frmManageStudent::Create);
-}
-
-void frmManageStudent::retrieveParentData(){
-    QStringList tempParentData;
-    bool exists = false;
-    if (myDB->lineExists("myclass_parents", "parent", ui->edtParentName->text())){
-        tempParentData = myDB->retrieveLine("myclass_parents", "parent", ui->edtParentName->text());
-        exists = true;
-    }
-
-    if (!exists){
-        if (QMessageBox::question(this, tr("Inexistent parental data | SmartClass"),
-                              tr("We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?"),
-                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::No){
-            this->setParentGroupEnabled(true);
-            return;
-        }
-    }
-
-    ui->edtParentPhone->setText(exists ? tempParentData.at(2) : "");
-    ui->cbParentMobileOperator->setCurrentIndex(QString(exists ? tempParentData.at(3) : "0").toInt());
-    ui->edtParentMobile->setText(exists ? tempParentData.at(4) : "");
-    ui->edtParentEmail->setText(exists ? tempParentData.at(5) : "");
-    ui->edtParentID->setText(exists ? tempParentData.at(6) : "");
-    ui->edtParentCPG->setText(exists ? tempParentData.at(7) : "");
-    ui->cbParentIndication->setCurrentText(exists ? tempParentData.at(8) : tr("Online advertisements"));
-
-    for (int i = 2; i < 5; ++i){
-        delete pics[i];
-        pics[i] = NULL;
-    }
-
-    if (exists){
-        pics[2] = new QPixmap(myDB->retrieveImage("myclass_pimages", "parentID", "parent", tempParentData.at(0)));
-        pics[3] = new QPixmap(myDB->retrieveImage("myclass_pimages", "parentCPG", "parent", tempParentData.at(0)));
-        pics[4] = new QPixmap(myDB->retrieveImage("myclass_pimages", "addressComprobation", "parent", tempParentData.at(0)));
-    }
-    else {
-        pics[2] = new QPixmap();
-        pics[3] = new QPixmap();
-        pics[4] = new QPixmap();
-    }
-
-    this->setParentGroupEnabled(true);
-}
-
-void frmManageStudent::parentNameChanged(){
-    this->setParentGroupEnabled(false);
-}
-
-void frmManageStudent::setParentGroupEnabled(bool enable){
-    ui->lblParentPhone->setEnabled(enable);
-    ui->edtParentPhone->setEnabled(enable);
-    ui->lblParentMobile->setEnabled(enable);
-    ui->cbParentMobileOperator->setEnabled(enable);
-    ui->edtParentMobile->setEnabled(enable);
-    ui->lblParentEmail->setEnabled(enable);
-    ui->edtParentEmail->setEnabled(enable);
-    ui->lblParentID->setEnabled(enable);
-    ui->edtParentID->setEnabled(enable);
-    ui->lblParentCPG->setEnabled(enable);
-    ui->edtParentCPG->setEnabled(enable);
-    ui->lblParentIndication->setEnabled(enable);
-    ui->cbParentIndication->setEnabled(enable);
-    ui->btParentIDPicture->setEnabled(enable);
-    ui->btParentCPGPicture->setEnabled(enable);
 }
 
 void frmManageStudent::addCourse(){
@@ -627,6 +567,46 @@ void frmManageStudent::courseIndexChanged(){
         if (item->text().contains(courseData[i].at(0)) && item->text().contains(courseData[i].at(4))
                 && item->text().contains(courseData[i].at(5)) && item->text().contains(courseData[i].at(6)))
             ui->lblDescriptionOfCourse->setText(courseData[i].at(2));
+    }
+}
+
+void frmManageStudent::updateParentInfo(const QString &pName){
+    if (pName.isEmpty() || pName.isNull()) return;
+    QStringList tempParentData;
+    bool exists = false;
+    if (myDB->lineExists("myclass_parents", "parent", pName)){
+        tempParentData = myDB->retrieveLine("myclass_parents", "parent", pName);
+        exists = true;
+    }
+
+    if (!exists)
+        if (QMessageBox::question(this, tr("Inexistent parental data | SmartClass"),
+                              tr("We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?"),
+                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+            return;
+
+    ui->edtParentPhone->setText(exists ? tempParentData.at(2) : "");
+    ui->cbParentMobileOperator->setCurrentIndex(QString(exists ? tempParentData.at(3) : "0").toInt());
+    ui->edtParentMobile->setText(exists ? tempParentData.at(4) : "");
+    ui->edtParentEmail->setText(exists ? tempParentData.at(5) : "");
+    ui->edtParentID->setText(exists ? tempParentData.at(6) : "");
+    ui->edtParentCPG->setText(exists ? tempParentData.at(7) : "");
+    ui->cbParentIndication->setCurrentText(exists ? tempParentData.at(8) : tr("Online advertisements"));
+
+    for (int i = 2; i < 5; ++i){
+        delete pics[i];
+        pics[i] = NULL;
+    }
+
+    if (exists){
+        pics[2] = new QPixmap(myDB->retrieveImage("myclass_pimages", "parentID", "parent", tempParentData.at(0)));
+        pics[3] = new QPixmap(myDB->retrieveImage("myclass_pimages", "parentCPG", "parent", tempParentData.at(0)));
+        pics[4] = new QPixmap(myDB->retrieveImage("myclass_pimages", "addressComprobation", "parent", tempParentData.at(0)));
+    }
+    else {
+        pics[2] = new QPixmap();
+        pics[3] = new QPixmap();
+        pics[4] = new QPixmap();
     }
 }
 

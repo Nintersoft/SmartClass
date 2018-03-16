@@ -674,7 +674,7 @@ QListWidget {
            <x>0</x>
            <y>0</y>
            <width>628</width>
-           <height>1197</height>
+           <height>1194</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
@@ -767,7 +767,7 @@ QListWidget {
              <item row="8" column="0">
               <widget class="QLabel" name="lblParentIndication">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>How have you met us?</string>
@@ -777,7 +777,7 @@ QListWidget {
              <item row="6" column="0">
               <widget class="QLabel" name="lblParentCPG">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>CPG:</string>
@@ -786,6 +786,9 @@ QListWidget {
              </item>
              <item row="0" column="0">
               <widget class="QLabel" name="lblParentName">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="text">
                 <string>Name:</string>
                </property>
@@ -794,7 +797,7 @@ QListWidget {
              <item row="3" column="0">
               <widget class="QLabel" name="lblParentMobile">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Mobile phone number:</string>
@@ -804,7 +807,7 @@ QListWidget {
              <item row="1" column="0">
               <widget class="QLabel" name="lblParentPhone">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Phone number:</string>
@@ -814,7 +817,7 @@ QListWidget {
              <item row="5" column="0">
               <widget class="QLabel" name="lblParentID">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>ID:</string>
@@ -824,7 +827,7 @@ QListWidget {
              <item row="3" column="1">
               <widget class="QComboBox" name="cbParentMobileOperator">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="editable">
                 <bool>true</bool>
@@ -884,35 +887,35 @@ QListWidget {
              <item row="5" column="1" colspan="2">
               <widget class="QLineEdit" name="edtParentID">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item row="6" column="1" colspan="2">
               <widget class="QLineEdit" name="edtParentCPG">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item row="1" column="1" colspan="3">
               <widget class="QLineEdit" name="edtParentPhone">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item row="3" column="2" colspan="2">
               <widget class="QLineEdit" name="edtParentMobile">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item row="8" column="1" colspan="3">
               <widget class="QComboBox" name="cbParentIndication">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="editable">
                 <bool>true</bool>
@@ -932,7 +935,7 @@ QListWidget {
              <item row="4" column="0">
               <widget class="QLabel" name="lblParentEmail">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Email:</string>
@@ -942,14 +945,14 @@ QListWidget {
              <item row="4" column="1" colspan="3">
               <widget class="QLineEdit" name="edtParentEmail">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
               </widget>
              </item>
              <item row="5" column="3">
               <widget class="QPushButton" name="btParentIDPicture">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>...</string>
@@ -959,20 +962,17 @@ QListWidget {
              <item row="6" column="3">
               <widget class="QPushButton" name="btParentCPGPicture">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>...</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1" colspan="2">
-              <widget class="QLineEdit" name="edtParentName"/>
-             </item>
-             <item row="0" column="3">
-              <widget class="QPushButton" name="btParentPreloadedData">
-               <property name="text">
-                <string>Preload data</string>
+             <item row="0" column="1" colspan="3">
+              <widget class="QComboBox" name="edtParentName">
+               <property name="editable">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1333,8 +1333,6 @@ QListWidget {
   <tabstop>cbExperimentalClassCourse</tabstop>
   <tabstop>edtExperimentalClassDateTime</tabstop>
   <tabstop>edtExperimentalClassObservations</tabstop>
-  <tabstop>edtParentName</tabstop>
-  <tabstop>btParentPreloadedData</tabstop>
   <tabstop>edtParentPhone</tabstop>
   <tabstop>cbParentMobileOperator</tabstop>
   <tabstop>edtParentMobile</tabstop>

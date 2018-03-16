@@ -60,7 +60,6 @@ protected:
     };
 
     void retrieveData();
-    void setParentGroupEnabled(bool enable);
 
 private:
     Ui::frmManageStudent *ui;
@@ -91,9 +90,6 @@ protected slots:
 
     void enableRegistrationDetails(int index);
 
-    void retrieveParentData();
-    void parentNameChanged();
-
     void addCourse();
     void removeCourse();
     void courseQuantityChanged();
@@ -103,6 +99,8 @@ protected slots:
     void resetData();
     void changePaymentDetails();
     void paymentValuesChanged();
+
+    void updateParentInfo(const QString &pName);
 
     /*
      * FIX PAYMENT DETAILS AND COURSE SHORT DESC
