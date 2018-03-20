@@ -1012,14 +1012,14 @@ QTableWidget, QListWidget{
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="1">
-               <widget class="QToolButton" name="btBackUpDB">
+              <item row="0" column="5">
+               <widget class="QToolButton" name="btExportDB">
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/BackUpDatabase.PNG</normaloff>:/images/buttons/BackUpDatabase.PNG</iconset>
+                  <normaloff>:/images/buttons/ExportDatabase.PNG</normaloff>:/images/buttons/ExportDatabase.PNG</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1046,14 +1046,14 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="5">
-               <widget class="QToolButton" name="btExportDB">
+              <item row="0" column="1">
+               <widget class="QToolButton" name="btBackUpDB">
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/ExportDatabase.PNG</normaloff>:/images/buttons/ExportDatabase.PNG</iconset>
+                  <normaloff>:/images/buttons/BackUpDatabase.PNG</normaloff>:/images/buttons/BackUpDatabase.PNG</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1063,7 +1063,24 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="6">
+              <item row="0" column="2">
+               <widget class="QToolButton" name="btResetDB">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/ResetDB.png</normaloff>:/images/buttons/ResetDB.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="8">
                <spacer name="horizontalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1103,20 +1120,30 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QToolButton" name="btResetDB">
+              <item row="0" column="7">
+               <widget class="QToolButton" name="btUninstall">
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/ResetDB.png</normaloff>:/images/buttons/ResetDB.png</iconset>
+                  <normaloff>:/images/buttons/Uninstall.png</normaloff>:/images/buttons/Uninstall.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
                   <width>100</width>
                   <height>100</height>
                  </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="6">
+               <widget class="Line" name="line_9">
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
                 </property>
                </widget>
               </item>

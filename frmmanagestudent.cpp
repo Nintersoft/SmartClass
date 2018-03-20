@@ -252,16 +252,43 @@ void frmManageStudent::saveData(){
         parentInfo.insert(1, QString(parentalData.at(1)).replace(studentData.at(0), studentInfo.at(0)));
         myDB->updateLine("myclass_parents", parentsTable, parentInfo, "parent", parentalData.at(0));
     }
-    else if (QMessageBox::information(this, tr("Parent data changed | SmartClass"),
-                                      tr("Looks like the name of the parent has changed. Would you like to mantain this changes (note that all the kids who have this person as parent are going to change their parents)?"),
-                                      QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes){
-        parentInfo.insert(1, QString(parentalData.at(1)).replace(studentData.at(0), studentInfo.at(0)));
-        myDB->updateLine("myclass_parents", parentsTable, parentInfo, "parent", parentalData.at(0));
-    }
     else {
-        parentInfo.replace(0, parentalData.at(0));
-        parentInfo.insert(1, QString(parentalData.at(1)).replace(studentData.at(0), studentInfo.at(0)));
-        myDB->updateLine("myclass_parents", parentsTable, parentInfo, "parent", parentalData.at(0));
+        QMessageBox parentWarning;
+        parentWarning.setIcon(QMessageBox::Information);
+        parentWarning.setWindowTitle(tr("Parent data changed | SmartClass"));
+        parentWarning.setText(tr("Looks like the name of the parent has changed. You have three options from now on.\n\n"
+                                 "-> Update : If you choose this option, the parent name will be changed for every student attached to this parent.\n"
+                                 "-> Ignore : If you choose this option, the parent name will remain the same.\n"
+                                 "-> Change : If you choose this option, the parent name will be updated just for this student. Other students related to this parent are going to remain intact."));
+        parentWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        parentWarning.setButtonText(QMessageBox::Yes,tr("Update"));
+        parentWarning.setButtonText(QMessageBox::Ignore,tr("Ignore"));
+        parentWarning.setButtonText(QMessageBox::Cancel,tr("Change"));
+        int choice = parentWarning.exec();
+        if (choice == QMessageBox::Yes){
+            parentInfo.insert(1, QString(parentalData.at(1)).replace(studentData.at(0), studentInfo.at(0)));
+            myDB->updateLine("myclass_parents", parentsTable, parentInfo, "parent", parentalData.at(0));
+        }
+        else if (choice == QMessageBox::Ignore){
+            parentInfo.replace(0, parentalData.at(0));
+            parentInfo.insert(1, QString(parentalData.at(1)).replace(studentData.at(0), studentInfo.at(0)));
+            myDB->updateLine("myclass_parents", parentsTable, parentInfo, "parent", parentalData.at(0));
+        }
+        else {
+            if (QString(parentalData.at(1)).split("|").length() == 1){
+                parentInfo.insert(1, QString(parentalData.at(1)).replace(studentData.at(0), studentInfo.at(0)));
+                myDB->updateLine("myclass_parents", parentsTable, parentInfo, "parent", parentalData.at(0));
+            }
+            else {
+                QStringList brothers = parentalData.at(1).split("|");
+                brothers.removeOne(studentData.at(0));
+                QStringList backup(parentInfo);
+                backup.insert(1, brothers.join("|"));
+                myDB->updateLine("myclass_parents", parentsTable, backup, "parent", parentalData.at(0));
+                parentInfo.insert(1, studentInfo.at(0));
+                myDB->addLine("myclass_parents", parentsTable, parentInfo);
+            }
+        }
     }
 
     for (int i = 0; i < courseDataCount; ++i){

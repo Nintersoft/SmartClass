@@ -69,6 +69,8 @@ private slots:
     void restoreDataBase();
     void removeDataBase();
 
+    void removeAppSettings();
+
     void searchPrevious();
     void searchNext();
 

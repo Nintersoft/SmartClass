@@ -104,6 +104,7 @@ frmMain::frmMain(QWidget *parent) :
         connect(ui->btResetDB, SIGNAL(clicked(bool)), this, SLOT(removeDataBase()));
         connect(ui->btImportDB, SIGNAL(clicked(bool)), this, SLOT(openImportExportTool()));
         connect(ui->btExportDB, SIGNAL(clicked(bool)), this, SLOT(openImportExportTool()));
+        connect(ui->btUninstall, SIGNAL(clicked(bool)), this, SLOT(removeAppSettings()));
 
         connect(ui->btOpenNSDocwiki, SIGNAL(clicked(bool)), this, SLOT(openNSDocwiki()));
         connect(ui->btOpenNSWebsite, SIGNAL(clicked(bool)), this, SLOT(openNSWebSite()));
@@ -587,6 +588,7 @@ void frmMain::setUIToRole(){
     ui->btExportDB->setEnabled(enable);
     ui->btBackUpDB->setEnabled(enable);
     ui->btResetDB->setEnabled(enable);
+    ui->btUninstall->setEnabled(enable);
 
     if (sessionRole == "EDITOR") enable = true;
 
@@ -981,9 +983,43 @@ void frmMain::removeDataBase(){
             qApp->quit();
         }
     }
+}
 
-    QMessageBox confirmation;
-    confirmation.setWindowTitle(tr("Confirmation | SmartClass"));
+void frmMain::removeAppSettings(){
+    QMessageBox uninstall;
+    uninstall.setWindowTitle(tr("Maintenance Tool | SmartClass"));
+    uninstall.setIcon(QMessageBox::Warning);
+    uninstall.setText(tr("Are you facing any trouble with SmartClass? This tool may be helpful for you. We have three options currently available:\n"
+                         "Clear Settings : Clear the initialization/standard settings and restart the application as a clean installation (Note that this option has no effect over the database).\n"
+                         "Uninstall : Performs a clean uninstall by removing any settings and files which may rest after the uninstallation process (If you are using SQLite the database may be removed during the process of uninstallation. Do not forget to make a backup before uninstalling!).\n"
+                         "Cancel : Cancel the current operation."));
+    uninstall.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::Cancel);
+    uninstall.setButtonText(QMessageBox::Yes, tr("Clear Settings"));
+    uninstall.setButtonText(QMessageBox::YesToAll, tr("Uninstall"));
+
+    int choice = uninstall.exec();
+    if (choice == QMessageBox::Cancel) return;
+
+    settings->clear();
+    QString tempDir = QDir::homePath();
+    if (QSysInfo::windowsVersion() != QSysInfo::WV_None)
+        tempDir += "/AppData/Roaming/Nintersoft/SmartClass/";
+    else tempDir += "/.Nintersoft/SmartClass/";
+
+    QDir downloadDir(tempDir + "Downloads/");
+    if (downloadDir.exists()) downloadDir.removeRecursively();
+
+    QDir dataDir(tempDir + "images/");
+    if (dataDir.exists()) dataDir.removeRecursively();
+
+    if (choice == QMessageBox::Yes){
+        QDesktopServices::openUrl(QUrl(QCoreApplication::applicationFilePath()));
+        QApplication::exit(EXIT_SUCCESS);
+    }
+    QMessageBox::information(this, tr("Process complete | SmartClass"),
+                             tr("The process of uninstallation is going to continue right after you dismiss this message!"), QMessageBox::Ok);
+    QDesktopServices::openUrl(QUrl("./unins000.exe"));
+    QApplication::exit(EXIT_SUCCESS);
 }
 
 void frmMain::openNSDocwiki(){

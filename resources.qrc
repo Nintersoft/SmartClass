@@ -40,5 +40,6 @@
         <file>images/logos/Logo.png</file>
         <file>images/logos/Logo.ico</file>
         <file>images/logos/Logo_64.png</file>
+        <file>images/buttons/Uninstall.png</file>
     </qresource>
 </RCC>
