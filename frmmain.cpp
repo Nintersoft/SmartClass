@@ -185,10 +185,10 @@ void frmMain::createTables(){
         dbWarning.setWindowTitle(tr("Connection issue | SmartClass"));
         dbWarning.setIcon(QMessageBox::Critical);
         dbWarning.setStandardButtons(QMessageBox::Discard | QMessageBox::Abort);
-        dbWarning.setButtonText(QMessageBox::Discard, tr("Clean settings"));
+        dbWarning.setButtonText(QMessageBox::Discard, tr("Clear settings"));
         dbWarning.setButtonText(QMessageBox::Abort, tr("Quit"));
         dbWarning.setText(tr("It was not possible to establish connection to the database. Unfortunately it will not be possible to continue with the execution of this program. Please, try again later."
-                             "\nIf you keep having trouble while trying to connect, please, consider to clean the program settings (the database is not going to be affected)."));
+                             "\nIf you keep having trouble while trying to connect, please, consider to clear the program settings (the database is not going to be affected)."));
         if (dbWarning.exec() == QMessageBox::Discard){
             QString feedback = "";
             if (QMessageBox::warning(NULL, tr("Confirmation | SmartClass"),

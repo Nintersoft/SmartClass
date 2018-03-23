@@ -81,6 +81,11 @@
         <translation>Nintersoft Team</translation>
     </message>
     <message>
+        <location filename="../frmabout.ui" line="675"/>
+        <source>0.9.1.2</source>
+        <translation>0.9.1.2</translation>
+    </message>
+    <message>
         <location filename="../frmabout.ui" line="697"/>
         <source>Show licence</source>
         <translation>Show licence</translation>
@@ -145,9 +150,8 @@ p, li { white-space: pre-wrap; }
         <translation>Mauro Mascarenhas (Nintersoft)</translation>
     </message>
     <message>
-        <location filename="../frmabout.ui" line="675"/>
         <source>0.9.1.1</source>
-        <translation>0.9.1.1</translation>
+        <translation type="vanished">0.9.1.1</translation>
     </message>
     <message>
         <location filename="../frmabout.ui" line="737"/>
@@ -1458,7 +1462,7 @@ Have a look at the log (on the directory of the file) for details.</translation>
     </message>
     <message>
         <location filename="../frmmain.ui" line="444"/>
-        <location filename="../frmmain.ui" line="1376"/>
+        <location filename="../frmmain.ui" line="1403"/>
         <source>School</source>
         <translation>School</translation>
     </message>
@@ -1523,200 +1527,237 @@ Have a look at the log (on the directory of the file) for details.</translation>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1131"/>
+        <location filename="../frmmain.ui" line="1158"/>
         <source>Help</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1182"/>
+        <location filename="../frmmain.ui" line="1209"/>
         <source>NS Website</source>
         <translation>NS Website</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1201"/>
+        <location filename="../frmmain.ui" line="1228"/>
         <source>Email</source>
         <translation>Email</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1220"/>
+        <location filename="../frmmain.ui" line="1247"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1239"/>
+        <location filename="../frmmain.ui" line="1266"/>
         <source>DocWiki</source>
         <translation>DocWiki</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1258"/>
+        <location filename="../frmmain.ui" line="1285"/>
         <source>Online support</source>
         <translation>Online support</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1277"/>
+        <location filename="../frmmain.ui" line="1304"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1317"/>
+        <location filename="../frmmain.ui" line="1344"/>
         <source>Search:</source>
         <translation>Search:</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1331"/>
-        <location filename="../frmmain.ui" line="1434"/>
+        <location filename="../frmmain.ui" line="1358"/>
+        <location filename="../frmmain.ui" line="1461"/>
         <source>Course name</source>
         <translation>Course name</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1336"/>
-        <location filename="../frmmain.ui" line="1439"/>
+        <location filename="../frmmain.ui" line="1363"/>
+        <location filename="../frmmain.ui" line="1466"/>
         <source>Class number</source>
         <translation>Class number</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1341"/>
-        <location filename="../frmmain.ui" line="1444"/>
+        <location filename="../frmmain.ui" line="1368"/>
+        <location filename="../frmmain.ui" line="1471"/>
         <source>Teacher</source>
         <translation>Teacher</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1346"/>
+        <location filename="../frmmain.ui" line="1373"/>
         <source>Beginning date</source>
         <translation>Beginning date</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1351"/>
-        <location filename="../frmmain.ui" line="1454"/>
+        <location filename="../frmmain.ui" line="1378"/>
+        <location filename="../frmmain.ui" line="1481"/>
         <source>Days and time</source>
         <translation>Days and time</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1366"/>
+        <location filename="../frmmain.ui" line="1393"/>
         <source>Name of the student</source>
         <translation>Name of the student</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1371"/>
+        <location filename="../frmmain.ui" line="1398"/>
         <source>Name of the parent</source>
         <translation>Name of the parent</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1396"/>
+        <location filename="../frmmain.ui" line="1423"/>
         <source>&lt; Previous</source>
         <translation>&lt; Previous</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1415"/>
+        <location filename="../frmmain.ui" line="1442"/>
         <source>Next &gt;</source>
         <translation>Next &gt;</translation>
     </message>
     <message>
-        <location filename="../frmmain.ui" line="1449"/>
+        <location filename="../frmmain.ui" line="1476"/>
         <source>Beginnig date</source>
         <translation>Beginnig date</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="278"/>
+        <location filename="../frmmain.cpp" line="312"/>
         <source>You are going to disconnect from this session. Are you sure?</source>
         <translation>You are going to disconnect from this session. Are you sure?</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="279"/>
-        <location filename="../frmmain.cpp" line="706"/>
-        <location filename="../frmmain.cpp" line="753"/>
-        <location filename="../frmmain.cpp" line="806"/>
-        <location filename="../frmmain.cpp" line="953"/>
+        <location filename="../frmmain.cpp" line="194"/>
+        <location filename="../frmmain.cpp" line="313"/>
+        <location filename="../frmmain.cpp" line="741"/>
+        <location filename="../frmmain.cpp" line="788"/>
+        <location filename="../frmmain.cpp" line="841"/>
         <source>Confirmation | SmartClass</source>
         <translation>Confirmation | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="319"/>
-        <location filename="../frmmain.cpp" line="323"/>
-        <location filename="../frmmain.cpp" line="351"/>
-        <location filename="../frmmain.cpp" line="355"/>
-        <location filename="../frmmain.cpp" line="379"/>
-        <location filename="../frmmain.cpp" line="383"/>
-        <location filename="../frmmain.cpp" line="703"/>
-        <location filename="../frmmain.cpp" line="750"/>
+        <location filename="../frmmain.cpp" line="185"/>
+        <source>Connection issue | SmartClass</source>
+        <translation>Connection issue | SmartClass</translation>
+    </message>
+    <message>
+        <source>Clean settings</source>
+        <translation type="vanished">Clean settings</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="189"/>
+        <source>Quit</source>
+        <translation>Quit</translation>
+    </message>
+    <message>
+        <source>It was not possible to establish connection to the database. Unfortunately it will not be possible to continue with the execution of this program. Please, try again later.
+If you keep having trouble while trying to connect, please, consider to clean the program settings (the database is not going to be affected).</source>
+        <translation type="vanished">It was not possible to establish connection to the database. Unfortunately it will not be possible to continue with the execution of this program. Please, try again later.
+If you keep having trouble while trying to connect, please, consider to clean the program settings (the database is not going to be affected).</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="195"/>
+        <source>You are about to remove every information about the database connection of this program.
+This step cannot be undone. Do you still want to proceed?</source>
+        <translation>You are about to remove every information about the database connection of this program.
+This step cannot be undone. Do you still want to proceed?</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="202"/>
+        <source>Settings removed. Please, restart SmartClass.</source>
+        <translation>Settings removed. Please, restart SmartClass.</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="204"/>
+        <source>Closing SmartClass.</source>
+        <translation>Closing SmartClass.</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="353"/>
+        <location filename="../frmmain.cpp" line="357"/>
+        <location filename="../frmmain.cpp" line="385"/>
+        <location filename="../frmmain.cpp" line="389"/>
+        <location filename="../frmmain.cpp" line="413"/>
+        <location filename="../frmmain.cpp" line="417"/>
+        <location filename="../frmmain.cpp" line="738"/>
+        <location filename="../frmmain.cpp" line="785"/>
         <source>Warning | SmartClass</source>
         <translation>Warning | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="319"/>
-        <location filename="../frmmain.cpp" line="379"/>
-        <location filename="../frmmain.cpp" line="703"/>
-        <location filename="../frmmain.cpp" line="750"/>
+        <location filename="../frmmain.cpp" line="353"/>
+        <location filename="../frmmain.cpp" line="413"/>
+        <location filename="../frmmain.cpp" line="738"/>
+        <location filename="../frmmain.cpp" line="785"/>
         <source>Sorry, but you have to select a row in the students table in order to execute this command.</source>
         <translation>Sorry, but you have to select a row in the students table in order to execute this command.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="323"/>
-        <location filename="../frmmain.cpp" line="383"/>
+        <location filename="../frmmain.cpp" line="357"/>
+        <location filename="../frmmain.cpp" line="417"/>
         <source>Sorry, but the table of students must be selected in order to execute this command.</source>
         <translation>Sorry, but the table of students must be selected in order to execute this command.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="351"/>
+        <location filename="../frmmain.cpp" line="385"/>
         <source>Sorry, but you have to select a row in the courses table in order to execute this command.</source>
         <translation>Sorry, but you have to select a row in the courses table in order to execute this command.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="355"/>
+        <location filename="../frmmain.cpp" line="389"/>
         <source>Sorry, but the table of courses must be selected in order to execute this command.</source>
         <translation>Sorry, but the table of courses must be selected in order to execute this command.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="462"/>
-        <location filename="../frmmain.cpp" line="468"/>
-        <location filename="../frmmain.cpp" line="473"/>
-        <location filename="../frmmain.cpp" line="484"/>
-        <location filename="../frmmain.cpp" line="486"/>
-        <location filename="../frmmain.cpp" line="492"/>
-        <location filename="../frmmain.cpp" line="498"/>
-        <location filename="../frmmain.cpp" line="503"/>
-        <location filename="../frmmain.cpp" line="514"/>
-        <location filename="../frmmain.cpp" line="516"/>
-        <location filename="../frmmain.cpp" line="521"/>
-        <location filename="../frmmain.cpp" line="527"/>
-        <location filename="../frmmain.cpp" line="533"/>
-        <location filename="../frmmain.cpp" line="538"/>
-        <location filename="../frmmain.cpp" line="574"/>
-        <location filename="../frmmain.cpp" line="828"/>
+        <location filename="../frmmain.cpp" line="496"/>
+        <location filename="../frmmain.cpp" line="502"/>
+        <location filename="../frmmain.cpp" line="507"/>
+        <location filename="../frmmain.cpp" line="518"/>
+        <location filename="../frmmain.cpp" line="520"/>
+        <location filename="../frmmain.cpp" line="526"/>
+        <location filename="../frmmain.cpp" line="532"/>
+        <location filename="../frmmain.cpp" line="537"/>
+        <location filename="../frmmain.cpp" line="548"/>
+        <location filename="../frmmain.cpp" line="550"/>
+        <location filename="../frmmain.cpp" line="555"/>
+        <location filename="../frmmain.cpp" line="561"/>
+        <location filename="../frmmain.cpp" line="567"/>
+        <location filename="../frmmain.cpp" line="572"/>
+        <location filename="../frmmain.cpp" line="609"/>
+        <location filename="../frmmain.cpp" line="863"/>
         <source>Information | SmartClass</source>
         <translation>Information | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="462"/>
+        <location filename="../frmmain.cpp" line="496"/>
         <source>You have not selected/specified any user to upgrade its permissions.</source>
         <translation>You have not selected/specified any user to upgrade its permissions.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="468"/>
+        <location filename="../frmmain.cpp" line="502"/>
         <source>Due to safety purposes, you are not able to update your own permissions. If you really need to change your permissions, please, ask to another administrator do it.</source>
         <translation>Due to safety purposes, you are not able to update your own permissions. If you really need to change your permissions, please, ask to another administrator do it.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="473"/>
+        <location filename="../frmmain.cpp" line="507"/>
         <source>This user already have the maximum level of permission. Operation aborted.</source>
         <translation>This user already have the maximum level of permission. Operation aborted.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="484"/>
-        <location filename="../frmmain.cpp" line="514"/>
-        <location filename="../frmmain.cpp" line="533"/>
+        <location filename="../frmmain.cpp" line="518"/>
+        <location filename="../frmmain.cpp" line="548"/>
+        <location filename="../frmmain.cpp" line="567"/>
         <source>The user </source>
         <translation>The user </translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="484"/>
-        <location filename="../frmmain.cpp" line="514"/>
+        <location filename="../frmmain.cpp" line="518"/>
+        <location filename="../frmmain.cpp" line="548"/>
         <source> has been granted </source>
         <translation> has been granted </translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="484"/>
-        <location filename="../frmmain.cpp" line="514"/>
+        <location filename="../frmmain.cpp" line="518"/>
+        <location filename="../frmmain.cpp" line="548"/>
         <source> permissions.</source>
         <translation> permissions.</translation>
     </message>
@@ -1725,17 +1766,17 @@ Have a look at the log (on the directory of the file) for details.</translation>
         <translation type="vanished">An error has ocurred during the attempt of user permission upgrade operation. Try again later (after restarting smartclass).</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="492"/>
+        <location filename="../frmmain.cpp" line="526"/>
         <source>You have not selected/specified any user to revoke its permissions.</source>
         <translation>You have not selected/specified any user to revoke its permissions.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="498"/>
+        <location filename="../frmmain.cpp" line="532"/>
         <source>Due to safety purposes, you are not able to downgrade your own permissions. If you really need to change your permissions, please, ask to another administrator do it.</source>
         <translation>Due to safety purposes, you are not able to downgrade your own permissions. If you really need to change your permissions, please, ask to another administrator do it.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="503"/>
+        <location filename="../frmmain.cpp" line="537"/>
         <source>This user already have the minimal level of permission. Operation aborted.</source>
         <translation>This user already have the minimal level of permission. Operation aborted.</translation>
     </message>
@@ -1748,12 +1789,12 @@ Have a look at the log (on the directory of the file) for details.</translation>
         <translation type="vanished">You have not selected/specified any user to be removed.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="527"/>
+        <location filename="../frmmain.cpp" line="561"/>
         <source>Due to safety purposes, you are not able to remove yourself. If you really need to remove your account, please, ask to another administrator do it.</source>
         <translation>Due to safety purposes, you are not able to remove yourself. If you really need to remove your account, please, ask to another administrator do it.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="533"/>
+        <location filename="../frmmain.cpp" line="567"/>
         <source> has been removed successfully.</source>
         <translation> has been removed successfully.</translation>
     </message>
@@ -1762,46 +1803,47 @@ Have a look at the log (on the directory of the file) for details.</translation>
         <translation type="vanished">An error has ocurred during the attempt of user removal operation. Try again later (after restarting SmartClass).</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="574"/>
+        <location filename="../frmmain.cpp" line="609"/>
         <source>Seems that you do not have enough privileges to acess any data here. Plase, contact the administrator in order to upgrade your privileges.</source>
         <translation>Seems that you do not have enough privileges to acess any data here. Please, contact the administrator in order to upgrade your privileges.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="684"/>
-        <location filename="../frmmain.cpp" line="698"/>
+        <location filename="../frmmain.cpp" line="719"/>
+        <location filename="../frmmain.cpp" line="733"/>
         <source>Search results | SmartClass</source>
         <translation>Search results | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="684"/>
+        <location filename="../frmmain.cpp" line="719"/>
         <source>The search has reached the top of the table without any match.
 Please, try again with different terms or filters.</source>
         <translation>The search has reached the top of the table without any match.
 Please, try again with different terms or filters.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="698"/>
+        <location filename="../frmmain.cpp" line="733"/>
         <source>The search has reached the bottom of the table without any match.
 Please, try again with different terms or filters.</source>
         <translation>The search has reached the bottom of the table without any match.
 Please, try again with different terms or filters.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="707"/>
-        <location filename="../frmmain.cpp" line="754"/>
+        <location filename="../frmmain.cpp" line="742"/>
+        <location filename="../frmmain.cpp" line="789"/>
         <source>You are going to erase %1 from the database.
 This action cannot be undone. Continue?</source>
         <translation>You are going to erase %1 from the database.
 This action cannot be undone. Continue?</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="770"/>
+        <location filename="../frmmain.cpp" line="805"/>
         <source> * starts on: </source>
         <translation> * starts on: </translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="793"/>
-        <location filename="../frmmain.cpp" line="838"/>
+        <location filename="../frmmain.cpp" line="205"/>
+        <location filename="../frmmain.cpp" line="828"/>
+        <location filename="../frmmain.cpp" line="873"/>
         <source>Info | SmartClass</source>
         <translation>Info | SmartClass</translation>
     </message>
@@ -1812,39 +1854,51 @@ Please, use either the import tool or dump the database in the host in order to 
 Please, use either the import tool or dump the database in the host in order to restore your DB.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="486"/>
+        <location filename="../frmmain.cpp" line="188"/>
+        <source>Clear settings</source>
+        <translation>Clear settings</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="190"/>
+        <source>It was not possible to establish connection to the database. Unfortunately it will not be possible to continue with the execution of this program. Please, try again later.
+If you keep having trouble while trying to connect, please, consider to clear the program settings (the database is not going to be affected).</source>
+        <translation>It was not possible to establish connection to the database. Unfortunately it will not be possible to continue with the execution of this program. Please, try again later.
+If you keep having trouble while trying to connect, please, consider to clear the program settings (the database is not going to be affected).</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="520"/>
         <source>An error has ocurred during the attempt of user permission upgrade operation. Try again later (after restarting SmartClass).</source>
         <translation>An error has ocurred during the attempt of user permission upgrade operation. Try again later (after restarting SmartClass).</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="516"/>
+        <location filename="../frmmain.cpp" line="550"/>
         <source>An error has ocurred during the attempt of user permission downgrade operation. Try again later (after restarting SmartClass).</source>
         <translation>An error has ocurred during the attempt of user permission downgrade operation. Try again later (after restarting SmartClass).</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="521"/>
+        <location filename="../frmmain.cpp" line="555"/>
         <source>You have not selected/specified any user to be removed.</source>
         <translation>You have not selected/specified any user to be removed.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="538"/>
+        <location filename="../frmmain.cpp" line="572"/>
         <source>An error has ocurred during the attempt of user removal operation. Try again later (after restarting SmartClass).</source>
         <translation>An error has ocurred during the attempt of user removal operation. Try again later (after restarting SmartClass).</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="794"/>
+        <location filename="../frmmain.cpp" line="829"/>
         <source>Unfortunately you cannot restore the database from a file, since you are not using an SQLITE database.
 Please, use either the import tool or restore the dumped file in your host in order to restore your DB.</source>
         <translation>Unfortunately you cannot restore the database from a file, since you are not using an SQLITE database.
 Please, use either the import tool or restore the dumped file in your host in order to restore your DB.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="801"/>
+        <location filename="../frmmain.cpp" line="836"/>
         <source>Select database file | SmartClass</source>
         <translation>Select database file | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="806"/>
+        <location filename="../frmmain.cpp" line="841"/>
         <source>You are going to replace the current database by a new one. This may corrupt your database system.
 This action cannot be undone. This application is going to restart after the procedure is complete.
 Do you still want to proceed?</source>
@@ -1853,43 +1907,43 @@ This action cannot be undone. This application is going to restart after the pro
 Do you still want to proceed?</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="828"/>
+        <location filename="../frmmain.cpp" line="863"/>
         <source>This application is about to restart!</source>
         <translation>This application is about to restart!</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="839"/>
+        <location filename="../frmmain.cpp" line="874"/>
         <source>Unfortunately you cannot backup the database to a file, since you are not using an SQLITE database.
 Please, use either the import tool or dump the database in the host in order to restore your DB.</source>
         <translation>Unfortunately you cannot backup the database to a file, since you are not using an SQLITE database.
 Please, use either the import tool or dump the database in the host in order to save your DB.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="861"/>
+        <location filename="../frmmain.cpp" line="896"/>
         <source>Save database file | SmartClass</source>
         <translation>Save database file | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="871"/>
-        <location filename="../frmmain.cpp" line="1056"/>
+        <location filename="../frmmain.cpp" line="906"/>
+        <location filename="../frmmain.cpp" line="1125"/>
         <source>Critical error | SmartClass</source>
         <translation>Critical error | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="872"/>
+        <location filename="../frmmain.cpp" line="907"/>
         <source>The connection with the database could not be restored.
 Please, restart the program in order to have access its functionalities.</source>
         <translation>The connection with the database could not be restored.
 Please, restart the program in order to have access its functionalities.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="879"/>
-        <location filename="../frmmain.cpp" line="891"/>
+        <location filename="../frmmain.cpp" line="914"/>
+        <location filename="../frmmain.cpp" line="926"/>
         <source>Delete database confirmation | SmartClass</source>
         <translation>Delete database confirmation | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="880"/>
+        <location filename="../frmmain.cpp" line="915"/>
         <source>Would you like to reset the database?
 This is going to erase all the contents in your database (even your login).
 If you accept, you are going to be logged out and you will have to choose this option again.</source>
@@ -1898,7 +1952,7 @@ This is going to erase all the contents in your database (even your login).
 If you accept, you are going to be logged out and you will have to choose this option again.</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="892"/>
+        <location filename="../frmmain.cpp" line="927"/>
         <source>Would you like to reset the database?
 This action cannot be undone (be sure you have a backup of your database).
 You have two options to choose:
@@ -1913,42 +1967,78 @@ You have two options to choose:
 -&gt;Delete database file (only available for SQLITE)</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="899"/>
+        <location filename="../frmmain.cpp" line="934"/>
         <source>Detele file</source>
         <translation>Detele file</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="902"/>
+        <location filename="../frmmain.cpp" line="937"/>
         <source>Delete tables</source>
         <translation>Delete tables</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="957"/>
+        <location filename="../frmmain.cpp" line="990"/>
+        <source>Maintenance Tool | SmartClass</source>
+        <translation>Maintenance Tool | SmartClass</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="992"/>
+        <source>Are you facing any trouble with SmartClass? This tool may be helpful for you. We have three options currently available:
+Clear Settings : Clear the initialization/standard settings and restart the application as a clean installation (Note that this option has no effect over the database).
+Uninstall : Performs a clean uninstall by removing any settings and files which may rest after the uninstallation process (If you are using SQLite the database may be removed during the process of uninstallation. Do not forget to make a backup before uninstalling!).
+Cancel : Cancel the current operation.</source>
+        <translation>Are you facing any trouble with SmartClass? This tool may be helpful for you. We have three options currently available:
+Clear Settings : Clear the initialization/standard settings and restart the application as a clean installation (Note that this option has no effect over the database).
+Uninstall : Performs a clean uninstall by removing any settings and files which may rest after the uninstallation process (If you are using SQLite the database may be removed during the process of uninstallation. Do not forget to make a backup before uninstalling!).
+Cancel : Cancel the current operation.</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="997"/>
+        <source>Clear Settings</source>
+        <translation>Clear Settings</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="998"/>
+        <source>Uninstall</source>
+        <translation>Uninstall</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="1019"/>
+        <source>Process complete | SmartClass</source>
+        <translation>Process complete | SmartClass</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="1020"/>
+        <source>The process of uninstallation is going to continue right after you dismiss this message!</source>
+        <translation>The process of uninstallation is going to continue right after you dismiss this message!</translation>
+    </message>
+    <message>
+        <location filename="../frmmain.cpp" line="1026"/>
         <source>http://docwiki.nintersoft.com/en/</source>
         <translation>http://docwiki.nintersoft.com/en/</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="961"/>
+        <location filename="../frmmain.cpp" line="1030"/>
         <source>http://www.nintersoft.com/en/</source>
         <translation>http://www.nintersoft.com/en/</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="965"/>
+        <location filename="../frmmain.cpp" line="1034"/>
         <source>http://www.nintersoft.com/en/support/</source>
         <translation>http://www.nintersoft.com/en/support/</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="969"/>
+        <location filename="../frmmain.cpp" line="1038"/>
         <source>mailto:support@nintersoft.com?subject=SmartClass%20Support</source>
         <translation>mailto:support@nintersoft.com?subject=SmartClass%20Support</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="1052"/>
+        <location filename="../frmmain.cpp" line="1121"/>
         <source>_BackUp_SmartClass_DB.db</source>
         <translation>_BackUp_SmartClass_DB.db</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="1057"/>
+        <location filename="../frmmain.cpp" line="1126"/>
         <source>The connection with the database could not be restored after the backup.
 Please, restart the program in order to have access it&apos;s functionalities.</source>
         <translation>The connection with the database could not be restored after the backup.
@@ -1983,7 +2073,7 @@ Please, restart the program in order to have access it&apos;s functionalities.</
     </message>
     <message>
         <location filename="../frmmanagestudent.ui" line="693"/>
-        <location filename="../frmmanagestudent.ui" line="790"/>
+        <location filename="../frmmanagestudent.ui" line="793"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
@@ -1994,7 +2084,7 @@ Please, restart the program in order to have access it&apos;s functionalities.</
     </message>
     <message>
         <location filename="../frmmanagestudent.ui" line="707"/>
-        <location filename="../frmmanagestudent.ui" line="820"/>
+        <location filename="../frmmanagestudent.ui" line="823"/>
         <source>ID:</source>
         <translation>ID:</translation>
     </message>
@@ -2012,8 +2102,8 @@ Please, restart the program in order to have access it&apos;s functionalities.</
     <message>
         <location filename="../frmmanagestudent.ui" line="741"/>
         <location filename="../frmmanagestudent.ui" line="754"/>
-        <location filename="../frmmanagestudent.ui" line="955"/>
-        <location filename="../frmmanagestudent.ui" line="965"/>
+        <location filename="../frmmanagestudent.ui" line="958"/>
+        <location filename="../frmmanagestudent.ui" line="968"/>
         <location filename="../frmmanagestudent.ui" line="1077"/>
         <source>...</source>
         <translation>...</translation>
@@ -2039,85 +2129,84 @@ Please, restart the program in order to have access it&apos;s functionalities.</
         <translation>CPG:</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="800"/>
+        <location filename="../frmmanagestudent.ui" line="803"/>
         <source>Mobile phone number:</source>
         <translation>Mobile phone number:</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="810"/>
+        <location filename="../frmmanagestudent.ui" line="813"/>
         <source>Phone number:</source>
         <translation>Phone number:</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="834"/>
+        <location filename="../frmmanagestudent.ui" line="837"/>
         <source>Algar Telecom</source>
         <translation>Algar Telecom</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="839"/>
+        <location filename="../frmmanagestudent.ui" line="842"/>
         <source>Claro</source>
         <translation>Claro</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="844"/>
+        <location filename="../frmmanagestudent.ui" line="847"/>
         <source>Correios Celular</source>
         <translation>Correios Celular</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="849"/>
+        <location filename="../frmmanagestudent.ui" line="852"/>
         <source>Nextel</source>
         <translation>Nextel</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="854"/>
+        <location filename="../frmmanagestudent.ui" line="857"/>
         <source>Oi</source>
         <translation>Oi</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="859"/>
+        <location filename="../frmmanagestudent.ui" line="862"/>
         <source>Porto Seguro Conecta</source>
         <translation>Porto Seguro Conecta</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="864"/>
+        <location filename="../frmmanagestudent.ui" line="867"/>
         <source>Sarcomtel</source>
         <translation>Sarcomtel</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="869"/>
+        <location filename="../frmmanagestudent.ui" line="872"/>
         <source>TIM</source>
         <translation>TIM</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="874"/>
+        <location filename="../frmmanagestudent.ui" line="877"/>
         <source>Veek</source>
         <translation>Veek</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="879"/>
+        <location filename="../frmmanagestudent.ui" line="882"/>
         <source>Vivo</source>
         <translation>Vivo</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="922"/>
-        <location filename="../frmmanagestudent.cpp" line="492"/>
+        <location filename="../frmmanagestudent.ui" line="925"/>
+        <location filename="../frmmanagestudent.cpp" line="621"/>
         <source>Online advertisements</source>
         <translation>Online advertisements</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="927"/>
+        <location filename="../frmmanagestudent.ui" line="930"/>
         <source>Friend/Acquaintance indication</source>
         <translation>Friend/Acquaintance indication</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="938"/>
+        <location filename="../frmmanagestudent.ui" line="941"/>
         <source>Email:</source>
         <translation>Email:</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.ui" line="975"/>
         <source>Preload data</source>
-        <translation>Preload data</translation>
+        <translation type="vanished">Preload data</translation>
     </message>
     <message>
         <location filename="../frmmanagestudent.ui" line="985"/>
@@ -2208,8 +2297,8 @@ Please, restart the program in order to have access it&apos;s functionalities.</
     </message>
     <message>
         <location filename="../frmmanagestudent.ui" line="1264"/>
-        <location filename="../frmmanagestudent.cpp" line="603"/>
-        <location filename="../frmmanagestudent.cpp" line="615"/>
+        <location filename="../frmmanagestudent.cpp" line="570"/>
+        <location filename="../frmmanagestudent.cpp" line="582"/>
         <source>You have choosen %1 installments of $ %2 . After the discount, each installment is going to cost $ %3 .</source>
         <translation>You have choosen %1 installments of $ %2 . After the discount, each installment is going to cost $ %3 .</translation>
     </message>
@@ -2220,83 +2309,110 @@ Please, restart the program in order to have access it&apos;s functionalities.</
         <translation>Manage Student | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="141"/>
+        <location filename="../frmmanagestudent.cpp" line="142"/>
         <source>Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent. Please, fix the folowing issues before trying to save again:
 </source>
         <translation>Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent. Please, fix the folowing issues before trying to save again:
 </translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="146"/>
+        <location filename="../frmmanagestudent.cpp" line="147"/>
         <source>
 -&gt;The name of the student cannot be empty;</source>
         <translation>
 -&gt;The name of the student cannot be empty;</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="150"/>
+        <location filename="../frmmanagestudent.cpp" line="151"/>
         <source>
 -&gt;A student with the same same name already exists in your database. If you want to update him/her, please, use the update button available in the main screen;</source>
         <translation>
 -&gt;A student with the same same name already exists in your database. If you want to update him/her, please, use the update button available in the main screen;</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="154"/>
+        <location filename="../frmmanagestudent.cpp" line="155"/>
         <source>
 -&gt;The birthday of the student is invalid;</source>
         <translation>
 -&gt;The birthday of the student is invalid;</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="158"/>
+        <location filename="../frmmanagestudent.cpp" line="159"/>
         <source>
 -&gt;The name of the parent cannot be empty;</source>
         <translation>
 -&gt;The name of the parent cannot be empty;</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="162"/>
+        <location filename="../frmmanagestudent.cpp" line="163"/>
         <source>
 -&gt;It must have either the parent&apos;s email or telephone. Currently, both of them are empty;</source>
         <translation>
 -&gt;It must have either the parent&apos;s email or telephone. Currently, both of them are empty;</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="167"/>
-        <location filename="../frmmanagestudent.cpp" line="540"/>
+        <location filename="../frmmanagestudent.cpp" line="168"/>
+        <location filename="../frmmanagestudent.cpp" line="507"/>
         <source>Warning | SmartClass</source>
         <translation>Warning | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="213"/>
-        <location filename="../frmmanagestudent.cpp" line="269"/>
-        <location filename="../frmmanagestudent.cpp" line="388"/>
-        <location filename="../frmmanagestudent.cpp" line="450"/>
+        <location filename="../frmmanagestudent.cpp" line="214"/>
+        <location filename="../frmmanagestudent.cpp" line="297"/>
+        <location filename="../frmmanagestudent.cpp" line="416"/>
+        <location filename="../frmmanagestudent.cpp" line="484"/>
         <source> * starts on: </source>
         <translation> * starts on: </translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="254"/>
+        <location filename="../frmmanagestudent.cpp" line="258"/>
         <source>Parent data changed | SmartClass</source>
         <translation>Parent data changed | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="255"/>
-        <source>Looks like the name of the parent has changed. Would you like to mantain this changes (note that all the kids who have this person as parent are going to change their parents)?</source>
-        <translation>Looks like the name of the parent has changed. Would you like to mantain this changes (note that all the kids who have this person as parent are going to change their parents)?</translation>
+        <location filename="../frmmanagestudent.cpp" line="259"/>
+        <source>Looks like the name of the parent has changed. You have three options from now on.
+
+-&gt; Update : If you choose this option, the parent name will be changed for every student attached to this parent.
+-&gt; Ignore : If you choose this option, the parent name will remain the same.
+-&gt; Change : If you choose this option, the parent name will be updated just for this student. Other students related to this parent are going to remain intact.</source>
+        <translation>Looks like the name of the parent has changed. You have three options from now on.
+
+-&gt; Update : If you choose this option, the parent name will be changed for every student attached to this parent.
+-&gt; Ignore : If you choose this option, the parent name will remain the same.
+-&gt; Change : If you choose this option, the parent name will be updated just for this student. Other students related to this parent are going to remain intact.</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="332"/>
+        <location filename="../frmmanagestudent.cpp" line="264"/>
+        <source>Update</source>
+        <translation>Update</translation>
+    </message>
+    <message>
+        <location filename="../frmmanagestudent.cpp" line="265"/>
+        <source>Ignore</source>
+        <translation>Ignore</translation>
+    </message>
+    <message>
+        <location filename="../frmmanagestudent.cpp" line="266"/>
+        <source>Change</source>
+        <translation>Change</translation>
+    </message>
+    <message>
+        <source>Looks like the name of the parent has changed. Would you like to mantain this changes (note that all the kids who have this person as parent are going to change their parents)?</source>
+        <translation type="vanished">Looks like the name of the parent has changed. Would you like to mantain this changes (note that all the kids who have this person as parent are going to change their parents)?</translation>
+    </message>
+    <message>
+        <location filename="../frmmanagestudent.cpp" line="360"/>
         <source>Reset confirmation | SmartClass</source>
         <translation>Reset confirmation | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="333"/>
+        <location filename="../frmmanagestudent.cpp" line="361"/>
         <source>You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you still want to proceed?</source>
         <translation>You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you still want to proceed?</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="540"/>
+        <location filename="../frmmanagestudent.cpp" line="507"/>
         <source>This student is already registered on this course!</source>
         <translation>This student is already registered on this course!</translation>
     </message>
@@ -2305,12 +2421,12 @@ Please, restart the program in order to have access it&apos;s functionalities.</
         <translation type="vanished">You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you steel want to proceed?</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="478"/>
+        <location filename="../frmmanagestudent.cpp" line="610"/>
         <source>Inexistent parental data | SmartClass</source>
         <translation>Inexistent parental data | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="479"/>
+        <location filename="../frmmanagestudent.cpp" line="611"/>
         <source>We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?</source>
         <translation>We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?</translation>
     </message>
@@ -2319,12 +2435,12 @@ Please, restart the program in order to have access it&apos;s functionalities.</
         <translation type="vanished">This student is already in this course!</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="561"/>
+        <location filename="../frmmanagestudent.cpp" line="528"/>
         <source>SmartClass | Confirmation</source>
         <translation>SmartClass | Confirmation</translation>
     </message>
     <message>
-        <location filename="../frmmanagestudent.cpp" line="561"/>
+        <location filename="../frmmanagestudent.cpp" line="528"/>
         <source>You are going to remove the student from the %1 course. Are you sure?</source>
         <translation>You are going to remove the student from the %1 course. Are you sure?</translation>
     </message>
