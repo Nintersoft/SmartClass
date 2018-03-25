@@ -16,7 +16,7 @@ TARGET = SmartClass
 TEMPLATE = app
 
 win32 {
-    VERSION = 0.9.1.2
+    VERSION = 0.9.1.3
 
     QMAKE_TARGET_COMPANY = Nintersoft
     QMAKE_TARGET_PRODUCT = SmartClass
