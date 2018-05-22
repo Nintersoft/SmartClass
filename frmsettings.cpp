@@ -94,7 +94,12 @@ frmSettings::~frmSettings()
 void frmSettings::retrieveSettings(){
     if (programSettings.childGroups().contains("contract form")){
         programSettings.beginGroup("contract form");
-        ui->edtContractText->setPlainText(programSettings.value("text", "").toString());
+        ui->edtContractText->setPlainText(programSettings.value("text", tr("I, %1, owner of the ID %2 and CPG %3,"
+                                                                           " hereby confirm that I am enrolling my son/daugther %4 on the following course:"
+                                                                           "\n"
+                                                                           "\n - %5."
+                                                                           "\n"
+                                                                           "\nI am aware that this course is going to be ministred at %6.")).toString());
         programSettings.endGroup();
     }
     if (programSettings.childGroups().contains("language options")){
@@ -192,7 +197,7 @@ void frmSettings::saveOptions(){
     programSettings.endGroup();
 
     programSettings.beginGroup("company info");
-    programSettings.setValue("name", ui->edtCompanyName->text().isEmpty() ? tr("Nintersoft Team") : ui->edtCompanyLogo->text());
+    programSettings.setValue("name", ui->edtCompanyName->text().isEmpty() ? tr("Nintersoft Team") : ui->edtCompanyName->text());
 
     QString logoPath  = QDir::homePath() + ((QSysInfo::windowsVersion() != QSysInfo::WV_None) ?
                 "/AppData/Roaming/Nintersoft/SmartClass/images/" :

@@ -635,7 +635,7 @@ QListWidget {
       <item row="8" column="0" colspan="2">
        <widget class="QPushButton" name="btGenerateForm">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Generate</string>

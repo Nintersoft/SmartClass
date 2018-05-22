@@ -426,7 +426,7 @@ void frmMain::openContractForm(){
     QString companyName = NULL;
     if (settings->childGroups().contains("company info")){
         settings->beginGroup("company info");
-        companyName = settings->value("company info", "").toString();
+        companyName = settings->value("name", "").toString();
         settings->endGroup();
     }
     frmContract = new frmPrintContract(NULL,
@@ -824,7 +824,7 @@ void frmMain::removeCourse(){
 }
 
 void frmMain::restoreDataBase(){
-    if (db_SETTINGS.length() != 1){
+    if (db_SETTINGS.length() != 2){
         QMessageBox::information(this, tr("Info | SmartClass"),
                                  tr("Unfortunately you cannot restore the database from a file, since you are not using an SQLITE database."
                                     "\nPlease, use either the import tool or restore the dumped file in your host in order to restore your DB."),
@@ -869,7 +869,7 @@ void frmMain::restoreDataBase(){
 }
 
 void frmMain::backupDataBase(){
-    if (db_SETTINGS.length() != 1){
+    if (db_SETTINGS.length() != 2){
         QMessageBox::information(this, tr("Info | SmartClass"),
                                  tr("Unfortunately you cannot backup the database to a file, since you are not using an SQLITE database."
                                     "\nPlease, use either the import tool or dump the database in the host in order to restore your DB."),
@@ -929,7 +929,7 @@ void frmMain::removeDataBase(){
                                 "\nYou have two options to choose:"
                                 "\n\n->Delete the tables (this will not remove the database file, but will erase all its contents)"
                                 "\n->Delete database file (only available for SQLITE)"));
-        if (db_SETTINGS.length() == 1){
+        if (db_SETTINGS.length() == 2){
             confirmation.setStandardButtons(QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::Cancel);
             confirmation.setButtonText(QMessageBox::YesToAll, tr("Detele file"));
         }

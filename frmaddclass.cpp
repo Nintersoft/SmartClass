@@ -29,7 +29,7 @@ frmAddClass::frmAddClass(QWidget *parent, Role role, QString name, const QString
    * End of GUI operations
    */
   myDB = new DBManager(dbData, DBManager::getUniqueConnectionName("importExport"),
-                       dbData.length() == 1 ? "SQLITE" : "MYSQL");
+                       dbData.length() == 2 ? "SQLITE" : "MYSQL");
 
   studentsData = NULL;
   paymentData = NULL;

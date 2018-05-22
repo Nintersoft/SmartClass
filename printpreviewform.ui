@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>PrintPreviewForm</class>
  <widget class="QMainWindow" name="PrintPreviewForm">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -113,7 +116,7 @@ QTabBar QToolButton::!enabled{
 	background-color: orange;
 }
 
-QWidget#tabInfo, QWidget#tabInfoLayout, QWidget#tabGeneral, QWidget#tabGeneralLayout, QWidget#tabFileLayout, QWidget#tabManagementLayout, QWidget#tabToolsLayout, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
+QWidget#tabFile, QWidget#tabManagement, QWidget#tabTools, QWidget#tabHelp, QWidget#tabFileLayout, QWidget#tabManagementLayout, QWidget#tabToolsLayout, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
 	background: white;
 }
 
@@ -643,18 +646,26 @@ QListWidget {
        </layout>
       </item>
       <item row="0" column="0">
-       <widget class="QScrollArea" name="scrollArea">
+       <widget class="QScrollArea" name="scrollManager">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents">
+        <widget class="QWidget" name="screenManagerLayout">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>589</width>
-           <height>287</height>
+           <width>587</width>
+           <height>285</height>
           </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QWidget#screenManagerLayout{
+	background : #EEE;
+}</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="1">
@@ -697,13 +708,38 @@ QListWidget {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="styleSheet">
              <string notr="true">QWidget#paperPreview{
 	background-color: white;
     border: 1px solid black;
 }</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_4"/>
+            <layout class="QGridLayout" name="gridLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <property name="horizontalSpacing">
+              <number>10</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>0</number>
+             </property>
+            </layout>
            </widget>
           </item>
           <item row="1" column="2">

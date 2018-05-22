@@ -16,7 +16,7 @@ TARGET = SmartClass
 TEMPLATE = app
 
 win32 {
-    VERSION = 0.9.1.3
+    VERSION = 0.9.2.1
 
     QMAKE_TARGET_COMPANY = Nintersoft
     QMAKE_TARGET_PRODUCT = SmartClass
@@ -27,7 +27,7 @@ win32 {
 #    RC_LANG = 0x0416
 }
 else {
-    VERSION = 0.9.1
+    VERSION = 0.9.2
 }
 
 # The following define makes your compiler emit warnings if you use

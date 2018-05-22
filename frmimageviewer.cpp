@@ -30,23 +30,26 @@ frmImageViewer::frmImageViewer(QWidget *parent, const QPixmap &image) :
      * End of GUI operations
      */
 
-    if (!image.isNull()) ui->lblPicture->setPixmap(image);
+    if (!image.isNull()) ui->lblPicture->setPixmap(image.scaled(QSize(390, 254), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     connect(ui->btLoadImage, SIGNAL(clicked(bool)), this, SLOT(openImage()));
     connect(ui->btCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(ui->btPrintImage, SIGNAL(clicked(bool)), this, SLOT(openPrintForm()));
     connect(ui->btRemoveImage, SIGNAL(clicked(bool)), this, SLOT(removeImage()));
     connect(ui->btSave, SIGNAL(clicked(bool)), this, SLOT(close()));
 
+    currentImage = image;
     printForm = NULL;
 }
 
 frmImageViewer::~frmImageViewer()
 {
+    if (printForm) delete printForm;
     delete ui;
 }
 
 void frmImageViewer::closeEvent(QCloseEvent *event){
-    if (sender()->objectName() == "btSave") emit exec(ui->lblPicture->pixmap() == NULL ? QPixmap() : *(ui->lblPicture->pixmap()));
+    if (sender()->objectName() == "btSave") emit exec(ui->lblPicture->pixmap() == NULL ? QPixmap() : currentImage);
     else emit exec(INITIAL_IMAGE);
     event->accept();
 }
@@ -63,11 +66,13 @@ void frmImageViewer::openImage(){
             QPixmap image = QPixmap::fromImage(QImage::fromData(imageFile.readAll()));
             if (!image.isNull()){
                 ui->lblPicture->setText("");
-                ui->lblPicture->setPixmap(image);
+                ui->lblPicture->setPixmap(image.scaled(QSize(390, 254), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+                currentImage = image;
             }
             else {
                 ui->lblPicture->setText(tr("There is no picture to display here!"));
                 ui->lblPicture->setPixmap(QPixmap());
+                currentImage = QPixmap();
             }
             imageFile.close();
         }
@@ -79,6 +84,8 @@ void frmImageViewer::removeImage(){
     ui->lblPicture->setPixmap(QPixmap());
     ui->lblPicture->setText(tr("There is no picture to display here!"));
     ui->lblPicture->update();
+
+    currentImage = QPixmap();
 }
 
 void frmImageViewer::openPrintForm(){
@@ -87,10 +94,9 @@ void frmImageViewer::openPrintForm(){
         printForm = NULL;
     }
 
-    printForm = new PrintPreviewForm(NULL, *ui->lblPicture->pixmap());
-    printForm->show();
+    printForm = new PrintPreviewForm(NULL, currentImage);
+    printForm->showMaximized();
 }
-
 /*
  * GUI Functions (don't change, unless necessary)
  */

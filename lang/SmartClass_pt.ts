@@ -4,22 +4,22 @@
 <context>
     <name>PrintPreviewForm</name>
     <message>
-        <location filename="../printpreviewform.ui" line="14"/>
+        <location filename="../printpreviewform.ui" line="17"/>
         <source>MainWindow</source>
         <translation>JanelaPrincipal</translation>
     </message>
     <message>
-        <location filename="../printpreviewform.ui" line="625"/>
+        <location filename="../printpreviewform.ui" line="628"/>
         <source>Export to PDF</source>
         <translation>Exportar para PDF</translation>
     </message>
     <message>
-        <location filename="../printpreviewform.ui" line="632"/>
+        <location filename="../printpreviewform.ui" line="635"/>
         <source>Print</source>
         <translation>Imprimir</translation>
     </message>
     <message>
-        <location filename="../printpreviewform.ui" line="639"/>
+        <location filename="../printpreviewform.ui" line="642"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -29,9 +29,38 @@
         <translation>Prever imagem | SmartClass</translation>
     </message>
     <message>
-        <location filename="../printpreviewform.cpp" line="52"/>
+        <location filename="../printpreviewform.cpp" line="78"/>
+        <location filename="../printpreviewform.cpp" line="163"/>
         <source>Preview form | SmartClass</source>
         <translation>Prever formulário | SmartClass</translation>
+    </message>
+    <message>
+        <location filename="../printpreviewform.cpp" line="118"/>
+        <location filename="../printpreviewform.cpp" line="204"/>
+        <source>dddd, dd of MMMM of yyyy
+</source>
+        <translation>dddd, dd de MMMM de yyyy
+</translation>
+    </message>
+    <message>
+        <location filename="../printpreviewform.cpp" line="265"/>
+        <source>Export content to PDF | SmartClass</source>
+        <translation>Exportar conteúdo para PDF | SmartClass</translation>
+    </message>
+    <message>
+        <location filename="../printpreviewform.cpp" line="267"/>
+        <source>SmartClass - document_</source>
+        <translation>SmartClass - documento_</translation>
+    </message>
+    <message>
+        <location filename="../printpreviewform.cpp" line="269"/>
+        <source>Portable Document Format files (*.pdf)</source>
+        <translation>Arquivos em Formato de Documento Portável (*.pdf)</translation>
+    </message>
+    <message>
+        <location filename="../printpreviewform.cpp" line="309"/>
+        <source>Print Document | SmartClass</source>
+        <translation>Imprimir Documento | SmartClass</translation>
     </message>
 </context>
 <context>
@@ -81,9 +110,17 @@
         <translation>Equipe Nintersoft</translation>
     </message>
     <message>
-        <location filename="../frmabout.ui" line="675"/>
         <source>0.9.1.2</source>
-        <translation>0.9.1.2</translation>
+        <translation type="vanished">0.9.1.2</translation>
+    </message>
+    <message>
+        <source>0.9.1.3</source>
+        <translation type="vanished">0.9.1.3</translation>
+    </message>
+    <message>
+        <location filename="../frmabout.ui" line="675"/>
+        <source>0.9.2.1</source>
+        <translation>0.9.2.1</translation>
     </message>
     <message>
         <location filename="../frmabout.ui" line="697"/>
@@ -697,33 +734,33 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../frmimageviewer.ui" line="659"/>
-        <location filename="../frmimageviewer.cpp" line="69"/>
-        <location filename="../frmimageviewer.cpp" line="80"/>
+        <location filename="../frmimageviewer.cpp" line="73"/>
+        <location filename="../frmimageviewer.cpp" line="85"/>
         <source>There is no picture to display here!</source>
         <translation>Não há imagem a ser mostrada aqui!</translation>
     </message>
     <message>
-        <location filename="../frmimageviewer.ui" line="677"/>
+        <location filename="../frmimageviewer.ui" line="674"/>
         <source>Load image</source>
         <translation>Ler imagem</translation>
     </message>
     <message>
-        <location filename="../frmimageviewer.ui" line="684"/>
+        <location filename="../frmimageviewer.ui" line="681"/>
         <source>Remove image</source>
         <translation>Remover imagem</translation>
     </message>
     <message>
-        <location filename="../frmimageviewer.ui" line="691"/>
+        <location filename="../frmimageviewer.ui" line="688"/>
         <source>Print</source>
         <translation>Imprimir</translation>
     </message>
     <message>
-        <location filename="../frmimageviewer.ui" line="698"/>
+        <location filename="../frmimageviewer.ui" line="695"/>
         <source>Save</source>
         <translation>Salvar</translation>
     </message>
     <message>
-        <location filename="../frmimageviewer.ui" line="705"/>
+        <location filename="../frmimageviewer.ui" line="702"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -734,7 +771,7 @@ p, li { white-space: pre-wrap; }
         <translation>Visualizador de imagens | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmimageviewer.cpp" line="56"/>
+        <location filename="../frmimageviewer.cpp" line="59"/>
         <source>Manage image file | SmartClass</source>
         <translation>Gerenciar arquivo de imagem | SmartClass</translation>
     </message>
@@ -2522,29 +2559,29 @@ Por favor, reinicie o programa para ter acesso às suas funcionalidades.</transl
         <translation>Gerador de contrado | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="131"/>
+        <location filename="../frmprintcontract.cpp" line="132"/>
         <source>Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent. Please, fix the folowing issues before trying to generate the form again:
 </source>
         <translation>Bom, infelizmente não podemos prosseguir. Alguns dados estão inconsistentes ou inexistentes. Por favor, corrija os seguintes problemas antes de tentar gerar um formulário novamente:
 </translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="136"/>
+        <location filename="../frmprintcontract.cpp" line="137"/>
         <source>
 -&gt;The name of the companny cannot be empty;</source>
         <translation>
 O nome da empresa não pode estar vazio;</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="140"/>
+        <location filename="../frmprintcontract.cpp" line="141"/>
         <source>
 -&gt;You must select a course in order to generate the form;</source>
         <translation>
 -&gt;Você deve selecionar um curso para gerar este formulário;</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="78"/>
-        <location filename="../frmprintcontract.cpp" line="145"/>
+        <location filename="../frmprintcontract.cpp" line="79"/>
+        <location filename="../frmprintcontract.cpp" line="146"/>
         <source>Warning | SmartClass</source>
         <translation>Aviso | SmartClass</translation>
     </message>
@@ -2554,115 +2591,127 @@ O nome da empresa não pode estar vazio;</translation>
         <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_endereco $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $p_custo $p_desconto $p_parcelas</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="79"/>
+        <location filename="../frmprintcontract.cpp" line="80"/>
         <source>You have to select a course in order to continue the operation. Otherwise it will not be possible to continue.</source>
         <translation>Você deve selecionar um curso para continuar com a operação. Caso contrário, não será possível continuar.</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="85"/>
+        <location filename="../frmprintcontract.cpp" line="86"/>
         <source>Test | SmartClass</source>
         <translation>Teste | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="100"/>
+        <location filename="../frmprintcontract.cpp" line="101"/>
         <source> * starts on: </source>
         <translation> * inicia em: </translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="107"/>
+        <location filename="../frmprintcontract.cpp" line="108"/>
         <source>$prog_path</source>
         <translation>$cam_prog</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="108"/>
+        <location filename="../frmprintcontract.cpp" line="109"/>
         <source>$s_name</source>
         <translation>$s_nome</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="109"/>
+        <location filename="../frmprintcontract.cpp" line="110"/>
         <source>$s_birthday</source>
         <translation>$s_aniversario</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="110"/>
+        <location filename="../frmprintcontract.cpp" line="111"/>
         <source>$s_id</source>
         <translation>$s_rg</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="111"/>
+        <location filename="../frmprintcontract.cpp" line="112"/>
         <source>$s_school</source>
         <translation>$s_escola</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="112"/>
+        <location filename="../frmprintcontract.cpp" line="113"/>
         <source>$s_experimental_course</source>
         <translation>$s_curso_experimental</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="113"/>
+        <location filename="../frmprintcontract.cpp" line="114"/>
         <source>$s_experimental_date</source>
         <translation>$s_data_experimental</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="114"/>
+        <location filename="../frmprintcontract.cpp" line="115"/>
         <source>$s_address</source>
         <translation>$s_endereco</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="116"/>
+        <location filename="../frmprintcontract.cpp" line="117"/>
         <source>$s_parent</source>
         <translation>$s_responsavel</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="117"/>
+        <location filename="../frmprintcontract.cpp" line="118"/>
         <source>$p_telephone</source>
         <translation>$p_telefone</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="118"/>
+        <location filename="../frmprintcontract.cpp" line="119"/>
         <source>$p_mobile</source>
         <translation>$p_celular</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="119"/>
+        <location filename="../frmprintcontract.cpp" line="120"/>
         <source>$p_email</source>
         <translation>$p_email</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="120"/>
+        <location filename="../frmprintcontract.cpp" line="121"/>
         <source>$p_id</source>
         <translation>$p_rg</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="121"/>
+        <location filename="../frmprintcontract.cpp" line="122"/>
         <source>$p_cpg</source>
         <translation>$p_cpf</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="123"/>
+        <location filename="../frmprintcontract.cpp" line="124"/>
         <source>$s_course</source>
         <translation>$s_curso</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="125"/>
+        <location filename="../frmprintcontract.cpp" line="126"/>
         <source>$p_cost</source>
         <translation>$p_custo</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="126"/>
+        <location filename="../frmprintcontract.cpp" line="127"/>
         <source>$p_discount</source>
         <translation>$p_desconto</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="127"/>
+        <location filename="../frmprintcontract.cpp" line="128"/>
         <source>$p_installments</source>
         <translation>$p_parcelas</translation>
     </message>
     <message>
-        <location filename="../frmprintcontract.cpp" line="149"/>
+        <location filename="../frmprintcontract.cpp" line="150"/>
+        <source>I, %1, owner of the ID %2 and CPG %3, hereby confirm that I am enrolling my son/daugther %4 on the following course:
+
+ - %5.
+
+I am aware that this course is going to be ministred at %6.</source>
+        <translation>Eu, %1, proprietário do RG %2 e CPF %3, por meio desta, confirmo que estou matriculando meu filho/filha %4 no seguinte curso:
+
+ - %5.
+
+Estou consciente que este curso será ministrado em %6.</translation>
+    </message>
+    <message>
         <source>I, %1, owner of the ID %2 and CPG %3, hereby confirm that I am enrolling my son/daugther %4 on the following course:
  - %5.I am aware that this course is going to be ministred at %6.</source>
-        <translation>Eu, %1, portador do RG %2 e CPF %3, venho através desta confirmar que estou cadastrando meu filho/filha %4 no seguinte curso:
+        <translation type="vanished">Eu, %1, portador do RG %2 e CPF %3, venho através desta confirmar que estou cadastrando meu filho/filha %4 no seguinte curso:
  - %5.Estou ciente de que este curso será ministrádo em %6.</translation>
     </message>
 </context>
@@ -2820,27 +2869,27 @@ Dado autogerado SmartClass</translation>
         <translation>Informações de contato</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="701"/>
+        <location filename="../frmsettings.ui" line="709"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;%1 ~ Name of the parent&lt;br/&gt;%2 ~ ID of the parent&lt;br/&gt;%3 ~ CPG of the parent&lt;br/&gt;%4 ~ Name of the student&lt;br/&gt;%5 ~ Name of the course (+ details)&lt;br/&gt;%6 ~ Name of the company&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;%1 ~ Nome do responsável&lt;br/&gt;%2 ~ RG do responsável&lt;br/&gt;%3 ~ CPF do responsável&lt;br/&gt;%4 ~ Nome do aluno&lt;br/&gt;%5 ~ Nome do curso (+ detalhes)&lt;br/&gt;%6 ~ Nome da empresa&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="711"/>
+        <location filename="../frmsettings.ui" line="719"/>
         <source>Language settings</source>
         <translation>Configurações de idioma</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="717"/>
+        <location filename="../frmsettings.ui" line="725"/>
         <source>Current language</source>
         <translation>Idioma atual</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="731"/>
+        <location filename="../frmsettings.ui" line="739"/>
         <source>English (UK)</source>
         <translation>Inglês (RU)</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="736"/>
+        <location filename="../frmsettings.ui" line="744"/>
         <source>Portuguese (BR)</source>
         <translation>Portugês (BR)</translation>
     </message>
@@ -2849,34 +2898,34 @@ Dado autogerado SmartClass</translation>
         <translation type="vanished">Backup</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1070"/>
+        <location filename="../frmsettings.ui" line="1078"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1109"/>
+        <location filename="../frmsettings.ui" line="1117"/>
         <source>Database info</source>
         <translation>Informação do banco de dados</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="945"/>
-        <location filename="../frmsettings.ui" line="1121"/>
-        <location filename="../frmsettings.ui" line="1160"/>
-        <location filename="../frmsettings.ui" line="1173"/>
-        <location filename="../frmsettings.ui" line="1186"/>
-        <location filename="../frmsettings.ui" line="1238"/>
-        <location filename="../frmsettings.ui" line="1251"/>
-        <location filename="../frmsettings.ui" line="1278"/>
+        <location filename="../frmsettings.ui" line="953"/>
+        <location filename="../frmsettings.ui" line="1129"/>
+        <location filename="../frmsettings.ui" line="1168"/>
+        <location filename="../frmsettings.ui" line="1181"/>
+        <location filename="../frmsettings.ui" line="1194"/>
+        <location filename="../frmsettings.ui" line="1246"/>
+        <location filename="../frmsettings.ui" line="1259"/>
+        <location filename="../frmsettings.ui" line="1286"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1147"/>
+        <location filename="../frmsettings.ui" line="1155"/>
         <source>Database type:</source>
         <translation>Tipo do banco de dados:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1134"/>
+        <location filename="../frmsettings.ui" line="1142"/>
         <source>Database name:</source>
         <translation>Nome do banco de dados:</translation>
     </message>
@@ -2886,122 +2935,136 @@ Dado autogerado SmartClass</translation>
         <translation>Texto do contrato (sem HTML, i.e, apenas texto plano)</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="752"/>
+        <location filename="../frmsettings.ui" line="698"/>
+        <location filename="../frmsettings.cpp" line="97"/>
+        <source>I, %1, owner of the ID %2 and CPG %3, hereby confirm that I am enrolling my son/daugther %4 on the following course:
+
+ - %5.
+
+I am aware that this course is going to be ministred at %6.</source>
+        <translation>Eu, %1, proprietário do RG %2 e CPF %3, por meio desta, confirmo que estou matriculando meu filho/filha %4 no seguinte curso:
+
+ - %5.
+
+Estou consciente que este curso será ministrado em %6.</translation>
+    </message>
+    <message>
+        <location filename="../frmsettings.ui" line="760"/>
         <source>Backup/External</source>
         <translation>Backup/Externo</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="797"/>
+        <location filename="../frmsettings.ui" line="805"/>
         <source>Backup Settings</source>
         <translation>Configurações de backup</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="807"/>
+        <location filename="../frmsettings.ui" line="815"/>
         <source>5</source>
         <translation>5</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="812"/>
+        <location filename="../frmsettings.ui" line="820"/>
         <source>10</source>
         <translation>10</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="817"/>
+        <location filename="../frmsettings.ui" line="825"/>
         <source>15</source>
         <translation>15</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="822"/>
+        <location filename="../frmsettings.ui" line="830"/>
         <source>30</source>
         <translation>30</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="827"/>
+        <location filename="../frmsettings.ui" line="835"/>
         <source>45</source>
         <translation>45</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="832"/>
+        <location filename="../frmsettings.ui" line="840"/>
         <source>60</source>
         <translation>60</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="837"/>
+        <location filename="../frmsettings.ui" line="845"/>
         <source>120</source>
         <translation>120</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="842"/>
+        <location filename="../frmsettings.ui" line="850"/>
         <source>240</source>
         <translation>240</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="850"/>
+        <location filename="../frmsettings.ui" line="858"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You should be careful when choosing the timer interval. Choosing a short interval may affect the performance of this program, once the backup may be a long process depending on the database size.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Você deve tomar cuidado ao escolher o intervalo de tempo. Escolher um pequeno intervalo poderá afetar o desempenho deste programa, uma vez que o backup pode ser um processo muito demorado, dependendo do tamanho do seu banco de dados.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="863"/>
+        <location filename="../frmsettings.ui" line="871"/>
         <source>Scheduled time</source>
         <translation>Horário agendado</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="892"/>
+        <location filename="../frmsettings.ui" line="900"/>
         <source>Enable database backup (Recommended)</source>
         <translation>Ativar o backup do banco de dados (Recomendado)</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="902"/>
+        <location filename="../frmsettings.ui" line="910"/>
         <source>You are currently using a MySQL database to store your data. Unfortunately this program does not provide support to MySQL backup.</source>
         <translation>Atualmente você está utilizando um banco de dados MySQL para armazenar seus arquivos. Infelizmente este programa não disponibiliza suporte para backup MySQL.</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="915"/>
+        <location filename="../frmsettings.ui" line="923"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="922"/>
+        <location filename="../frmsettings.ui" line="930"/>
         <source>Scheduled interval</source>
         <translation>Intervalo agendado</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="932"/>
+        <location filename="../frmsettings.ui" line="940"/>
         <source>Manage schedules</source>
         <translation>Gerenciar agendamentos</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="952"/>
+        <location filename="../frmsettings.ui" line="960"/>
         <source>Interval (minutes):</source>
         <translation>Intervalo (minutos):</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="959"/>
+        <location filename="../frmsettings.ui" line="967"/>
         <source>Path:</source>
         <translation>Caminho:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="983"/>
+        <location filename="../frmsettings.ui" line="991"/>
         <source>Third party program settings</source>
         <translation>Configurações de programas de terceiros</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="992"/>
+        <location filename="../frmsettings.ui" line="1000"/>
         <source>Command line arguments</source>
         <translation>Argumentos de linha de comando</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1002"/>
+        <location filename="../frmsettings.ui" line="1010"/>
         <source>?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1012"/>
+        <location filename="../frmsettings.ui" line="1020"/>
         <source>External program path:</source>
         <translation>Caminho para o programa externo:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1039"/>
+        <location filename="../frmsettings.ui" line="1047"/>
         <source>Enable external program exportation</source>
         <translation>Ativar exportação para programa externo</translation>
     </message>
@@ -3010,22 +3073,22 @@ Dado autogerado SmartClass</translation>
         <translation type="vanished">$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $s_endereco $p_custo $p_desconto $p_parcelas</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1199"/>
+        <location filename="../frmsettings.ui" line="1207"/>
         <source>Database port:</source>
         <translation>Porta do banco de dados:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1264"/>
+        <location filename="../frmsettings.ui" line="1272"/>
         <source>Database host:</source>
         <translation>Host do banco de dados:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1225"/>
+        <location filename="../frmsettings.ui" line="1233"/>
         <source>Database username:</source>
         <translation>Usuário do banco de dados:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1212"/>
+        <location filename="../frmsettings.ui" line="1220"/>
         <source>Database Password:</source>
         <translation>Senha do banco de dados:</translation>
     </message>
@@ -3034,35 +3097,35 @@ Dado autogerado SmartClass</translation>
         <translation type="vanished">TextLabel</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1288"/>
+        <location filename="../frmsettings.ui" line="1296"/>
         <source>Branding</source>
         <translation>Propaganda</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1297"/>
+        <location filename="../frmsettings.ui" line="1305"/>
         <source>Company logo:</source>
         <translation>Logo da empresa:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="973"/>
-        <location filename="../frmsettings.ui" line="1022"/>
-        <location filename="../frmsettings.ui" line="1311"/>
+        <location filename="../frmsettings.ui" line="981"/>
+        <location filename="../frmsettings.ui" line="1030"/>
+        <location filename="../frmsettings.ui" line="1319"/>
         <source>Search</source>
         <translation>Busca</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1055"/>
-        <location filename="../frmsettings.cpp" line="190"/>
+        <location filename="../frmsettings.ui" line="1063"/>
+        <location filename="../frmsettings.cpp" line="195"/>
         <source>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments</source>
         <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_endereco $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $p_custo $p_desconto $p_parcelas</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1271"/>
+        <location filename="../frmsettings.ui" line="1279"/>
         <source>Database Prefix:</source>
         <translation>Prefixo do banco de dados:</translation>
     </message>
     <message>
-        <location filename="../frmsettings.ui" line="1318"/>
+        <location filename="../frmsettings.ui" line="1326"/>
         <source>Company name:</source>
         <translation>Nome da empresa:</translation>
     </message>
@@ -3073,73 +3136,73 @@ Dado autogerado SmartClass</translation>
         <translation>Configurações | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="126"/>
+        <location filename="../frmsettings.cpp" line="131"/>
         <source>$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_address $p_cost $p_discount $p_installments</source>
         <translation>$cam_prog $s_nome $s_aniversario $s_rg $s_escola $s_curso_experimental $s_data_experimental $s_responsavel $p_telefone $p_celular $p_email $p_rg $p_cpf $s_curso $s_endereco $p_custo $p_desconto $p_parcelas</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="153"/>
-        <location filename="../frmsettings.cpp" line="195"/>
+        <location filename="../frmsettings.cpp" line="158"/>
+        <location filename="../frmsettings.cpp" line="200"/>
         <source>Nintersoft Team</source>
         <translation>Equipe Nintersoft</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="159"/>
+        <location filename="../frmsettings.cpp" line="164"/>
         <source>Confirmation | SmartClass</source>
         <translation>Confirmação | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="159"/>
+        <location filename="../frmsettings.cpp" line="164"/>
         <source>You are going to reset the settings to the previously saved state.
 Are you sure?</source>
         <translation>Você está prestes a reiniciar as configurações para o estado previamente salvo.
 Está certo disso?</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="213"/>
-        <location filename="../frmsettings.cpp" line="232"/>
+        <location filename="../frmsettings.cpp" line="218"/>
+        <location filename="../frmsettings.cpp" line="237"/>
         <source>Select company logo | SmartClass</source>
         <translation>Selecione o logo da empresa | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="215"/>
+        <location filename="../frmsettings.cpp" line="220"/>
         <source>Image files (*.png *.jpeg *.jpg)</source>
         <translation>Arquivos de imagem (*.png *.jpeg *.jpg)</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="215"/>
-        <location filename="../frmsettings.cpp" line="225"/>
-        <location filename="../frmsettings.cpp" line="235"/>
+        <location filename="../frmsettings.cpp" line="220"/>
+        <location filename="../frmsettings.cpp" line="230"/>
+        <location filename="../frmsettings.cpp" line="240"/>
         <source>All files (*.*)</source>
         <translation>Todos os arquivos (*.*)</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="222"/>
+        <location filename="../frmsettings.cpp" line="227"/>
         <source>Select backup path | SmartClass</source>
         <translation>Selecione o caminho do backup | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="234"/>
+        <location filename="../frmsettings.cpp" line="239"/>
         <source>Executable files (*.bat *.bin *.cmd *.com *.cpl *csh *.exe *.inx *.ksh *.msi *.out *.paf *.reg *.run *.rgs *.vb *.vbe *.vbs *.vbscript *.ws *.wsf)</source>
         <translation>Arquivos executáveis (*.bat *.bin *.cmd *.com *.cpl *csh *.exe *.inx *.ksh *.msi *.out *.paf *.reg *.run *.rgs *.vb *.vbe *.vbs *.vbscript *.ws *.wsf)</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="244"/>
+        <location filename="../frmsettings.cpp" line="249"/>
         <source>Warning | SmartClass</source>
         <translation>Aviso | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="244"/>
+        <location filename="../frmsettings.cpp" line="249"/>
         <source>Sorry, but you cannot schedule two backups to the same period.</source>
         <translation>Desculpe, mas você não pode agendar dois backups para o mesmo período.</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="273"/>
+        <location filename="../frmsettings.cpp" line="278"/>
         <source>External contract program helper | SmartClass</source>
         <translation>Auxiliador de programa de contrado externo | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmsettings.cpp" line="274"/>
+        <location filename="../frmsettings.cpp" line="279"/>
         <source>The following box is the field containing the command line command which will be executed (it supports prefix and sulfix words).
 This is a list of the special supported arguments:
 

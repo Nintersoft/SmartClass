@@ -3,12 +3,20 @@
 
 #include <QDesktopWidget>
 #include <QDesktopServices>
-//#include <QPrintDialog>
+#include <QFontDatabase>
+#include <QPrintDialog>
+#include <QFileDialog>
 #include <QMainWindow>
+#include <QGridLayout>
+#include <QPrinter>
+#include <QPainter>
 #include <QPixmap>
 #include <QWidget>
 #include <QLabel>
 #include <QFile>
+#include <QDate>
+#include <QRect>
+#include <QDir>
 
 namespace Ui {
 class PrintPreviewForm;
@@ -20,7 +28,8 @@ class PrintPreviewForm : public QMainWindow
 
 public:
     explicit PrintPreviewForm(QWidget *parent = 0, const QPixmap &pixmap = QPixmap());
-    explicit PrintPreviewForm(QWidget *parent = 0, const QString &text = "", bool includeLogo = false);
+    explicit PrintPreviewForm(QWidget *parent = 0, const QString &text = "", const QPixmap &pixmap = QPixmap());
+    explicit PrintPreviewForm(QWidget *parent = 0, const QStringList &content = QStringList(), const QPixmap &pixmap = QPixmap());
     ~PrintPreviewForm();
 
 protected:
@@ -49,6 +58,11 @@ private:
     LockMoveType locked;
 
     QWidget* mainWidget;
+    QLabel *contract, *companyName, *companyLogo, *parentName;
+
+private slots:
+    void exportToPDF();
+    void printDocument();
 };
 
 #endif // PRINTPREVIEWFORM_H

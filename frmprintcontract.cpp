@@ -64,6 +64,7 @@ frmPrintContract::frmPrintContract(QWidget *parent, QStringList studentData,
     ui->edtCompanyName->setText(companyName);
 
     connect(ui->btOpenExternal, SIGNAL(clicked(bool)), this, SLOT(openExternalTool()));
+    connect(ui->btGenerateForm, SIGNAL(clicked(bool)), this, SLOT(generateContractForm()));
 }
 
 frmPrintContract::~frmPrintContract()
@@ -148,19 +149,39 @@ void frmPrintContract::generateContractForm(){
 
     QString defaultTemplate = tr("I, %1, owner of the ID %2 and CPG %3,"
                                  " hereby confirm that I am enrolling my son/daugther %4 on the following course:"
+                                 "\n"
                                  "\n - %5."
-                                 "I am aware that this course is going to be ministred at %6.");
+                                 "\n"
+                                 "\nI am aware that this course is going to be ministred at %6.");
+
     QSettings settings("Nintersoft", "SmartClass");
     if (settings.childGroups().contains("contract")){
         settings.beginGroup("contract");
-        defaultTemplate = settings.value("text", defaultTemplate).toString().arg(ui->lblParentName->text())
-                                                                            .arg(ui->lblParentID->text()
-                                                                            .arg(ui->lblParentCPG->text()
-                                                                            .arg(ui->lblStudentName->text())
-                                                                            .arg(ui->cbStudentCourse->currentText()
-                                                                            .arg(ui->edtCompanyName->text()))));
+        defaultTemplate = settings.value("text", defaultTemplate).toString();
         settings.endGroup();
     }
+
+    defaultTemplate = defaultTemplate.arg(ui->lblParentName->text())
+                                     .arg(ui->lblParentID->text())
+                                     .arg(ui->lblParentCPG->text())
+                                     .arg(ui->lblStudentName->text())
+                                     .arg(ui->cbStudentCourse->currentText())
+                                     .arg(ui->edtCompanyName->text());
+
+    if (ui->cbIncludeCompanyLogo->isChecked()){
+        QPixmap cLogo;
+        QString logoPath  = QDir::homePath() + ((QSysInfo::windowsVersion() != QSysInfo::WV_None) ?
+                    "/AppData/Roaming/Nintersoft/SmartClass/images/Logo.png" :
+                    "/.Nintersoft/SmartClass/images/Logo.png");
+        cLogo.load(logoPath);
+        frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
+                                                                << ui->lblParentName->text()
+                                                                << ui->edtCompanyName->text(), cLogo);
+    }
+    else frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
+                                                    << ui->lblParentName->text()
+                                                    << ui->edtCompanyName->text());
+    frmPrintPrev->showMaximized();
 }
 
 /*

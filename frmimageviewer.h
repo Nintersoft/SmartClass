@@ -53,6 +53,7 @@ private:
     QPoint posCursor;
     LockMoveType locked;
     const QPixmap INITIAL_IMAGE;
+    QPixmap currentImage;
 
     PrintPreviewForm* printForm;
 

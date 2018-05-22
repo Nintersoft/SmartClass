@@ -12,6 +12,7 @@
 #include <QDate>
 
 #include "dbmanager.h"
+#include "printpreviewform.h"
 
 namespace Ui {
 class frmPrintContract;
@@ -61,6 +62,8 @@ private:
     QString externalCommand, programPath;
 
     const int PAYMENT_DATA_SIZE, COURSES_DATA_SIZE;
+
+    PrintPreviewForm *frmPrintPrev;
 
 protected slots:
     void generateContractForm();
