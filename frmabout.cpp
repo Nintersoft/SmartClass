@@ -53,7 +53,7 @@ frmAbout::frmAbout(QWidget *parent) :
 #ifdef _WIN32
     connect(ui->btUpgrade, SIGNAL(clicked(bool)), this, SLOT(upgradeProgram()));
     upgradeStep = 0;
-    upgradeVersion = 3;
+    upgradeVersion = 4;
 
     tempDir = QDir::homePath() + "/AppData/Roaming/Nintersoft/SmartClass/Downloads/";
 
@@ -147,7 +147,7 @@ void frmAbout::downloadFinished(){
             QStringList upData = infoLine.split("=");
 
             for (int i = 1; i < (upData.length() - 1); ++i)
-                downloadLink += infoLine[i];
+                downloadLink += upData[i];
 
             if (upData.last().toInt() > upgradeVersion) downloadArchive(downloadLink, tempDir, "SmartClass.exe");
             else{
@@ -156,7 +156,13 @@ void frmAbout::downloadFinished(){
             }
         }
     }
-    else emit upgradeAvailable();
+    else{
+        setDefaultStatus();
+        QMessageBox::information(this, tr("Upgrade info | SmartClass"), tr("The upgrade process is going to start as soon as you finish your work."
+                                                                           "\nYou can continue using SmartClass, since the installer will be launched right after you close the SmartClass."), QMessageBox::Ok);
+        ui->btUpgrade->setEnabled(false);
+        emit upgradeAvailable();
+    }
 }
 
 bool frmAbout::downloadArchive(QString archiveUrl, QString saveToPath, QString archiveName){

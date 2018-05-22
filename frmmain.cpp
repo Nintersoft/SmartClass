@@ -25,6 +25,8 @@ frmMain::frmMain(QWidget *parent) :
 
     returnCode = -1;
 
+    upgradeAvailable = false;
+
     myDB = NULL;
     firstRunScr = NULL;
     loginScr = NULL;
@@ -66,6 +68,7 @@ frmMain::frmMain(QWidget *parent) :
 
             frmAbt = new frmAbout();
             connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbt, SLOT(show()));
+            connect(frmAbt, SIGNAL(upgradeAvailable()), this, SLOT(setUpgradeAvailable()));
         }
     }
     else {
@@ -137,6 +140,10 @@ frmMain::~frmMain()
 }
 
 void frmMain::closeEvent(QCloseEvent *event){
+    if (upgradeAvailable){
+        QMessageBox::information(this, tr("Upgrade | SmartClass"), tr("The upgrade process is going to start as soon as you dismiss this message."), QMessageBox::Ok);
+        QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::homePath() + "/AppData/Roaming/Nintersoft/SmartClass/Downloads/SmartClass.exe"));
+    }
     qApp->exit();
     event->accept();
 }
@@ -283,6 +290,7 @@ void frmMain::getFirstSettings(const QStringList &sqlData, const QString &langSl
 
     frmAbt = new frmAbout();
     connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbt, SLOT(show()));
+    connect(frmAbt, SIGNAL(upgradeAvailable()), this, SLOT(setUpgradeAvailable()));
     this->hide();
 
     firstRunScr->close();
@@ -1018,7 +1026,7 @@ void frmMain::removeAppSettings(){
     }
     QMessageBox::information(this, tr("Process complete | SmartClass"),
                              tr("The process of uninstallation is going to continue right after you dismiss this message!"), QMessageBox::Ok);
-    QDesktopServices::openUrl(QUrl("./unins000.exe"));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/unins000.exe"));
     QApplication::exit(EXIT_SUCCESS);
 }
 
@@ -1126,6 +1134,10 @@ void frmMain::scheduledBackup(){
                               tr("The connection with the database could not be restored after the backup."
                                  "\nPlease, restart the program in order to have access it's functionalities."),
                               QMessageBox::Ok, QMessageBox::NoButton);
+}
+
+void frmMain::setUpgradeAvailable(){
+    upgradeAvailable = true;
 }
 
 /*

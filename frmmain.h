@@ -78,6 +78,7 @@ private slots:
     void changeTable(bool student);
 
     void changeLanguage(const QString &slug);
+    void setUpgradeAvailable();
 
 protected slots:
     void receiveNewStudentData(const QStringList &data);
@@ -150,6 +151,8 @@ private:
     QTranslator qtTranslator;
     QSettings* settings;
     QStringList db_SETTINGS;
+
+    bool upgradeAvailable;
 
     void getUsers();
     void getStudents();
