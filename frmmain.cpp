@@ -2,22 +2,14 @@
 #include "ui_frmmain.h"
 
 frmMain::frmMain(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::frmMain),
-    RESIZE_LIMIT(2)
+    NMainWindow(parent),
+    ui(new Ui::frmMain)
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
-    centralWidget()->installEventFilter(this);
-    ui->titleBar->installEventFilter(this);
-    ui->statusBar->installEventFilter(this);
 
-    centralWidget()->setMouseTracking(true);
-    ui->titleBar->setMouseTracking(true);
-    ui->statusBar->setMouseTracking(true);
-
-    setWindowTitle(tr("SmartClass | Nintersoft"));
-    locked = LockMoveType::None;
+    // Sets the custom Widgets on the parent Class
+    // Otherwise, the window resizing feature will not work
+    NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
 
     /*
      *  End of GUI implementation
@@ -51,7 +43,7 @@ frmMain::frmMain(QWidget *parent) :
         dbData = true;
     }
 
-    if (dbData && (QFile::exists(frmLogin::getDBPath()) || isMySQL)){
+    if (dbData && (QFile::exists(SmartClassGlobal::getDBPath()) || isMySQL)){
         setupDBConnection();
         if (returnCode == -1){
             if (settings->childGroups().contains("language options", Qt::CaseInsensitive)){
@@ -60,8 +52,8 @@ frmMain::frmMain(QWidget *parent) :
                 settings->endGroup();
             }
 
-            loginScr = new frmLogin(NULL, db_SETTINGS);
-            connect(loginScr, SIGNAL(dataReady(QStringList)), this, SLOT(setSessionRole(QStringList)));
+            loginScr = new frmLogin(NULL, db_data);
+            connect(loginScr, SIGNAL(dataReady(QList<QVariant>)), this, SLOT(setSessionRole(QList<QVariant>)));
             loginScr->show();
 
             createTables();
@@ -73,7 +65,7 @@ frmMain::frmMain(QWidget *parent) :
     }
     else {
         firstRunScr = new frmFirstRun();
-        connect(firstRunScr, SIGNAL(sendData(QStringList, QString)), this, SLOT(getFirstSettings(QStringList, QString)));
+        connect(firstRunScr, SIGNAL(sendData(DBManager::DBData,QString)), this, SLOT(getFirstSettings(DBManager::DBData,QString)));
         firstRunScr->show();
     }
 
@@ -91,16 +83,13 @@ frmMain::frmMain(QWidget *parent) :
         connect(ui->btRemoveCourse, SIGNAL(clicked(bool)), this, SLOT(removeCourse()));
 
         connect(ui->btSettings, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
+        connect(ui->btManageUsers, SIGNAL(clicked(bool)), this, SLOT(openUserManager()));
         connect(ui->btInfo, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
 
         connect(ui->btPrintStudentForms, SIGNAL(clicked(bool)), this, SLOT(openContractForm()));
         connect(ui->btGetReceipt, SIGNAL(clicked(bool)), this, SLOT(openReceiptForm()));
 
         deleteDBStatus = 0;
-
-        connect(ui->btRemoveUser, SIGNAL(clicked(bool)), this, SLOT(removeUser()));
-        connect(ui->btUpgradeRole, SIGNAL(clicked(bool)), this, SLOT(upgradeUserPermissions()));
-        connect(ui->btRevokeRole, SIGNAL(clicked(bool)), this, SLOT(revokeUserPermissions()));
 
         connect(ui->btRestoreDB, SIGNAL(clicked(bool)), this, SLOT(restoreDataBase()));
         connect(ui->btBackUpDB, SIGNAL(clicked(bool)), this, SLOT(backupDataBase()));
@@ -123,6 +112,7 @@ frmMain::frmMain(QWidget *parent) :
         frmPayment = NULL;
         frmConfig= NULL;
         addClass = NULL;
+        frmMngUsers = NULL;
     }
 }
 
@@ -135,6 +125,7 @@ frmMain::~frmMain()
 
     if (firstRunScr) delete firstRunScr;
     if (settings) delete settings;
+    if (frmMngUsers) delete frmMngUsers;
 
     delete ui;
 }
@@ -163,30 +154,10 @@ void frmMain::resizeEvent(QResizeEvent *event){
     ui->tableCourses->setColumnWidth(4, newWidth);
 
     event->accept();
-    QMainWindow::resizeEvent(event);
+    NMainWindow::resizeEvent(event);
 }
 
 void frmMain::createTables(){
-    QStringList studentsTable, parentsTable, studentImagesTable, pricingTable, coursesTable, parentImagesTable;
-    QString id = (db_SETTINGS.length() == 2) ? "id INTEGER PRIMARY KEY" : "id INTEGER(64) UNSIGNED AUTO_INCREMENT PRIMARY KEY";
-    studentsTable << id << "student TEXT NOT NULL" << "birthday TEXT NOT NULL"
-                    << "studentID TEXT" << "school TEXT" << "observations TEXT"
-                    << "experimentalCourse TEXT" << "experimentalCourseDate TEXT"
-                    << "experimentalCourseObservations TEXT" << "courses TEXT" << "address TEXT";
-    parentsTable << id << "parent TEXT NOT NULL" << "students TEXT NOT NULL"
-                 << "phone TEXT" << "mobileOperator TEXT" << "mobile TEXT" << "email TEXT"
-                    << "parentID TEXT" << "parentCPG TEXT" << "meeting TEXT";
-    studentImagesTable << id << "student TEXT NOT NULL" << "studentImage BLOB"
-                       << "studentID BLOB";
-    parentImagesTable << id << "parent TEXT NOT NULL" << "parentID BLOB"
-                      << "parentCPG BLOB" << "addressComprobation BLOB";
-    pricingTable << id << "student TEXT NOT NULL" << "course TEXT NOT NULL" << "discount TEXT"
-                 << "beginningDate TEXT NOT NULL" << "installments TEXT NOT NULL";
-    coursesTable << id << "course TEXT NOT NULL" << "teacher TEXT NOT NULL"
-                 << "shortDescription TEXT NOT NULL" << "longDescription TEXT NOT NULL" << "class TEXT NOT NULL"
-                 << "dayNTime TEXT NOT NULL" << "beginningDate TEXT NOT NULL" << "endDate TEXT NOT NULL"
-                 << "price TEXT NOT NULL" << "students TEXT";
-
     if (!myDB->openDB()){
         QMessageBox dbWarning;
         dbWarning.setWindowTitle(tr("Connection issue | SmartClass"));
@@ -216,65 +187,61 @@ void frmMain::createTables(){
         else returnCode = 1;
     }
 
-    myDB->createTable("myclass_parents", parentsTable);
-    myDB->createTable("myclass_students", studentsTable);
-    myDB->createTable("myclass_simages", studentImagesTable);
-    myDB->createTable("myclass_pimages", parentImagesTable);
-    myDB->createTable("myclass_pricing", pricingTable);
-    myDB->createTable("myclass_courses", coursesTable);
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS));
 }
 
 void frmMain::setupDBConnection(){
     if (!settings->childGroups().contains("dbinfo")){
         settings->beginGroup("dbinfo");
         settings->setValue("database type", "SQLITE");
-        db_SETTINGS = QStringList() << frmLogin::getDBPath()
-                                    << settings->value("table prefix", "").toString();
-        myDB = new DBManager(db_SETTINGS, DBManager::getUniqueConnectionName("mainConnection"));
+
+        db_data.setDatabaseName(SmartClassGlobal::getDBPath());
+        SmartClassGlobal::setDatabaseType(DBManager::SQLITE);
+        SmartClassGlobal::setTablePrefix(settings->value("table prefix", "").toString());
     }
     else {
         settings->beginGroup("dbinfo");
         if (settings->value("database type").toString() == "SQLITE"){
-            db_SETTINGS = QStringList() << frmLogin::getDBPath()
-                                        << settings->value("table prefix", "").toString();
-            myDB = new DBManager(db_SETTINGS, DBManager::getUniqueConnectionName("mainConnection"));
+            db_data.setDatabaseName(SmartClassGlobal::getDBPath());
+            SmartClassGlobal::setDatabaseType(DBManager::SQLITE);
+            SmartClassGlobal::setTablePrefix(settings->value("table prefix", "").toString());
         }
         else {
-            db_SETTINGS << settings->value("host").toString()
-                        << settings->value("database").toString()
-                        << QString::number(settings->value("port").toInt())
-                        << settings->value("username").toString()
-                        << settings->value("password").toString()
-                        << settings->value("table prefix", "").toString();
-            myDB = new DBManager(db_SETTINGS, DBManager::getUniqueConnectionName("mainConnection"), "MYSQL");
+            db_data.setHostName(settings->value("host").toString());
+            db_data.setDatabaseName(settings->value("database").toString());
+            db_data.setUserName(settings->value("username").toString());
+            db_data.setPort(settings->value("port").toInt());
+            db_data.setUserName(settings->value("username").toString());
+            db_data.setPassword(settings->value("password").toString());
+            SmartClassGlobal::setDatabaseType(DBManager::MYSQL);
+            SmartClassGlobal::setTablePrefix(settings->value("table prefix", "").toString());
         }
     }
     settings->endGroup();
+
+    myDB = new DBManager(db_data, SmartClassGlobal::tablePrefix(),
+                         SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("mainConnection"));
     createTables();
 }
 
-void frmMain::getFirstSettings(const QStringList &sqlData, const QString &langSlug){
-    db_SETTINGS = sqlData;
+void frmMain::getFirstSettings(const DBManager::DBData &sqlData, const QString &langSlug){
+    db_data = sqlData;
+    myDB = new DBManager(sqlData, SmartClassGlobal::tablePrefix(),
+                         SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("mainConnection"));
 
-    settings->beginGroup("dbinfo");
-    int size = sqlData.length();
-    if (size == 2){
-        settings->setValue("database type", QString("SQLITE"));
-        settings->setValue("table prefix", QString(sqlData.at(1)));
-        myDB = new DBManager(sqlData, DBManager::getUniqueConnectionName("mainConnection"), "SQLITE");
-    }
-    else {
-        settings->setValue("database type", QString("MYSQL"));
-        settings->setValue("host", QString(sqlData.at(0)));
-        settings->setValue("database", QString(sqlData.at(1)));
-        settings->setValue("port", QString(sqlData.at(2)).toInt());
-        settings->setValue("username", QString(sqlData.at(3)));
-        settings->setValue("password", QString(sqlData.at(4)));
-        settings->setValue("table prefix", QString(sqlData.at(5)));
-        myDB = new DBManager(sqlData, DBManager::getUniqueConnectionName("mainConnection"), "MYSQL");
-    }
-
-    settings->endGroup();
     if (langSlug != "en") changeLanguage(langSlug);
 
     createTables();
@@ -285,7 +252,7 @@ void frmMain::getFirstSettings(const QStringList &sqlData, const QString &langSl
     }
 
     loginScr = new frmLogin(NULL, sqlData);
-    connect(loginScr, SIGNAL(dataReady(QStringList)), this, SLOT(setSessionRole(QStringList)));
+    connect(loginScr, SIGNAL(dataReady(QList<QVariant>)), this, SLOT(setSessionRole(QList<QVariant>)));
     loginScr->show();
 
     frmAbt = new frmAbout();
@@ -298,17 +265,16 @@ void frmMain::getFirstSettings(const QStringList &sqlData, const QString &langSl
     firstRunScr = NULL;
 }
 
-void frmMain::setSessionRole(const QStringList &userInfo){
-    sessionRole = userInfo.at(7);
-    currentUser = userInfo.at(0);
+void frmMain::setSessionRole(const QList<QVariant> &userInfo){
+    sessionRole = (SmartClassGlobal::UserRoles)userInfo.at(7).toInt();
+    currentUser = userInfo.at(0).toString();
 
     this->showMaximized();
     loginScr->close();
 
     setUIToRole();
 
-    getUsers();
-    if (sessionRole != "NEW"){
+    if (sessionRole != SmartClassGlobal::NEW){
         getCourses();
         getStudents();
         setBackupSettings();
@@ -326,17 +292,16 @@ void frmMain::logOut(){
         ui->tableCourses->setRowCount(0);
         ui->tableStudents->clearContents();
         ui->tableStudents->setRowCount(0);
-        ui->lwUsers->clear();
-        ui->tabWidget->setCurrentIndex(1);
+        ui->tabWidget->setCurrentIndex(0);
 
         if (loginScr){
-            disconnect(loginScr, SIGNAL(dataReady(QStringList)), this, SLOT(setSessionRole(QStringList)));
+            disconnect(loginScr, SIGNAL(dataReady(QList<QVariant>)), this, SLOT(setSessionRole(QList<QVariant>)));
             delete loginScr;
             loginScr = NULL;
         }
 
-        loginScr = new frmLogin(NULL, db_SETTINGS);
-        connect(loginScr, SIGNAL(dataReady(QStringList)), this, SLOT(setSessionRole(QStringList)));
+        loginScr = new frmLogin(NULL, db_data);
+        connect(loginScr, SIGNAL(dataReady(QList<QVariant>)), this, SLOT(setSessionRole(QList<QVariant>)));
         loginScr->show();
 
         myDB->closeDB();
@@ -346,17 +311,17 @@ void frmMain::logOut(){
 
 void frmMain::openStudentManager(){
     if (manageStudent){
-        disconnect(manageStudent, SIGNAL(updatedData(QStringList,QString)),
-                   this, SLOT(receiveStudentUpdatedData(QStringList,QString)));
-        disconnect(manageStudent, SIGNAL(newData(QStringList)),
-                   this, SLOT(receiveNewStudentData(QStringList)));
+        disconnect(manageStudent, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
+                   this, SLOT(receiveStudentUpdatedData(QList<QVariant>,qlonglong)));
+        disconnect(manageStudent, SIGNAL(newData(QList<QVariant>)),
+                   this, SLOT(receiveNewStudentData(QList<QVariant>)));
 
         delete manageStudent;
         manageStudent = NULL;
     }
 
     QString senderName = sender()->objectName();
-    if (senderName == "btAddStudent") manageStudent = new frmManageStudent(NULL, frmManageStudent::Create, NULL, db_SETTINGS);
+    if (senderName == "btAddStudent") manageStudent = new frmManageStudent(NULL, frmManageStudent::Create, -1, db_data);
     else if (ui->tableStudents->currentRow() < 0){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
         return;
@@ -365,30 +330,30 @@ void frmMain::openStudentManager(){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of students must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
-    else if (senderName == "btUpdateStudent" && (sessionRole == "ADMIN" || sessionRole == "EDITOR"))
-        manageStudent = new frmManageStudent(NULL, frmManageStudent::Role::Edit, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text(), db_SETTINGS);
-    else manageStudent = new frmManageStudent(NULL, frmManageStudent::Role::View, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text(), db_SETTINGS);
+    else if (senderName == "btUpdateStudent" && (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR))
+        manageStudent = new frmManageStudent(NULL, frmManageStudent::Role::Edit, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
+    else manageStudent = new frmManageStudent(NULL, frmManageStudent::Role::View, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
 
-    connect(manageStudent, SIGNAL(updatedData(QStringList,QString)),
-               this, SLOT(receiveStudentUpdatedData(QStringList,QString)));
-    connect(manageStudent, SIGNAL(newData(QStringList)),
-               this, SLOT(receiveNewStudentData(QStringList)));
+    connect(manageStudent, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
+               this, SLOT(receiveStudentUpdatedData(QList<QVariant>,qlonglong)));
+    connect(manageStudent, SIGNAL(newData(QList<QVariant>)),
+               this, SLOT(receiveNewStudentData(QList<QVariant>)));
     manageStudent->show();
 }
 
 void frmMain::openClassesManager(){
     if (addClass) {
-        disconnect(addClass, SIGNAL(updatedData(QStringList,QString)),
-                   this, SLOT(receiveCourseUpdatedData(QStringList,QString)));
-        disconnect(addClass, SIGNAL(newData(QStringList)),
-                   this, SLOT(receiveNewCourseData(QStringList)));
+        disconnect(addClass, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
+                   this, SLOT(receiveCourseUpdatedData(QList<QVariant>,qlonglong)));
+        disconnect(addClass, SIGNAL(newData(QList<QVariant>)),
+                   this, SLOT(receiveNewCourseData(QList<QVariant>)));
 
         delete addClass;
         addClass = NULL;
     }
 
     QString senderName = sender()->objectName();
-    if (senderName == "btAddCourse") addClass = new frmAddClass(NULL, frmAddClass::Create, NULL, db_SETTINGS);
+    if (senderName == "btAddCourse") addClass = new frmAddClass(NULL, frmAddClass::Create, -1, db_data);
     else if (ui->tableCourses->currentRow() < 0){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the courses table in order to execute this command."), QMessageBox::Ok);
         return;
@@ -397,23 +362,25 @@ void frmMain::openClassesManager(){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of courses must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
-    else if (senderName == "btUpdateCourse" && (sessionRole == "ADMIN" || sessionRole == "EDITOR"))
-        addClass = new frmAddClass(NULL, frmAddClass::Role::Edit, QString(ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->text()
-                                                                          + "|" + ui->tableCourses->item(ui->tableCourses->currentRow(), 1)->text()
-                                                                          + "|" + ui->tableCourses->item(ui->tableCourses->currentRow(), 4)->text()
-                                                                          + "|" + ui->tableCourses->item(ui->tableCourses->currentRow(), 3)->text()),
-                                                                  db_SETTINGS);
-    else addClass = new frmAddClass(NULL, frmAddClass::Role::View, QString(ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->text()
-                                                                           + "|" + ui->tableCourses->item(ui->tableCourses->currentRow(), 1)->text()
-                                                                           + "|" + ui->tableCourses->item(ui->tableCourses->currentRow(), 4)->text()
-                                                                           + "|" + ui->tableCourses->item(ui->tableCourses->currentRow(), 3)->text()),
-                                                                  db_SETTINGS);
+    else if (senderName == "btUpdateCourse" && (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR))
+        addClass = new frmAddClass(NULL, frmAddClass::Role::Edit, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
+    else addClass = new frmAddClass(NULL, frmAddClass::Role::View, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
 
-    connect(addClass, SIGNAL(updatedData(QStringList,QString)),
-               this, SLOT(receiveCourseUpdatedData(QStringList,QString)));
-    connect(addClass, SIGNAL(newData(QStringList)),
-               this, SLOT(receiveNewCourseData(QStringList)));
+    connect(addClass, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
+               this, SLOT(receiveCourseUpdatedData(QList<QVariant>,qlonglong)));
+    connect(addClass, SIGNAL(newData(QList<QVariant>)),
+               this, SLOT(receiveNewCourseData(QList<QVariant>)));
     addClass->show();
+}
+
+void frmMain::openUserManager(){
+    if (frmMngUsers){
+        delete frmMngUsers;
+        frmMngUsers = NULL;
+    }
+
+    frmMngUsers = new frmManageUsers(this, myDB, currentUser);
+    frmMngUsers->show();
 }
 
 void frmMain::openContractForm(){
@@ -431,20 +398,7 @@ void frmMain::openContractForm(){
         frmContract = NULL;
     }
 
-    QString companyName = NULL;
-    if (settings->childGroups().contains("company info")){
-        settings->beginGroup("company info");
-        companyName = settings->value("name", "").toString();
-        settings->endGroup();
-    }
-    frmContract = new frmPrintContract(NULL,
-                                       myDB->retrieveLine("myclass_students", "student", ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text()),
-                                       myDB->retrieveLine("myclass_parents", "parent", ui->tableStudents->item(ui->tableStudents->currentRow(), 1)->text()),
-                                       myDB->retrieveAllCondS("myclass_pricing", "student", ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text()),
-                                       myDB->rowsCountCond("myclass_pricing", "student", ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text()),
-                                       myDB->retrieveAllCondS("myclass_courses", "students", QString("%" + ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text() + "%"), "LIKE"),
-                                       myDB->rowsCountCond("myclass_courses", "students", QString("%" + ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text() + "%"), "LIKE"),
-                                       companyName);
+    frmContract = new frmPrintContract(NULL, myDB, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong());
     frmContract->show();
 }
 
@@ -454,8 +408,8 @@ void frmMain::openSettingsForm(){
         frmConfig = NULL;
     }
 
-    if (sender()->objectName() == "btInfo") frmConfig = new frmSettings(NULL, frmSettings::Info);
-    else frmConfig = new frmSettings();
+    if (sender()->objectName() == "btInfo") frmConfig = new frmSettings(NULL, myDB, frmSettings::Info);
+    else frmConfig = new frmSettings(NULL, myDB);
     frmConfig->show();
 }
 
@@ -465,10 +419,7 @@ void frmMain::openReceiptForm(){
         frmPayment = NULL;
     }
 
-    frmPayment = new frmReceipt(NULL, myDB->retrieveAll("myclass_pricing", QStringList() << "student" << "course" << "discount" << "beginningDate"
-                                                                                        << "installments"),
-                                myDB->retrieveAll("myclass_courses", QStringList() << "course" << "price" << "dayNTime" << "beginningDate" << "class"),
-                                myDB->rowsCount("myclass_pricing"), myDB->rowsCount("myclass_courses"));
+    frmPayment = new frmReceipt(NULL, myDB);
     frmPayment->show();
 }
 
@@ -479,115 +430,17 @@ void frmMain::openImportExportTool(){
     }
 
     if (sender()->objectName() == "btImportDB")
-        frmImportExport = new frmImportExportDB(NULL, frmImportExportDB::Import, db_SETTINGS);
-    else frmImportExport = new frmImportExportDB(NULL, frmImportExportDB::Export, db_SETTINGS);
+        frmImportExport = new frmImportExportDB(NULL, frmImportExportDB::Import, db_data);
+    else frmImportExport = new frmImportExportDB(NULL, frmImportExportDB::Export, db_data);
 
     frmImportExport->show();
 }
 
-void frmMain::getUsers(){
-    QStringList* users = myDB->retrieveAll("myclass_users", QStringList() << "username" << "name" << "role");
-    if (users == NULL) return;
-    int size = myDB->rowsCount("myclass_users");
-
-    for (int i = 0; i < size; ++i){
-        QString itemCaption = users[i].at(1) + " [ " + users[i].at(0) + " ] ~ " + users[i].at(2);
-        ui->lwUsers->addItem(itemCaption);
-    }
-
-    delete[] users;
-}
-
-void frmMain::upgradeUserPermissions(){
-    int currentRow = ui->lwUsers->currentRow();
-    if (currentRow < 0){
-        QMessageBox::warning(this, tr("Information | SmartClass"), tr("You have not selected/specified any user to upgrade its permissions."), QMessageBox::Ok);
-        return;
-    }
-    QListWidgetItem* item = ui->lwUsers->item(currentRow);
-
-    if (item->text().contains(currentUser)){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to update your own permissions. If you really need to change your permissions, please, ask to another administrator do it."), QMessageBox::Ok);
-        return;
-    }
-
-    if (item->text().contains("ADMIN")){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("This user already have the maximum level of permission. Operation aborted."), QMessageBox::Ok);
-        return;
-    }
-
-    QString username = QString(item->text().split(" [ ").at(1)).split(" ] ").at(0);
-    QString oldRole = item->text().split(" ] ~ ").at(1), newRole = "NEW";
-    if (oldRole == "NEW") newRole = "VIEWER";
-    else if (oldRole == "VIEWER") newRole = "EDITOR";
-    else if (oldRole == "EDITOR") newRole = "ADMIN";
-    if (myDB->updateLine("myclass_users", QStringList() << "role", QStringList() << newRole, "username", username)){
-        item->setText(item->text().replace(oldRole, newRole));
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("The user ") + username + tr(" has been granted ") + newRole + tr(" permissions."), QMessageBox::Ok);
-    }
-    else QMessageBox::information(this, tr("Information | SmartClass"), tr("An error has ocurred during the attempt of user permission upgrade operation. Try again later (after restarting SmartClass)."), QMessageBox::Ok);
-}
-
-void frmMain::revokeUserPermissions(){
-    int currentRow = ui->lwUsers->currentRow();
-    if (currentRow < 0){
-        QMessageBox::warning(this, tr("Information | SmartClass"), tr("You have not selected/specified any user to revoke its permissions."), QMessageBox::Ok);
-        return;
-    }
-    QListWidgetItem* item = ui->lwUsers->item(currentRow);
-
-    if (item->text().contains(currentUser)){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to downgrade your own permissions. If you really need to change your permissions, please, ask to another administrator do it."), QMessageBox::Ok);
-        return;
-    }
-
-    if (item->text().contains("NEW")){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("This user already have the minimal level of permission. Operation aborted."), QMessageBox::Ok);
-        return;
-    }
-
-    QString username = QString(item->text().split(" [ ").at(1)).split(" ] ").at(0);
-    QString oldRole = item->text().split(" ] ~ ").at(1), newRole = "NEW";
-    if (oldRole == "ADMIN") newRole = "EDITOR";
-    else if (oldRole == "EDITOR") newRole = "VIEWER";
-    else if (oldRole == "VIEWER") newRole = "NEW";
-    if (myDB->updateLine("myclass_users", QStringList() << "role", QStringList() << newRole, "username", username)){
-        item->setText(item->text().replace(oldRole, newRole));
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("The user ") + username + tr(" has been granted ") + newRole + tr(" permissions."), QMessageBox::Ok);
-    }
-    else QMessageBox::information(this, tr("Information | SmartClass"), tr("An error has ocurred during the attempt of user permission downgrade operation. Try again later (after restarting SmartClass)."), QMessageBox::Ok);
-}
-
-void frmMain::removeUser(){
-    int currentRow = ui->lwUsers->currentRow();if (currentRow < 0){
-        QMessageBox::warning(this, tr("Information | SmartClass"), tr("You have not selected/specified any user to be removed."), QMessageBox::Ok);
-        return;
-    }
-    QListWidgetItem* item = ui->lwUsers->item(currentRow);
-
-    if (item->text().contains(currentUser)){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to remove yourself. If you really need to remove your account, please, ask to another administrator do it."), QMessageBox::Ok);
-        return;
-    }
-
-    QString username = QString(item->text().split(" [ ").at(1)).split(" ] ").at(0);
-    if (myDB->removeLine("myclass_users", "username", username)){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("The user ") + username + tr(" has been removed successfully."), QMessageBox::Ok);
-        delete item;
-        item = NULL;
-        ui->lwUsers->setCurrentRow(currentRow == 0 ? 0 : (currentRow - 1));
-    }
-    else QMessageBox::information(this, tr("Information | SmartClass"), tr("An error has ocurred during the attempt of user removal operation. Try again later (after restarting SmartClass)."), QMessageBox::Ok);
-}
-
 void frmMain::setUIToRole(){
     bool enable = false;
-    if (sessionRole == "ADMIN") enable = true;
+    if (sessionRole == SmartClassGlobal::ADMIN) enable = true;
 
-    ui->lwUsers->setEnabled(enable);
-    ui->btUpgradeRole->setEnabled(enable);
-    ui->btRevokeRole->setEnabled(enable);
-    ui->btRemoveUser->setEnabled(enable);
+    ui->btManageUsers->setEnabled(enable);
     ui->btSettings->setEnabled(enable);
     ui->btGetReceipt->setEnabled(enable);
 
@@ -598,14 +451,14 @@ void frmMain::setUIToRole(){
     ui->btResetDB->setEnabled(enable);
     ui->btUninstall->setEnabled(enable);
 
-    if (sessionRole == "EDITOR") enable = true;
+    if (sessionRole == SmartClassGlobal::EDITOR) enable = true;
 
     ui->btAddStudent->setEnabled(enable);
     ui->btRemoveStudent->setEnabled(enable);
     ui->btAddCourse->setEnabled(enable);
     ui->btRemoveCourse->setEnabled(enable);
 
-    if (sessionRole == "VIEWER") enable = true;
+    if (sessionRole == SmartClassGlobal::VIEWER) enable = true;
 
     ui->btUpdateStudent->setEnabled(enable);
     ui->btUpdateCourse->setEnabled(enable);
@@ -614,26 +467,43 @@ void frmMain::setUIToRole(){
 
     if (enable) return;
 
-    QMessageBox::information(this, tr("Information | SmartClass"), tr("Seems that you do not have enough privileges to acess any data here. Plase, contact the administrator in order to upgrade your privileges."), QMessageBox::Ok);
+    QMessageBox::information(this, tr("Information | SmartClass"), tr("Seems that you do not have enough privileges to acess any data yet. Plase, contact an administrator in order to upgrade your permissions."), QMessageBox::Ok);
 }
 
 void frmMain::getStudents(){
-    QStringList* students = myDB->retrieveAll("myclass_students", QStringList() << "student" << "school" << "observations");
-    QStringList* parents = myDB->retrieveAll("myclass_parents", QStringList() << "parent" << "students");
-    if (parents == NULL || students == NULL) return;
-    int sSize = myDB->rowsCount("myclass_students");
-    int pSize = myDB->rowsCount("myclass_parents");
+    QStringList sTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT),
+                rTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE),
+                sNewTableSchema, rNewTableSchema;
+    sNewTableSchema << sTableSchema.at(0)
+                    << sTableSchema.at(1)
+                    << sTableSchema.at(2)
+                    << sTableSchema.at(5)
+                    << sTableSchema.at(6);
+    rNewTableSchema << rTableSchema.at(0)
+                    << rTableSchema.at(1);
+
+    QList< QList<QVariant> > students = myDB->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                                          sTableSchema);
+    QList< QList<QVariant> > parents = myDB->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                                         rNewTableSchema);
+    if (parents.isEmpty() || students.isEmpty()) return;
+
+    int sSize = students.length();
+    int rSize = parents.length();
 
     ui->tableStudents->setSortingEnabled(false);
     for (int i = 0; i < sSize; ++i){
-        QStringList studentTempData = QStringList() << students[i].at(0);
-        for (int k = 0; k < pSize; ++k){
-            if (QString(parents[k].at(1)).contains(students[i].at(0))){
-                studentTempData << parents[k].at(0);
+        qlonglong sID = students[i].at(0).toLongLong();
+        qlonglong rID;
+        QStringList studentTempData = QStringList() << students[i].at(1).toString();
+        for (int k = 0; k < rSize; ++k){
+            if (parents[k].at(0).toLongLong() == sID){
+                studentTempData << parents[k].at(1).toString();
+                rID = parents[k].at(0).toLongLong();
                 break;
             }
         }
-        studentTempData << students[i].at(1) << students[i].at(2);
+        studentTempData << students[i].at(2).toString() << students[i].at(3).toString();
 
         ui->tableStudents->insertRow(ui->tableStudents->rowCount());
 
@@ -641,75 +511,96 @@ void frmMain::getStudents(){
         ui->tableStudents->setItem(i, 1, new QTableWidgetItem(studentTempData.at(1)));
         ui->tableStudents->setItem(i, 2, new QTableWidgetItem(studentTempData.at(2)));
         ui->tableStudents->setItem(i, 3, new QTableWidgetItem(studentTempData.at(3)));
+
+        ui->tableStudents->item(i, 0)->setData(Qt::UserRole, students[i].at(0));
+        ui->tableStudents->item(i, 1)->setData(Qt::UserRole, rID);
     }
     ui->tableStudents->setSortingEnabled(true);
-
-    delete[] students;
-    delete[] parents;
 }
 
 void frmMain::getCourses(){
-    QStringList* courses = myDB->retrieveAll("myclass_courses", QStringList() << "course" << "class" << "teacher" << "beginningDate" << "dayNTime");
-    if (courses == NULL) return;
-    int cSize = myDB->rowsCount("myclass_courses");
+    QStringList cTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS),
+                cNewTableSchema;
+    cNewTableSchema << cTableSchema.at(0)  // ID
+                    << cTableSchema.at(1)  // Course
+                    << cTableSchema.at(2)  // Teacher
+                    << cTableSchema.at(5)  // Classroom
+                    << cTableSchema.at(6)  // Day and Time
+                    << cTableSchema.at(7); // Beginning Date
+    QList< QList<QVariant> > courses = myDB->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                                                         QStringList() << "id" << "course" << "class" << "teacher" << "beginningDate" << "dayNTime");
+    if (courses.isEmpty()) return;
+
+    int cSize = courses.length();
 
     ui->tableCourses->setSortingEnabled(false);
     for (int i = 0; i < cSize; ++i){
         ui->tableCourses->insertRow(ui->tableCourses->rowCount());
 
-        ui->tableCourses->setItem(i, 0, new QTableWidgetItem(courses[i].at(0)));
-        ui->tableCourses->setItem(i, 1, new QTableWidgetItem(courses[i].at(1)));
-        ui->tableCourses->setItem(i, 2, new QTableWidgetItem(courses[i].at(2)));
-        ui->tableCourses->setItem(i, 3, new QTableWidgetItem(courses[i].at(3)));
-        ui->tableCourses->setItem(i, 4, new QTableWidgetItem(courses[i].at(4)));
+        ui->tableCourses->setItem(i, 0, new QTableWidgetItem(courses[i].at(1).toString()));
+        ui->tableCourses->setItem(i, 1, new QTableWidgetItem(QString::number(courses[i].at(3).toInt())));
+        ui->tableCourses->setItem(i, 2, new QTableWidgetItem(courses[i].at(2).toString()));
+        ui->tableCourses->setItem(i, 3, new QTableWidgetItem(courses[i].at(5).toDate().toString("dd/MM/yyyy")));
+        ui->tableCourses->setItem(i, 4, new QTableWidgetItem(courses[i].at(4).toString()));
+
+        ui->tableCourses->item(i, 0)->setData(Qt::UserRole, courses[i].at(0));
     }
     ui->tableCourses->setSortingEnabled(true);
-
-    delete[] courses;
 }
 
-void frmMain::receiveNewStudentData(const QStringList &data){
+void frmMain::receiveNewStudentData(const QList<QVariant> &data){
     int oldRCount = ui->tableStudents->rowCount();
     ui->tableStudents->insertRow(oldRCount);
 
-    ui->tableStudents->setItem(oldRCount, 0, new QTableWidgetItem(data.at(0)));
-    ui->tableStudents->setItem(oldRCount, 1, new QTableWidgetItem(data.at(1)));
-    ui->tableStudents->setItem(oldRCount, 2, new QTableWidgetItem(data.at(2)));
-    ui->tableStudents->setItem(oldRCount, 3, new QTableWidgetItem(data.at(3)));
+    ui->tableStudents->setItem(oldRCount, 0, new QTableWidgetItem(data.at(1).toString()));
+    ui->tableStudents->setItem(oldRCount, 1, new QTableWidgetItem(data.at(3).toString()));
+    ui->tableStudents->setItem(oldRCount, 2, new QTableWidgetItem(data.at(4).toString()));
+    ui->tableStudents->setItem(oldRCount, 3, new QTableWidgetItem(data.at(5).toString()));
+
+    ui->tableStudents->item(ui->tableStudents->rowCount(), 0)->setData(Qt::UserRole, data.at(0));
+    ui->tableStudents->item(ui->tableStudents->rowCount(), 1)->setData(Qt::UserRole, data.at(2));
 }
 
-void frmMain::receiveStudentUpdatedData(const QStringList &data, const QString &oldName){
+void frmMain::receiveStudentUpdatedData(const QList<QVariant> &data, const qlonglong &oldStudent){
     int rowCount = ui->tableStudents->rowCount();
     for (int i = 0; i < rowCount; ++i){
-        if (ui->tableStudents->item(i, 0)->text() == oldName){
-            ui->tableStudents->item(i, 0)->setText(data.at(0));
-            ui->tableStudents->item(i, 1)->setText(data.at(1));
-            ui->tableStudents->item(i, 2)->setText(data.at(2));
-            ui->tableStudents->item(i, 3)->setText(data.at(3));
+        if (ui->tableStudents->item(i, 0)->data(Qt::UserRole).toLongLong() == oldStudent){
+            ui->tableStudents->item(i, 0)->setText(data.at(0).toString());
+            ui->tableStudents->item(i, 1)->setText(data.at(2).toString());
+            ui->tableStudents->item(i, 2)->setText(data.at(3).toString());
+            ui->tableStudents->item(i, 3)->setText(data.at(4).toString());
+
+            ui->tableStudents->item(i, 1)->setData(Qt::UserRole, data.at(1));
         }
     }
 }
 
-void frmMain::receiveNewCourseData(const QStringList &data){
+void frmMain::receiveNewCourseData(const QList<QVariant> &data){
     int oldRCount = ui->tableCourses->rowCount();
     ui->tableCourses->insertRow(oldRCount);
 
-    ui->tableCourses->setItem(oldRCount, 0, new QTableWidgetItem(data.at(0)));
-    ui->tableCourses->setItem(oldRCount, 1, new QTableWidgetItem(data.at(1)));
-    ui->tableCourses->setItem(oldRCount, 2, new QTableWidgetItem(data.at(2)));
-    ui->tableCourses->setItem(oldRCount, 3, new QTableWidgetItem(data.at(3)));
-    ui->tableCourses->setItem(oldRCount, 4, new QTableWidgetItem(data.at(4)));
+    ui->tableCourses->setItem(oldRCount, 0, new QTableWidgetItem(data.at(0).toString()));
+    ui->tableCourses->setItem(oldRCount, 1, new QTableWidgetItem(QString::number(data.at(1).toInt())));
+    ui->tableCourses->setItem(oldRCount, 2, new QTableWidgetItem(data.at(2).toString()));
+    ui->tableCourses->setItem(oldRCount, 3, new QTableWidgetItem(data.at(3).toDate().toString("dd/MM/yyyy")));
+    ui->tableCourses->setItem(oldRCount, 4, new QTableWidgetItem(data.at(4).toString()));
+
+    ui->tableCourses->item(oldRCount, 0)->setData(Qt::UserRole, data.at(5).toLongLong() == -1 ?
+                                                                QVariant(ui->tableCourses->item(oldRCount, 0)->data(Qt::UserRole).toLongLong() + 1) :
+                                                                data.at(5));
 }
 
-void frmMain::receiveCourseUpdatedData(const QStringList &data, const QString &oldCourse){
+void frmMain::receiveCourseUpdatedData(const QList<QVariant> &data, const qlonglong &oldCourse){
     int rowCount = ui->tableCourses->rowCount();
+
     for (int i = 0; i < rowCount; ++i){
-        if (ui->tableCourses->item(i, 0)->text() == oldCourse){
-            ui->tableCourses->item(i, 0)->setText(data.at(0));
-            ui->tableCourses->item(i, 1)->setText(data.at(1));
-            ui->tableCourses->item(i, 2)->setText(data.at(2));
-            ui->tableCourses->item(i, 3)->setText(data.at(3));
-            ui->tableCourses->item(i, 4)->setText(data.at(4));
+        if (ui->tableCourses->item(i, 0)->data(Qt::UserRole).toLongLong() == oldCourse){
+            ui->tableCourses->item(i, 0)->setText(data.at(0).toString());
+            ui->tableCourses->item(i, 1)->setText(QString::number(data.at(1).toInt()));
+            ui->tableCourses->item(i, 2)->setText(data.at(2).toString());
+            ui->tableCourses->item(i, 3)->setText(data.at(3).toDate().toString("dd/MM/yyyy"));
+            ui->tableCourses->item(i, 4)->setText(data.at(4).toString());
+            return;
         }
     }
 }
@@ -751,39 +642,37 @@ void frmMain::removeStudent(){
                               QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::No) return;
 
-    const QString STUDENT_NAME = ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text();
-    const QString PARENT_NAME = ui->tableStudents->item(ui->tableStudents->currentRow(), 1)->text();
+    const qlonglong STUDENT_ID = ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong();
+    const qlonglong RESPONSIBLE_ID = ui->tableStudents->item(ui->tableStudents->currentRow(), 1)->data(Qt::UserRole).toLongLong();
 
-    myDB->removeLine("myclass_students", "student", STUDENT_NAME);
-    myDB->removeLine("myclass_simages", "student", STUDENT_NAME);
-    QStringList selectedParentData = myDB->retrieveLine("myclass_parents", "parent", PARENT_NAME);
-    QStringList studentsFromParent = QString(selectedParentData.at(1)).split("|", QString::SkipEmptyParts);
+    QStringList sTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT),
+                rTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE),
+                pTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS),
+                siTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES),
+                riTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES),
+                ceTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS);
 
-    if (studentsFromParent.length() <= 1){
-        myDB->removeLine("myclass_parents", "parent", PARENT_NAME);
-        myDB->removeLine("myclass_pimages", "parent", PARENT_NAME);
-    }
-    else {
-        studentsFromParent.removeOne(STUDENT_NAME);
-        myDB->updateLine("myclass_parents", QStringList() << "students", QStringList() << studentsFromParent.join("|"),
-                        "parent", PARENT_NAME);
-    }
+    myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                    sTableSchema.at(0), STUDENT_ID);
+    myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                    siTableSchema.at(0), STUDENT_ID);
+    while (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                           ceTableSchema.at(1), STUDENT_ID))
+        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                        ceTableSchema.at(1), STUDENT_ID);
 
-    QStringList courseColumns;
-    courseColumns << "course" << "teacher" << "shortDescription" << "longDescription" << "class"
-                    << "dayNTime" << "beginningDate" << "endDate" << "price" << "students";
-    QStringList currentCourseData = myDB->retrieveLine("myclass_courses", "students", "%" + STUDENT_NAME + "%", "LIKE");
-    while (!currentCourseData.isEmpty()){
-        QStringList studentsInCourse = QString(currentCourseData.at(9)).split("|", QString::SkipEmptyParts);
-        studentsInCourse.removeOne(STUDENT_NAME);
-        myDB->updateLine("myclass_courses", QStringList() << "students", QStringList() << studentsInCourse.join("|"),
-                        courseColumns, currentCourseData);
-
-        currentCourseData = myDB->retrieveLine("myclass_courses", "students", "%" + STUDENT_NAME + "%", "LIKE");
+    if (!myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                         sTableSchema.at(2), RESPONSIBLE_ID)){
+        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                        rTableSchema.at(0), RESPONSIBLE_ID);
+        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                        riTableSchema.at(0), RESPONSIBLE_ID);
     }
 
-    while (myDB->lineExists("myclass_pricing", "student", STUDENT_NAME))
-        myDB->removeLine("myclass_pricing", "student", STUDENT_NAME);
+    while (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                           pTableSchema.at(0), STUDENT_ID))
+        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                        pTableSchema.at(0), STUDENT_ID);
 
     ui->tableStudents->removeRow(ui->tableStudents->currentRow());
 }
@@ -798,41 +687,28 @@ void frmMain::removeCourse(){
                               QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::No) return;
 
-    int cRow = ui->tableCourses->currentRow();
-    QStringList COURSE_DATA = myDB->retrieveLine("myclass_courses", QStringList() << "course" << "class" << "dayNTime" << "beginningDate",
-                                                QStringList() << ui->tableCourses->item(cRow, 0)->text()
-                                                              << ui->tableCourses->item(cRow, 1)->text()
-                                                              << ui->tableCourses->item(cRow, 4)->text()
-                                                              << ui->tableCourses->item(cRow, 3)->text());
-    myDB->removeLine("myclass_courses", QStringList() << "course" << "class" << "dayNTime" << "beginningDate",
-                    QStringList() << ui->tableCourses->item(cRow, 0)->text()
-                                  << ui->tableCourses->item(cRow, 1)->text()
-                                  << ui->tableCourses->item(cRow, 4)->text()
-                                  << ui->tableCourses->item(cRow, 3)->text());
-    QString courseSyntesis = COURSE_DATA.at(0) + " [ " + COURSE_DATA.at(4) + " ] - " + COURSE_DATA.at(5)
-                    + tr(" * starts on: ") + COURSE_DATA.at(6);
+    qlonglong COURSE_ID = ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong();
 
-    while (myDB->lineExists("myclass_pricing", QStringList() << "course", QStringList() << courseSyntesis))
-        myDB->removeLine("myclass_pricing", QStringList() << "course", QStringList() << courseSyntesis);
+    myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                    SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
+                    COURSE_ID);
 
-    QStringList studentData = myDB->retrieveLine("myclass_students", "courses", "%" + courseSyntesis + "%", "LIKE");
-    QStringList studentsTable = QStringList() << "student" << "birthday" << "studentID" << "school" << "observations"
-                                              << "experimentalCourse" << "experimentalCourseDate" << "experimentalCourseObservations"
-                                              << "courses" << "address";
-    while (!studentData.isEmpty()){
-        QStringList coursesOfStudent = QString(studentData.at(8)).split("|", QString::SkipEmptyParts);
-        coursesOfStudent.removeOne(courseSyntesis);
-        myDB->updateLine("myclass_students", QStringList() << "courses", QStringList() << coursesOfStudent.join("|"),
-                        studentsTable, studentData);
+    QString pTableName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+            ceTableName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS);
+    QStringList pTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS),
+                ceTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS);
 
-        studentData = myDB->retrieveLine("myclass_students", "courses", "%" + courseSyntesis + "%", "LIKE");
-    }
+    while (myDB->rowExists(ceTableName, ceTableSchema.at(0), COURSE_ID))
+        myDB->removeRow(ceTableName, ceTableSchema.at(0), COURSE_ID);
 
-    ui->tableCourses->removeRow(cRow);
+    while (myDB->rowExists(pTableName, pTableSchema.at(1), COURSE_ID))
+        myDB->removeRow(pTableName, pTableSchema.at(1), COURSE_ID);
+
+    ui->tableCourses->removeRow(ui->tableCourses->currentRow());
 }
 
 void frmMain::restoreDataBase(){
-    if (db_SETTINGS.length() != 2){
+    if (SmartClassGlobal::databaseType() != DBManager::SQLITE){
         QMessageBox::information(this, tr("Info | SmartClass"),
                                  tr("Unfortunately you cannot restore the database from a file, since you are not using an SQLITE database."
                                     "\nPlease, use either the import tool or restore the dumped file in your host in order to restore your DB."),
@@ -865,8 +741,8 @@ void frmMain::restoreDataBase(){
 
             myDB->closeDB();
 
-            QFile::remove(frmLogin::getDBPath());
-            QFile::copy(restoreDlg.selectedFiles().at(0), frmLogin::getDBPath());
+            QFile::remove(SmartClassGlobal::getDBPath());
+            QFile::copy(restoreDlg.selectedFiles().at(0), SmartClassGlobal::getDBPath());
 
             QMessageBox::question(this, tr("Information | SmartClass"), tr("This application is about to restart!"),
                                               QMessageBox::Ok);
@@ -877,7 +753,7 @@ void frmMain::restoreDataBase(){
 }
 
 void frmMain::backupDataBase(){
-    if (db_SETTINGS.length() != 2){
+    if (SmartClassGlobal::databaseType() != DBManager::SQLITE){
         QMessageBox::information(this, tr("Info | SmartClass"),
                                  tr("Unfortunately you cannot backup the database to a file, since you are not using an SQLITE database."
                                     "\nPlease, use either the import tool or dump the database in the host in order to restore your DB."),
@@ -908,7 +784,7 @@ void frmMain::backupDataBase(){
     saveDialog.setDirectory(QDir::homePath());
 
     if (saveDialog.exec())
-        QFile::copy(frmLogin::getDBPath(), saveDialog.selectedFiles().at(0));
+        QFile::copy(SmartClassGlobal::getDBPath(), saveDialog.selectedFiles().at(0));
 
     if (!myDB->openDB())
         QMessageBox::critical(NULL, tr("Critical error | SmartClass"),
@@ -937,7 +813,7 @@ void frmMain::removeDataBase(){
                                 "\nYou have two options to choose:"
                                 "\n\n->Delete the tables (this will not remove the database file, but will erase all its contents)"
                                 "\n->Delete database file (only available for SQLITE)"));
-        if (db_SETTINGS.length() == 2){
+        if (SmartClassGlobal::databaseType() == DBManager::SQLITE){
             confirmation.setStandardButtons(QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::Cancel);
             confirmation.setButtonText(QMessageBox::YesToAll, tr("Detele file"));
         }
@@ -958,13 +834,16 @@ void frmMain::removeDataBase(){
                 addClass = NULL;
             }
 
-            myDB->dropTable("myclass_users");
-            myDB->dropTable("myclass_students");
-            myDB->dropTable("myclass_parents");
-            myDB->dropTable("myclass_courses");
-            myDB->dropTable("myclass_simages");
-            myDB->dropTable("myclass_pimages");
-            myDB->dropTable("myclass_pricing");
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS));
             myDB->closeDB();
 
             QDesktopServices::openUrl(QUrl(QCoreApplication::applicationFilePath()));
@@ -986,7 +865,7 @@ void frmMain::removeDataBase(){
 
             myDB->closeDB();
 
-            QFile::remove(frmLogin::getDBPath());
+            QFile::remove(SmartClassGlobal::getDBPath());
             QDesktopServices::openUrl(QUrl(QCoreApplication::applicationFilePath()));
             qApp->quit();
         }
@@ -1072,7 +951,7 @@ void frmMain::changeTranslator(QTranslator &transl, const QString &filePath){
 void frmMain::changeEvent(QEvent *event){
     if (event != NULL && event->type() == QEvent::LanguageChange)
         ui->retranslateUi(this);
-    QMainWindow::changeEvent(event);
+    NMainWindow::changeEvent(event);
 }
 
 void frmMain::setBackupSettings(){
@@ -1127,7 +1006,7 @@ void frmMain::scheduledBackup(){
     myDB->closeDB();
     QString filename = backupPath + QDir::separator() +
             QDateTime::currentDateTime().toString("yyyy_MM_dd-HH_mm") + tr("_BackUp_SmartClass_DB.db");
-    QFile::copy(frmLogin::getDBPath(), filename);
+    QFile::copy(SmartClassGlobal::getDBPath(), filename);
 
     if (!myDB->openDB())
         QMessageBox::critical(NULL, tr("Critical error | SmartClass"),
@@ -1138,132 +1017,4 @@ void frmMain::scheduledBackup(){
 
 void frmMain::setUpgradeAvailable(){
     upgradeAvailable = true;
-}
-
-/*
- * GUI Functions (don't change, unless necessary)
- */
-
-void frmMain::mousePressEvent(QMouseEvent *event)
-{
-    if(event->button() == Qt::LeftButton)
-    {
-        int x = event->x(), y = event->y(), bottom = this->height() - RESIZE_LIMIT, right = this->width() - RESIZE_LIMIT;
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = LockMoveType::TopLeft;
-        }
-        else if (x < RESIZE_LIMIT && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomLeft();
-            locked = LockMoveType::BottomLeft;
-        }
-        else if (x > right && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topRight();
-            locked = LockMoveType::TopRight;
-        }
-        else if (x > right && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = LockMoveType::BottomRight;
-        }
-        else if (x < RESIZE_LIMIT || y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = x < RESIZE_LIMIT ? LockMoveType::Left : LockMoveType::Top;
-        }
-        else if (x > right || y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = x > right ? LockMoveType::Right : LockMoveType::Bottom;
-        }
-        event->accept();
-    }
-}
-
-void frmMain::undefMouseMoveEvent(QObject* object, QMouseEvent* event){
-    if (locked != LockMoveType::None){
-        switch (locked) {
-        case LockMoveType::TopLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::TopRight:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::BottomLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::BottomRight:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::Left:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::Right:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::Top:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        default:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        }
-        return;
-    }
-
-    int x = event->x(), y = event->y(), right = this->width() - RESIZE_LIMIT;
-    if (object->objectName() == "statusBar"){
-        if (x < RESIZE_LIMIT && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (x > right && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        else if (y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    else if (object->objectName() == "titleBar"){
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        if (x > right && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    if (x < RESIZE_LIMIT || x > right){
-        this->setCursor(QCursor(Qt::SizeHorCursor));
-    }
-    else {
-        this->setCursor(QCursor(Qt::ArrowCursor));
-    }
-}
-
-void frmMain::mouseReleaseEvent(QMouseEvent *event){
-    locked = LockMoveType::None;
-    event->accept();
-}
-
-bool frmMain::eventFilter(QObject* object, QEvent* event)
-{
-    if(event->type() == QEvent::MouseMove)
-        undefMouseMoveEvent(object, static_cast<QMouseEvent*>(event));
-    else if (event->type() == QEvent::MouseButtonPress && object->objectName() == "titleBar"){
-        mousePressEvent(static_cast<QMouseEvent*>(event));
-    }
-    return false;
 }

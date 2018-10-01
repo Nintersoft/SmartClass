@@ -1,20 +1,23 @@
 #ifndef FRMADDCLASS_H
 #define FRMADDCLASS_H
 
-#include <QMainWindow>
-#include <QDesktopWidget>
 #include <QListWidgetItem>
+#include <QDesktopWidget>
+#include <QMainWindow>
 #include <QStringList>
 #include <QMessageBox>
+#include <QSqlQuery>
+#include <QVariant>
 
-#include "frmlogin.h"
+#include "nmainwindow.h"
 #include "dbmanager.h"
+#include "frmlogin.h"
 
 namespace Ui {
 class frmAddClass;
 }
 
-class frmAddClass : public QMainWindow
+class frmAddClass : public NMainWindow
 {
     Q_OBJECT
 
@@ -25,42 +28,18 @@ public:
         Create
     };
 
-    explicit frmAddClass(QWidget *parent = 0, Role role = Create, QString name = NULL,
-                         const QStringList &dbData = QStringList());
+    explicit frmAddClass(QWidget *parent = 0, Role role = Create, qint64 courseID = -1,
+                         const DBManager::DBData &dbData = DBManager::DBData());
     ~frmAddClass();
-
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
-
-    QStringList coursesTable;
 
 private:
     Ui::frmAddClass *ui;
-    const int RESIZE_LIMIT;
-    const QString COURSE_NAME;
+    const qint64 COURSE_ID;
     const Role CURRENT_ROLE;
 
-    QPoint posCursor;
-    LockMoveType locked;
     DBManager* myDB;
 
-    QStringList courseData;
-    QStringList *paymentData, *studentsData;
+    QList<QVariant> courseData;
 
 protected slots:
     void saveNewClass();
@@ -72,8 +51,8 @@ protected slots:
     void applyCourseData();
 
 signals:
-    void newData(const QStringList &newData);
-    void updatedData(const QStringList &newData, const QString oldCourseName);
+    void newData(const QList<QVariant> &newData);
+    void updatedData(const QList<QVariant> &newData, const qlonglong oldIndex);
 };
 
 #endif // FRMADDCLASS_H

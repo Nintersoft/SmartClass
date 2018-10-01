@@ -597,22 +597,6 @@ QListWidget {
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="TitleBar" name="titleBar" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>30</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
        <number>5</number>
@@ -672,9 +656,9 @@ QListWidget {
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>0</y>
+           <y>-223</y>
            <width>628</width>
-           <height>1194</height>
+           <height>1218</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
@@ -976,6 +960,33 @@ QListWidget {
                </property>
               </widget>
              </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="lblRegistrationAddress">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>Complete address:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="3">
+              <widget class="QPushButton" name="btStudentAddressConfirmationPicture">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1" colspan="2">
+              <widget class="QLineEdit" name="edtRegistrationAddress">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -1008,16 +1019,6 @@ QListWidget {
                </property>
                <property name="text">
                 <string>-</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="lblRegistrationAddress">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>Complete address:</string>
                </property>
               </widget>
              </item>
@@ -1065,23 +1066,6 @@ QListWidget {
                </property>
                <property name="text">
                 <string>+</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="3">
-              <widget class="QPushButton" name="btStudentAddressConfirmationPicture">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>...</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1" colspan="2">
-              <widget class="QLineEdit" name="edtRegistrationAddress">
-               <property name="enabled">
-                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -1214,13 +1198,20 @@ QListWidget {
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
              <item row="4" column="0">
+              <widget class="QLabel" name="lblDiscountV">
+               <property name="text">
+                <string>Discount (value)[$]</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
               <widget class="QLabel" name="lblPaymentBeginningDate">
                <property name="text">
                 <string>First installment:</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="6" column="0">
               <widget class="QLabel" name="lblPaymentInstallments">
                <property name="text">
                 <string>Installments:</string>
@@ -1237,17 +1228,13 @@ QListWidget {
                </property>
               </widget>
              </item>
-             <item row="3" column="1" colspan="2">
-              <widget class="QSpinBox" name="sbDiscount">
-               <property name="maximum">
-                <number>100</number>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="lblDiscount">
+             <item row="7" column="0" colspan="3">
+              <widget class="QLabel" name="lblPaymentDetails">
                <property name="text">
-                <string>Discount (percentage):</string>
+                <string>You have choosen %1 installments of $ %2 . After the discount, each installment is going to cost $ %3 .</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -1258,17 +1245,21 @@ QListWidget {
                </property>
               </widget>
              </item>
-             <item row="6" column="0" colspan="3">
-              <widget class="QLabel" name="lblPaymentDetails">
+             <item row="3" column="0">
+              <widget class="QLabel" name="lblDiscount">
                <property name="text">
-                <string>You have choosen %1 installments of $ %2 . After the discount, each installment is going to cost $ %3 .</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <string>Discount (percentage):</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="1" colspan="2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="lblPaymentCourse">
+               <property name="text">
+                <string>Course:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1" colspan="2">
               <widget class="QSpinBox" name="sbInstallments">
                <property name="minimum">
                 <number>1</number>
@@ -1281,15 +1272,18 @@ QListWidget {
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="lblPaymentCourse">
-               <property name="text">
-                <string>Course:</string>
-               </property>
-              </widget>
+             <item row="5" column="1" colspan="2">
+              <widget class="QDateEdit" name="edtPaymentFirstInstallment"/>
              </item>
              <item row="4" column="1" colspan="2">
-              <widget class="QDateEdit" name="edtPaymentFirstInstallment"/>
+              <widget class="QDoubleSpinBox" name="sbDiscountV">
+               <property name="maximum">
+                <double>99999999999999997748809823456034029568.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>10.000000000000000</double>
+               </property>
+              </widget>
              </item>
              <item row="0" column="1">
               <widget class="QListWidget" name="listPaymentCourses">
@@ -1298,6 +1292,13 @@ QListWidget {
                  <width>0</width>
                  <height>60</height>
                 </size>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" colspan="2">
+              <widget class="QDoubleSpinBox" name="sbDiscount">
+               <property name="maximum">
+                <double>100.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -1314,14 +1315,6 @@ QListWidget {
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>TitleBar</class>
-   <extends>QWidget</extends>
-   <header>titlebar.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>edtStudentName</tabstop>
   <tabstop>btStudentPicture</tabstop>
@@ -1333,6 +1326,7 @@ QListWidget {
   <tabstop>cbExperimentalClassCourse</tabstop>
   <tabstop>edtExperimentalClassDateTime</tabstop>
   <tabstop>edtExperimentalClassObservations</tabstop>
+  <tabstop>edtParentName</tabstop>
   <tabstop>edtParentPhone</tabstop>
   <tabstop>cbParentMobileOperator</tabstop>
   <tabstop>edtParentMobile</tabstop>
@@ -1341,16 +1335,16 @@ QListWidget {
   <tabstop>btParentIDPicture</tabstop>
   <tabstop>edtParentCPG</tabstop>
   <tabstop>btParentCPGPicture</tabstop>
+  <tabstop>edtRegistrationAddress</tabstop>
+  <tabstop>btStudentAddressConfirmationPicture</tabstop>
   <tabstop>cbParentIndication</tabstop>
   <tabstop>cbRegistrationCourse</tabstop>
   <tabstop>btAddCourse</tabstop>
   <tabstop>btRemoveCourse</tabstop>
   <tabstop>listCourses</tabstop>
-  <tabstop>edtRegistrationAddress</tabstop>
-  <tabstop>btStudentAddressConfirmationPicture</tabstop>
   <tabstop>listPaymentCourses</tabstop>
   <tabstop>sbPaymentCost</tabstop>
-  <tabstop>sbDiscount</tabstop>
+  <tabstop>edtPaymentFirstInstallment</tabstop>
   <tabstop>sbInstallments</tabstop>
   <tabstop>btSave</tabstop>
   <tabstop>btReset</tabstop>

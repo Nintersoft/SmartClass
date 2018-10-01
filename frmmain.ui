@@ -466,211 +466,8 @@ QTableWidget, QListWidget{
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
-        <widget class="QWidget" name="tabFile">
-         <attribute name="title">
-          <string>File</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QScrollArea" name="scrollTabFile">
-            <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
-            </property>
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="tabFileLayout">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>724</width>
-               <height>127</height>
-              </rect>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_9">
-              <item row="0" column="6">
-               <widget class="Line" name="line_7">
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="Line" name="line_4">
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QToolButton" name="btLogOff">
-                <property name="toolTip">
-                 <string>LogOff</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/LogOut.PNG</normaloff>:/images/buttons/LogOut.PNG</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>100</width>
-                  <height>100</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QListWidget" name="lwUsers"/>
-              </item>
-              <item row="0" column="8">
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>216</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="4">
-               <widget class="Line" name="line_6">
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <layout class="QVBoxLayout" name="verticalLayout">
-                <item>
-                 <widget class="QPushButton" name="btUpgradeRole">
-                  <property name="minimumSize">
-                   <size>
-                    <width>80</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Upgrade</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btRevokeRole">
-                  <property name="minimumSize">
-                   <size>
-                    <width>80</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Revoke</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btRemoveUser">
-                  <property name="minimumSize">
-                   <size>
-                    <width>80</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Remove</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="7">
-               <widget class="QToolButton" name="btSettings">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/Settings.png</normaloff>:/images/buttons/Settings.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>100</width>
-                  <height>100</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="5">
-               <widget class="QWidget" name="widget" native="true">
-                <layout class="QGridLayout" name="gridLayout_10">
-                 <item row="1" column="0">
-                  <widget class="QRadioButton" name="rbStudentsTable">
-                   <property name="text">
-                    <string>Table of students</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="lblViewTable">
-                   <property name="text">
-                    <string>View:</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QRadioButton" name="rbCoursesTable">
-                   <property name="text">
-                    <string>Table of courses</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="tabManagement">
          <attribute name="title">
           <string>Management</string>
@@ -704,21 +501,11 @@ QTableWidget, QListWidget{
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>724</width>
-               <height>127</height>
+               <width>844</width>
+               <height>124</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
-              <item row="0" column="8" rowspan="2">
-               <widget class="Line" name="line_8">
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="2" rowspan="2">
                <widget class="Line" name="line_2">
                 <property name="frameShadow">
@@ -743,6 +530,26 @@ QTableWidget, QListWidget{
                   <width>100</width>
                   <height>100</height>
                  </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="8" rowspan="2">
+               <widget class="Line" name="line_8">
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="5" rowspan="2">
+               <widget class="Line" name="line_3">
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
                 </property>
                </widget>
               </item>
@@ -778,16 +585,6 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="5" rowspan="2">
-               <widget class="Line" name="line_3">
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="3" rowspan="2">
                <widget class="QToolButton" name="btAddCourse">
                 <property name="text">
@@ -805,44 +602,29 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="10" rowspan="2">
-               <widget class="QToolButton" name="btGetReceipt">
+              <item row="1" column="4">
+               <widget class="QToolButton" name="btRemoveCourse">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>50</width>
+                  <height>50</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/Receipt.png</normaloff>:/images/buttons/Receipt.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>100</width>
-                  <height>100</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="11" rowspan="2">
-               <spacer name="horizontalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>208</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="9" rowspan="2">
-               <widget class="QToolButton" name="btPrintStudentForms">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/PrintStudentTerm.png</normaloff>:/images/buttons/PrintStudentTerm.png</iconset>
+                  <normaloff>:/images/buttons/RemoveClasses.PNG</normaloff>:/images/buttons/RemoveClasses.PNG</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -884,29 +666,44 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="1" column="4">
-               <widget class="QToolButton" name="btRemoveCourse">
-                <property name="enabled">
-                 <bool>false</bool>
+              <item row="0" column="11" rowspan="2">
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="minimumSize">
+                <property name="sizeHint" stdset="0">
                  <size>
-                  <width>50</width>
-                  <height>50</height>
+                  <width>208</width>
+                  <height>20</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>50</height>
-                 </size>
-                </property>
+               </spacer>
+              </item>
+              <item row="0" column="10" rowspan="2">
+               <widget class="QToolButton" name="btGetReceipt">
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/RemoveClasses.PNG</normaloff>:/images/buttons/RemoveClasses.PNG</iconset>
+                  <normaloff>:/images/buttons/Receipt.png</normaloff>:/images/buttons/Receipt.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="9" rowspan="2">
+               <widget class="QToolButton" name="btPrintStudentForms">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/PrintStudentTerm.png</normaloff>:/images/buttons/PrintStudentTerm.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -968,6 +765,36 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
+              <item row="0" column="7" rowspan="2">
+               <widget class="QWidget" name="widget_2" native="true">
+                <layout class="QGridLayout" name="gridLayout_11">
+                 <item row="1" column="0">
+                  <widget class="QRadioButton" name="rbStudentsTable">
+                   <property name="text">
+                    <string>Table of Students</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QRadioButton" name="rbCoursesTable">
+                   <property name="text">
+                    <string>Table of Courses</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="lblViewTable">
+                   <property name="text">
+                    <string>View:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </widget>
            </widget>
@@ -1007,46 +834,25 @@ QTableWidget, QListWidget{
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>724</width>
-               <height>127</height>
+               <width>1044</width>
+               <height>123</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="12">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>329</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
               <item row="0" column="5">
-               <widget class="QToolButton" name="btExportDB">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/ExportDatabase.PNG</normaloff>:/images/buttons/ExportDatabase.PNG</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>100</width>
-                  <height>100</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QToolButton" name="btRestoreDB">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/ImportDatabase.PNG</normaloff>:/images/buttons/ImportDatabase.PNG</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>100</width>
-                  <height>100</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
                <widget class="QToolButton" name="btBackUpDB">
                 <property name="text">
                  <string/>
@@ -1063,14 +869,14 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QToolButton" name="btResetDB">
+              <item row="0" column="1">
+               <widget class="QToolButton" name="btSettings">
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="resources.qrc">
-                  <normaloff>:/images/buttons/ResetDB.png</normaloff>:/images/buttons/ResetDB.png</iconset>
+                  <normaloff>:/images/buttons/Settings.png</normaloff>:/images/buttons/Settings.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1081,29 +887,6 @@ QTableWidget, QListWidget{
                </widget>
               </item>
               <item row="0" column="8">
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>329</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="3">
-               <widget class="Line" name="line_5">
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="4">
                <widget class="QToolButton" name="btImportDB">
                 <property name="text">
                  <string/>
@@ -1120,7 +903,7 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="7">
+              <item row="0" column="11">
                <widget class="QToolButton" name="btUninstall">
                 <property name="text">
                  <string/>
@@ -1137,13 +920,118 @@ QTableWidget, QListWidget{
                 </property>
                </widget>
               </item>
-              <item row="0" column="6">
+              <item row="0" column="0">
+               <widget class="QToolButton" name="btLogOff">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/LogOut.PNG</normaloff>:/images/buttons/LogOut.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QToolButton" name="btRestoreDB">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/ImportDatabase.PNG</normaloff>:/images/buttons/ImportDatabase.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="9">
+               <widget class="QToolButton" name="btExportDB">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/ExportDatabase.PNG</normaloff>:/images/buttons/ExportDatabase.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="7">
+               <widget class="Line" name="line_5">
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="10">
                <widget class="Line" name="line_9">
                 <property name="frameShadow">
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="6">
+               <widget class="QToolButton" name="btResetDB">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/ResetDB.png</normaloff>:/images/buttons/ResetDB.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="Line" name="line_7">
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QToolButton" name="btManageUsers">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="resources.qrc">
+                  <normaloff>:/images/buttons/ManageUser.png</normaloff>:/images/buttons/ManageUser.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>100</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -1522,10 +1410,6 @@ QTableWidget, QListWidget{
   <tabstop>btSearchNext</tabstop>
   <tabstop>tableStudents</tabstop>
   <tabstop>tableCourses</tabstop>
-  <tabstop>btRemoveUser</tabstop>
-  <tabstop>btSettings</tabstop>
-  <tabstop>rbStudentsTable</tabstop>
-  <tabstop>rbCoursesTable</tabstop>
   <tabstop>scrollTabManagement</tabstop>
   <tabstop>btAddStudent</tabstop>
   <tabstop>btUpdateStudent</tabstop>
@@ -1549,12 +1433,7 @@ QTableWidget, QListWidget{
   <tabstop>btOpenNSDocwiki</tabstop>
   <tabstop>btOpenOnlineSupport</tabstop>
   <tabstop>btInfo</tabstop>
-  <tabstop>btUpgradeRole</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>scrollTabFile</tabstop>
-  <tabstop>btLogOff</tabstop>
-  <tabstop>lwUsers</tabstop>
-  <tabstop>btRevokeRole</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

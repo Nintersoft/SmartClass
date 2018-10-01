@@ -1,27 +1,16 @@
 #include "frmreceipt.h"
 #include "ui_frmreceipt.h"
 
-frmReceipt::frmReceipt(QWidget *parent, QStringList *paymentData, QStringList *courseData,
-                       int paymentDataSize, int courseDataSize) :
-    QMainWindow(parent),
-    ui(new Ui::frmReceipt),
-    RESIZE_LIMIT(2)
+frmReceipt::frmReceipt(QWidget *parent, DBManager *db_manager) :
+    NMainWindow(parent),
+    ui(new Ui::frmReceipt)
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
-    centralWidget()->installEventFilter(this);
-    ui->titleBar->installEventFilter(this);
-    ui->statusBar->installEventFilter(this);
 
-    centralWidget()->setMouseTracking(true);
-    ui->titleBar->setMouseTracking(true);
-    ui->statusBar->setMouseTracking(true);
-
-    setWindowTitle(tr("Receipt viewer | SmartClass"));
-    locked = LockMoveType::None;
-
-    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
-            this->size(), qApp->desktop()->availableGeometry()));
+    // Sets the custom Widgets on the parent Class
+    // Otherwise, the window resizing feature will not work
+    NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
+    ui->titleBar->setMaximizeButtonEnabled(false);
 
     /*
      *  End of GUI implementation
@@ -30,23 +19,27 @@ frmReceipt::frmReceipt(QWidget *parent, QStringList *paymentData, QStringList *c
     totalWDiscount = 0;
     totalIntegral = 0;
 
-    ui->titleBar->setMaximizeButtonEnabled(false);
-    connect(ui->cbShowTable, SIGNAL(toggled(bool)), this, SLOT(switchTableVisibility(bool)));
-    connect(ui->btExport, SIGNAL(clicked(bool)), this, SLOT(exportCSV()));
+    if (db_manager){
+        this->db_manager = db_manager;
 
-    ui->lblDate->setText(QDate::currentDate().toString("dd/MM/yyyy"));
+        connect(ui->cbShowTable, SIGNAL(toggled(bool)), this, SLOT(switchTableVisibility(bool)));
+        connect(ui->btExport, SIGNAL(clicked(bool)), this, SLOT(exportCSV()));
 
-    for (int i = -24; i < 25; ++i)
-        ui->cbCustomMonthNYear->addItem(QDate::currentDate().addMonths(i).toString("MM/yyyy"));
-    ui->cbCustomMonthNYear->setCurrentIndex(24);
+        ui->lblDate->setText(QDate::currentDate().toString("dd/MM/yyyy"));
 
-    connect(ui->cbCustomMonthNYear, SIGNAL(currentIndexChanged(int)), this, SLOT(generateTable()));
+        for (int i = -24; i < 25; ++i){
+            QDate nDate = QDate::currentDate().addMonths(i);
+            ui->cbCustomMonthNYear->addItem(nDate.toString("MM/yyyy"), QVariant(nDate));
+        }
+        ui->cbCustomMonthNYear->setCurrentIndex(24);
 
-    this->paymentData = paymentData;
-    this->paymentDataSize = paymentDataSize;
-    this->courseData = courseData;
-    this->courseDataSize = courseDataSize;
-    generateTable();
+        sData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT));
+        pData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS));
+        cData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS));
+
+        connect(ui->cbCustomMonthNYear, SIGNAL(currentIndexChanged(int)), this, SLOT(generateTable()));
+        generateTable();
+    }
 }
 
 frmReceipt::~frmReceipt()
@@ -57,7 +50,7 @@ frmReceipt::~frmReceipt()
 void frmReceipt::switchTableVisibility(bool show){
     ui->tablePricing->setVisible(show);
     int height = 600;
-    if (!show) height = 259;
+    if (!show) height = 229;
     this->setMaximumHeight(height);
     this->setMinimumHeight(height);
     this->setGeometry(QRect(this->geometry().topLeft(), QSize(this->width(), this->height())));
@@ -65,7 +58,7 @@ void frmReceipt::switchTableVisibility(bool show){
 }
 
 void frmReceipt::generateTable(){
-    if (paymentData == NULL) return;
+    if (db_manager == NULL) return;
 
     totalWDiscount = 0;
     totalIntegral = 0;
@@ -73,45 +66,47 @@ void frmReceipt::generateTable(){
     ui->tablePricing->clearContents();
     ui->tablePricing->setRowCount(0);
 
-    for (int i = 0; i < paymentDataSize; ++i){
-        int installments = paymentData[i].at(4).toInt();
+    for (int i = 0; i < pData.size(); ++i){
+        int installments = pData[i].at(4).toInt();
 
-        QDate choosenDate = QDate::fromString("01/" + ui->cbCustomMonthNYear->currentText(), "dd/MM/yyyy");
-        QDate initialDate = QDate::fromString(paymentData[i].at(3), "dd/MM/yyyy");
+        QDate choosenDate = ui->cbCustomMonthNYear->currentData(Qt::UserRole).toDate();
+        QDate initialDate = pData[i].at(3).toDate();
         QDate finalDate = initialDate.addMonths(installments - 1);
 
         if (choosenDate.year() < initialDate.year() || finalDate.year() < choosenDate.year()
                 || (choosenDate.year() == initialDate.year() && choosenDate.month() < initialDate.month())
                 || (choosenDate.year() == finalDate.year() && choosenDate.month() > finalDate.month())) continue;
 
-        for (int k = 0; k < installments; ++k){
-            if (choosenDate.year() == initialDate.addMonths(k).year()
-                    && choosenDate.month() == initialDate.addMonths(k).month()){
-                int currentRow = ui->tablePricing->rowCount();
-                ui->tablePricing->insertRow(currentRow);
-                ui->tablePricing->setItem(currentRow, 0, new QTableWidgetItem(paymentData[i].at(0)));
-                ui->tablePricing->setItem(currentRow, 1, new QTableWidgetItem(paymentData[i].at(1)));
-                ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString::number(k + 1) + "/" + paymentData[i].at(4)));
 
-                double price = 0;
-                int discount = QString(paymentData[i].at(2)).toInt();
-                for (int j = 0; j < courseDataSize; ++j){
-                    QString courseSyntesis = courseData[j].at(0) + " [ " + courseData[j].at(4) + " ] - " + courseData[j].at(2)
-                                    + tr(" * starts on: ") + courseData[j].at(3);
-                    if (paymentData[i].at(1) == courseSyntesis){
-                        price = QString(courseData[j].at(1)).toDouble();
-                        break;
-                    }
-                }
+        int currentRow = ui->tablePricing->rowCount();
+        int cIndex = -1;
+        ui->tablePricing->insertRow(currentRow);
 
-                totalIntegral += (price / installments);
-                totalWDiscount += ((price / installments) * (1 - (discount/100.0f)));
-
-                ui->tablePricing->setItem(currentRow, 3, new QTableWidgetItem(QString("%1").arg((double)((price / installments) * (1 - (discount/100.0f))), 0, 'f', 2)));
-                ui->tablePricing->setItem(currentRow, 4, new QTableWidgetItem(QString("%1").arg((price / installments), 0, 'f', 2)));
+        for (int k = 0; k < sData.size(); ++k)
+            if (pData[i].at(0) == sData[k].at(0)){
+                ui->tablePricing->setItem(currentRow, 0, new QTableWidgetItem(sData[i].at(1).toString()));
                 break;
             }
-        }
+        for (int k = 0; k < cData.size(); ++k)
+            if (pData[i].at(1) == cData[k].at(0)){
+                QString courseSyntesis = cData[k].at(1).toString() + tr(" ( class #") + cData[k].at(5).toString() + tr(" ) - ") + cData[k].at(6).toString()
+                                + tr(" * starts on: ") + cData[k].at(7).toString();
+                ui->tablePricing->setItem(currentRow, 1, new QTableWidgetItem(courseSyntesis));
+                cIndex = k;
+                break;
+            }
+        ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(choosenDate.month() - initialDate.month() + 1).arg(pData[i].at(4).toInt())));
+
+        double price = 0;
+        double discount = pData[i].at(2).toDouble();
+
+        if (cIndex != -1) price = cData[cIndex].at(9).toDouble();
+
+        totalIntegral += (price / installments);
+        totalWDiscount += ((price / installments) * (1 - (discount/100.0f)));
+
+        ui->tablePricing->setItem(currentRow, 3, new QTableWidgetItem(QString("%1").arg((double)((price / installments) * (1 - (discount/100.0f))), 0, 'f', 2)));
+        ui->tablePricing->setItem(currentRow, 4, new QTableWidgetItem(QString("%1").arg((price / installments), 0, 'f', 2)));
     }
 
     ui->lblReceiptWithDiscount->setText(QString("%1").arg(totalWDiscount, 0, 'f', 2));
@@ -153,132 +148,4 @@ void frmReceipt::exportCSV(){
         saveFile.write(data.toLocal8Bit());
         saveFile.close();
     }
-}
-
-/*
- * GUI Functions (don't change, unless necessary)
- */
-
-void frmReceipt::mousePressEvent(QMouseEvent *event)
-{
-    if(event->button() == Qt::LeftButton)
-    {
-        int x = event->x(), y = event->y(), bottom = this->height() - RESIZE_LIMIT, right = this->width() - RESIZE_LIMIT;
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = LockMoveType::TopLeft;
-        }
-        else if (x < RESIZE_LIMIT && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomLeft();
-            locked = LockMoveType::BottomLeft;
-        }
-        else if (x > right && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topRight();
-            locked = LockMoveType::TopRight;
-        }
-        else if (x > right && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = LockMoveType::BottomRight;
-        }
-        else if (x < RESIZE_LIMIT || y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = x < RESIZE_LIMIT ? LockMoveType::Left : LockMoveType::Top;
-        }
-        else if (x > right || y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = x > right ? LockMoveType::Right : LockMoveType::Bottom;
-        }
-        event->accept();
-    }
-}
-
-void frmReceipt::undefMouseMoveEvent(QObject* object, QMouseEvent* event){
-    if (locked != LockMoveType::None){
-        switch (locked) {
-        case LockMoveType::TopLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::TopRight:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::BottomLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::BottomRight:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::Left:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::Right:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::Top:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        default:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        }
-        return;
-    }
-
-    int x = event->x(), y = event->y(), right = this->width() - RESIZE_LIMIT;
-    if (object->objectName() == "statusBar"){
-        if (x < RESIZE_LIMIT && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (x > right && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        else if (y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    else if (object->objectName() == "titleBar"){
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        if (x > right && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    if (x < RESIZE_LIMIT || x > right){
-        this->setCursor(QCursor(Qt::SizeHorCursor));
-    }
-    else {
-        this->setCursor(QCursor(Qt::ArrowCursor));
-    }
-}
-
-void frmReceipt::mouseReleaseEvent(QMouseEvent *event){
-    locked = LockMoveType::None;
-    event->accept();
-}
-
-bool frmReceipt::eventFilter(QObject* object, QEvent* event)
-{
-    if(event->type() == QEvent::MouseMove)
-        undefMouseMoveEvent(object, static_cast<QMouseEvent*>(event));
-    else if (event->type() == QEvent::MouseButtonPress && object->objectName() == "titleBar"){
-        mousePressEvent(static_cast<QMouseEvent*>(event));
-    }
-    return false;
 }

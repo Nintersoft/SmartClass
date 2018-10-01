@@ -1,8 +1,19 @@
+/*-------------------------------------------------
+#
+# Project developed by Nintersoft team
+# Developer: Mauro Mascarenhas de Araújo
+# Contact: mauro.mascarenhas@nintersoft.com
+# License: Nintersoft Open Source Code Licence
+# Date: 31 of May of 2018
+#
+------------------------------------------------- */
+
 #ifndef TITLEBAR_H
 #define TITLEBAR_H
 
 #include <QWidget>
 #include <QMouseEvent>
+#include <QStyleOption>
 #include <QPainter>
 
 namespace Ui {
@@ -16,6 +27,9 @@ class TitleBar : public QWidget
 public:
     explicit TitleBar(QWidget *parent = 0);
     ~TitleBar();
+
+    void setMainWindow(QWidget *mainWindow);
+    QWidget* mainWindow();
 
     void setCloseButtonEnabled(bool enable);
     void setMaximizeButtonEnabled(bool enable);

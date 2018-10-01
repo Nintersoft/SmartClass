@@ -1,21 +1,24 @@
 #ifndef FRMMANAGESTUDENT_H
 #define FRMMANAGESTUDENT_H
 
-#include <QMainWindow>
 #include <QDesktopWidget>
+#include <QMainWindow>
 #include <QMessageBox>
 #include <QStringList>
+#include <QVariant>
 #include <QDir>
 
-#include "dbmanager.h"
-#include "frmimageviewer.h"
 #include "qlistwidgetpaymentitem.h"
+#include "smartclassglobal.h"
+#include "frmimageviewer.h"
+#include "nmainwindow.h"
+#include "dbmanager.h"
 
 namespace Ui {
 class frmManageStudent;
 }
 
-class frmManageStudent : public QMainWindow
+class frmManageStudent : public NMainWindow
 {
     Q_OBJECT
 
@@ -26,30 +29,11 @@ public:
         Create
     };
 
-    explicit frmManageStudent(QWidget *parent = 0, Role role = Create, const QString &studentName = NULL,
-                              const QStringList &dbData = QStringList());
+    explicit frmManageStudent(QWidget *parent = 0, Role role = Create, const qint64 &studentID = -1,
+                              const DBManager::DBData &dbData = DBManager::DBData());
     ~frmManageStudent();
 
-    const QString getDBPath();
-
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
-
     enum CurrentImageManagement{
         Student = 0,
         StudentID,
@@ -63,26 +47,22 @@ protected:
 
 private:
     Ui::frmManageStudent *ui;
-    const int RESIZE_LIMIT, CURRENT_ROLE;
-    const QString STUDENT_NAME;
-
-    QPoint posCursor;
-    LockMoveType locked;
+    const Role CURRENT_ROLE;
+    const qlonglong STUDENT_ID;
 
     DBManager* myDB;
     frmImageViewer* frmImgViewer;
 
     QString imageViewerSender;
-    QStringList studentData, parentalData;
-    QStringList *courseData, *paymentData;
+    QList<QVariant> studentData, responsibleData;
+    QList< QList<QVariant> > courseData, paymentData, courseEnrollments;
+
     int courseDataCount, paymentDataCount;
 
     CurrentImageManagement currentImg;
     QPixmap **pics;
 
     bool blockPaymentUpdate;
-
-    QStringList studentsTable, parentsTable, coursesTable, pricingTable, studentImagesTable, parentImagesTable;
 
 protected slots:
     void openImageViewer();
@@ -99,17 +79,14 @@ protected slots:
     void resetData();
     void changePaymentDetails();
     void paymentValuesChanged();
+    void changeDiscountValue(double value);
+    void changeDiscountPercentage(double percent);
 
     void updateParentInfo(const QString &pName);
 
-    /*
-     * FIX PAYMENT DETAILS AND COURSE SHORT DESC
-     * URGENT!
-     */
-
 signals:
-    void newData(const QStringList &newData);
-    void updatedData(const QStringList &newData, const QString oldStudentName);
+    void newData(const QList<QVariant> &newData);
+    void updatedData(const QList<QVariant> &newData, const qlonglong oldStudentIndex);
 };
 
 #endif // FRMMANAGESTUDENT_H

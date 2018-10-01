@@ -1,25 +1,30 @@
 #ifndef FRMSETTINGS_H
 #define FRMSETTINGS_H
 
-#include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QFileDialog>
 #include <QSettings>
+#include <QVariant>
 #include <QPixmap>
 #include <QEvent>
 #include <QFile>
+#include <QList>
 #include <QDir>
 
+#include "smartclassglobal.h"
+#include "nmainwindow.h"
+#include "dbmanager.h"
 #include "frmlogin.h"
 
 namespace Ui {
 class frmSettings;
 }
 
-class frmSettings : public QMainWindow
+class frmSettings : public NMainWindow
 {
     Q_OBJECT
 
@@ -29,35 +34,19 @@ public:
         Info
     };
 
-    explicit frmSettings(QWidget *parent = 0, OpenMode mode = frmSettings::Normal);
+    explicit frmSettings(QWidget *parent = 0, DBManager *db_manager = NULL, OpenMode mode = frmSettings::Normal);
     ~frmSettings();
-
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
 
 private:
     Ui::frmSettings *ui;
-    const int RESIZE_LIMIT;
 
-    QPoint posCursor;
-    LockMoveType locked;
+    QList< QList<QVariant> > gSettings;
     QString currentUser, sessionRole;
     QSettings programSettings;
+
+    DBManager *db_manager;
+
+    int langSettings;
 
 protected slots:
     void saveOptions();

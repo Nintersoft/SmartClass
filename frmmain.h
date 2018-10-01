@@ -1,18 +1,19 @@
 #ifndef FRMMAIN_H
 #define FRMMAIN_H
 
-#include <QMainWindow>
 #include <QDesktopServices>
 #include <QCoreApplication>
+#include <QResizeEvent>
 #include <QMouseEvent>
 #include <QCloseEvent>
-#include <QResizeEvent>
-#include <QSettings>
+#include <QMainWindow>
 #include <QTranslator>
 #include <QMessageBox>
 #include <QStringList>
+#include <QSettings>
 #include <QDateTime>
 #include <QSettings>
+#include <QVariant>
 #include <QTimer>
 #include <QPoint>
 #include <QTimer>
@@ -20,11 +21,14 @@
 #include <QTime>
 #include <QDir>
 
+#include "smartclassglobal.h"
+#include "nmainwindow.h"
 #include "dbmanager.h"
 
 #include "frmimportexportdb.h"
 #include "frmmanagestudent.h"
 #include "frmprintcontract.h"
+#include "frmmanageusers.h"
 #include "frmfirstrun.h"
 #include "frmaddclass.h"
 #include "frmsettings.h"
@@ -37,7 +41,7 @@ namespace Ui {
 class frmMain;
 }
 
-class frmMain : public QMainWindow
+class frmMain : public NMainWindow
 {
     Q_OBJECT
 
@@ -45,14 +49,15 @@ public:
     explicit frmMain(QWidget *parent = 0);
     ~frmMain();
 
-    int returnCode;
+    inline int getReturnCode() { return this->returnCode; }
 
 private slots:
-    void setSessionRole(const QStringList &userInfo);
+    void setSessionRole(const QList<QVariant> &userInfo);
     void logOut();
 
     void openStudentManager();
     void openClassesManager();
+    void openUserManager();
     void openContractForm();
     void openSettingsForm();
     void openReceiptForm();
@@ -60,10 +65,6 @@ private slots:
 
     void removeStudent();
     void removeCourse();
-
-    void revokeUserPermissions();
-    void upgradeUserPermissions();
-    void removeUser();
 
     void backupDataBase();
     void restoreDataBase();
@@ -81,13 +82,13 @@ private slots:
     void setUpgradeAvailable();
 
 protected slots:
-    void receiveNewStudentData(const QStringList &data);
-    void receiveStudentUpdatedData(const QStringList &data, const QString &oldName);
+    void receiveNewStudentData(const QList<QVariant> &data);
+    void receiveStudentUpdatedData(const QList<QVariant> &data, const qlonglong &oldStudent);
 
-    void receiveNewCourseData(const QStringList &data);
-    void receiveCourseUpdatedData(const QStringList &data, const QString &oldCourse);
+    void receiveNewCourseData(const QList<QVariant> &data);
+    void receiveCourseUpdatedData(const QList<QVariant> &data, const qlonglong &oldCourse);
 
-    void getFirstSettings(const QStringList &sqlData, const QString &langSlug);
+    void getFirstSettings(const DBManager::DBData &sqlData, const QString &langSlug);
 
     void openNSWebSite();
     void openNSDocwiki();
@@ -97,35 +98,19 @@ protected slots:
     void scheduledBackup();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
     void changeEvent(QEvent *event);
-    
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
-
-    QTimer backupTimer;
-    int backupTimersSize;
-    QString backupPath;
 
     void setBackupSettings();
 
+    QTimer backupTimer;
+    QString backupPath;
+
+    int backupTimersSize;
+    int returnCode;
+
 private:
     Ui::frmMain *ui;
-    const int RESIZE_LIMIT;
 
     frmFirstRun *firstRunScr;
     frmLogin *loginScr;
@@ -136,12 +121,13 @@ private:
     frmReceipt *frmPayment;
     frmPrintContract *frmContract;
     frmImportExportDB *frmImportExport;
+    frmManageUsers *frmMngUsers;
 
-    QPoint posCursor;
-    LockMoveType locked;
-    QString currentUser, sessionRole;
+    QString currentUser;
+    SmartClassGlobal::UserRoles sessionRole;
 
     DBManager *myDB;
+    DBManager::DBData db_data;
 
     int deleteDBStatus;
 
@@ -150,11 +136,9 @@ private:
     QTranslator translator;
     QTranslator qtTranslator;
     QSettings* settings;
-    QStringList db_SETTINGS;
 
     bool upgradeAvailable;
 
-    void getUsers();
     void getStudents();
     void getCourses();
     void setUIToRole();

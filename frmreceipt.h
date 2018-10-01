@@ -1,56 +1,39 @@
 #ifndef FRMRECEIPT_H
 #define FRMRECEIPT_H
 
-#include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QVariant>
+#include <QList>
 #include <QFile>
 #include <QDate>
 #include <QDir>
+
+#include "smartclassglobal.h"
+#include "nmainwindow.h"
+#include "dbmanager.h"
 
 namespace Ui {
 class frmReceipt;
 }
 
-class frmReceipt : public QMainWindow
+class frmReceipt : public NMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit frmReceipt(QWidget *parent = 0, QStringList* paymentData = NULL, QStringList* courseData = NULL,
-                                            int paymentDataSize = 0, int courseDataSize = 0);
+    explicit frmReceipt(QWidget *parent = 0, DBManager *db_manager = NULL);
     ~frmReceipt();
-
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
 
 private:
     Ui::frmReceipt *ui;
-    const int RESIZE_LIMIT;
 
-    QPoint posCursor;
-    LockMoveType locked;
-    QString currentUser, sessionRole;
-
-    QStringList *paymentData, *courseData;
-    int paymentDataSize, courseDataSize;
+    DBManager *db_manager;
     double totalWDiscount, totalIntegral;
+
+    QList< QList<QVariant> > sData, pData, cData;
 
 private slots:
     void switchTableVisibility(bool show);

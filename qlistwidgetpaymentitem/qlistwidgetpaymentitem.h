@@ -12,9 +12,9 @@ public:
 
     void setDate(const QDate &date);
     void setInstallments(int installments);
-    void setDiscount(int percentage);
+    void setDiscount(double percentage);
 
-    int discount();
+    double discount();
     int installments();
     int value();
     QDate date();
@@ -22,7 +22,8 @@ public:
 private:
     QDate dateN;
     const double VALUE;
-    int discountN, installmentsN;
+    double discountN;
+    int installmentsN;
 };
 
 #endif // QLISTWIDGETPAYMENTITEM_H

@@ -160,22 +160,6 @@ QWidget#tabLogin, QWidget#tabRegister, QWidget#tabRecover{
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="TitleBar" name="titleBar" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>30</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
      <layout class="QGridLayout" name="centralLayout">
       <property name="leftMargin">
        <number>6</number>
@@ -630,14 +614,6 @@ QWidget#tabLogin, QWidget#tabRegister, QWidget#tabRecover{
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>TitleBar</class>
-   <extends>QWidget</extends>
-   <header>titlebar.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>edtUsernameFLogin</tabstop>
   <tabstop>edtPasswordFLogin</tabstop>

@@ -1,3 +1,13 @@
+/*-------------------------------------------------
+#
+# Project developed by Nintersoft team
+# Developer: Mauro Mascarenhas de Araújo
+# Contact: mauro.mascarenhas@nintersoft.com
+# License: Nintersoft Open Source Code Licence
+# Date: 31 of May of 2018
+#
+------------------------------------------------- */
+
 #include "titlebar.h"
 #include "ui_titlebar.h"
 
@@ -6,13 +16,7 @@ TitleBar::TitleBar(QWidget *parent) :
     ui(new Ui::TitleBar)
 {
     ui->setupUi(this);
-    this->parent = parent->parentWidget();
-
-    connect(ui->btClose,SIGNAL(clicked()),this->parent,SLOT(close()));
-    connect(ui->btMinimize,SIGNAL(clicked()),this->parent,SLOT(showMinimized()));
-    connect(ui->btMaximize,SIGNAL(clicked()),this,SLOT(maximizeParent()));
-
-    connect(this->parent, SIGNAL(windowTitleChanged(QString)), ui->lblFormTitle, SLOT(setText(QString)));
+    setMainWindow(parent->parentWidget() ? parent->parentWidget() : parent);
 
     canMove = false;
 }
@@ -20,6 +24,31 @@ TitleBar::TitleBar(QWidget *parent) :
 TitleBar::~TitleBar()
 {
     delete ui;
+}
+
+void TitleBar::setMainWindow(QWidget *mainWindow){
+    this->parent = mainWindow;
+
+    disconnect(ui->btClose, SIGNAL(clicked()), this->parent, SLOT(close()));
+    disconnect(ui->btMinimize, SIGNAL(clicked()), this->parent, SLOT(showMinimized()));
+    disconnect(ui->btMaximize, SIGNAL(clicked()), this, SLOT(maximizeParent()));
+
+    disconnect(this->parent, SIGNAL(windowTitleChanged(QString)), ui->lblFormTitle, SLOT(setText(QString)));
+
+    connect(ui->btClose, SIGNAL(clicked()), this->parent, SLOT(close()));
+    connect(ui->btMinimize, SIGNAL(clicked()), this->parent, SLOT(showMinimized()));
+    connect(ui->btMaximize, SIGNAL(clicked()), this, SLOT(maximizeParent()));
+
+    connect(this->parent, SIGNAL(windowTitleChanged(QString)), ui->lblFormTitle, SLOT(setText(QString)));
+}
+
+void TitleBar::maximizeParent(){
+    if (parent->isMaximized()) parent->showNormal();
+    else parent->showMaximized();
+}
+
+QWidget* TitleBar::mainWindow(){
+    return this->parent;
 }
 
 void TitleBar::setCloseButtonEnabled(bool enable){
@@ -66,11 +95,6 @@ void TitleBar::mouseDoubleClickEvent(QMouseEvent *event){
         return;
     }
     if (event->button() == Qt::LeftButton) maximizeParent();
-}
-
-void TitleBar::maximizeParent(){
-    if (parent->isMaximized()) parent->showNormal();
-    else parent->showMaximized();
 }
 
 void TitleBar::paintEvent(QPaintEvent *)

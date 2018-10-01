@@ -2,27 +2,15 @@
 #include "ui_frmfirstrun.h"
 
 frmFirstRun::frmFirstRun(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::frmFirstRun),
-    RESIZE_LIMIT(2)
+    NMainWindow(parent),
+    ui(new Ui::frmFirstRun)
 {
     ui->setupUi(this);
-    setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
-    centralWidget()->installEventFilter(this);
-    ui->titleBar->installEventFilter(this);
-    ui->statusBar->installEventFilter(this);
 
-    centralWidget()->setMouseTracking(true);
-    ui->titleBar->setMouseTracking(true);
-    ui->statusBar->setMouseTracking(true);
-
-    setWindowTitle(tr("SmartClass | Nintersoft"));
-    locked = LockMoveType::None;
-
-    ui->titleBar->setMaximizeButtonEnabled(false);
-
-    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
-            this->size(), qApp->desktop()->availableGeometry()));
+    // Sets the custom Widgets on the parent Class
+    // Otherwise, the window resizing feature will not work
+    NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
+    this->setMaximizeButtonEnabled(false);
 
     /*
      *  End of GUI implementation
@@ -30,9 +18,18 @@ frmFirstRun::frmFirstRun(QWidget *parent) :
 
     allowed = false;
     canChangeLang = true;
+    settingsExists = false;
+
+    profileID = 0;
 
     currentLangIndex = 0;
     ui->grpMySQLSettings->setEnabled(false);
+    ui->btPrevStep->setVisible(false);
+    ui->btPrevStep->setEnabled(false);
+    ui->tabManager->tabBar()->hide();
+
+    connect(ui->btNextStep, SIGNAL(clicked(bool)), this, SLOT(nextStep()));
+    connect(ui->btPrevStep, SIGNAL(clicked(bool)), this, SLOT(previousStep()));
 
     connect(ui->btSearchCompanyLogo, SIGNAL(clicked(bool)), this, SLOT(selectCompanyLogo()));
     connect(ui->btRemoveLogo, SIGNAL(clicked(bool)), ui->edtCompanyLogoPath, SLOT(clear()));
@@ -43,6 +40,8 @@ frmFirstRun::frmFirstRun(QWidget *parent) :
     connect(ui->cbLanguage, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLanguage(int)));
 
     langPath = QApplication::applicationDirPath().append("/lang/");
+    if (QLocale::system().name().split("_").at(0) == "pt")
+        ui->cbLanguage->setCurrentIndex(1);
 
     db_manager = NULL;
 }
@@ -66,7 +65,7 @@ void frmFirstRun::closeEvent(QCloseEvent *event){
 
     QMessageBox confirmation;
     confirmation.setWindowTitle(tr("SmartClass | Critical warning!"));
-    confirmation.setText(tr("You are going to quit without save the database settings. This may corrupt the data. Do you want to proceed?"));
+    confirmation.setText(tr("You are going to quit without save the database settings. This may corrupt the setup data.\nDo you want to proceed?"));
     confirmation.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirmation.setIcon(QMessageBox::Critical);
 
@@ -74,64 +73,225 @@ void frmFirstRun::closeEvent(QCloseEvent *event){
     else event->ignore();
 }
 
+void frmFirstRun::nextStep(){
+    int currentTab = ui->tabManager->currentIndex();
+
+    if (currentTab == 1){
+        if (db_manager){
+            delete db_manager;
+            db_manager = NULL;
+        }
+
+        DBManager::DBData db_data;
+
+        if (ui->rbSQLite->isChecked()){
+            db_data.setDatabaseName(SmartClassGlobal::getDBPath());
+            SmartClassGlobal::setTablePrefix(ui->edtDatabasePrefix->text());
+            SmartClassGlobal::setDatabaseType(DBManager::SQLITE);
+            db_manager = new DBManager(db_data, SmartClassGlobal::tablePrefix(),
+                                        SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("firstRun"));
+        }
+        else{
+            db_data.setHostName(ui->edtHost->text());
+            db_data.setDatabaseName(ui->edtDatabase->text());
+            db_data.setPort(ui->edtPortNumber->value());
+            db_data.setUserName(ui->edtUsername->text());
+            db_data.setPassword(ui->edtPassword->text());
+            SmartClassGlobal::setTablePrefix(ui->edtDatabasePrefix->text());
+            SmartClassGlobal::setDatabaseType(DBManager::MYSQL);
+            db_manager = new DBManager(db_data, ui->edtDatabasePrefix->text(),
+                                        SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("firstRun"));
+        }
+
+        if (!db_manager->openDB()){
+            QMessageBox::critical(this, tr("Error | SmartClass"),
+                                    tr("An error has occurred while we tried to connect to the database. Please, check the input and try again.\nDetails: %1.").arg(db_manager->lastError().text()),
+                                    QMessageBox::Ok, QMessageBox::NoButton);
+            delete db_manager;
+            db_manager = NULL;
+            return;
+        }
+
+        db_export_data = db_data;
+
+        QSqlQuery checkSettings = db_manager->runCustomQuery();
+        checkSettings.prepare("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS) + "LIMIT 1");
+        if (checkSettings.exec()){
+            ui->grpCompanySettings->setEnabled(false);
+            settingsExists = true;
+
+            if (db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS)).size()){
+                QList<QVariant> settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS)).at(0);
+                ui->edtCompanyName->setText(settings.at(0).toString());
+                cLogo = db_manager->variantToPixmap(settings.at(2));
+                ui->lblCompanyLogoImg->setPixmap(cLogo.scaled(ui->lblCompanyLogoImg->size(), Qt::KeepAspectRatio));
+            }
+        }
+
+        ui->edtDeviceName->setText(QHostInfo::localHostName());
+        ui->edtDeviceOS->setText(QSysInfo::productType());
+        ui->edtDeviceOSMV->setText(QSysInfo::productVersion());
+        ui->edtDeviceLastAccess->setText(QDateTime::currentDateTime().toString("dd/MM/yyyy - HH:mm:ss"));
+
+        QSqlQuery checkActiveC = db_manager->runCustomQuery();
+        checkActiveC.prepare("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS) + "LIMIT 1");
+        if (checkActiveC.exec()){
+            activeConnections = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS));
+            for (int i = 0; i < activeConnections.size(); ++i){
+                if (activeConnections[i].at(1).toString() == ui->edtDeviceName->text()
+                        && activeConnections[i].at(2).toString() == ui->edtDeviceOS->text()
+                        && activeConnections[i].at(3).toString() == ui->edtDeviceOSMV->text()){
+                    profileID = activeConnections[i].at(0).toLongLong();
+                    break;
+                }
+            }
+        }
+        else if(!db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                         SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS))){
+            QMessageBox::critical(this, tr("Error | SmartClass"),
+                                  tr("It was not possible to create the table of device access control. Please, try again."), QMessageBox::Ok, QMessageBox::NoButton);
+            return;
+        }
+    }
+    else if (currentTab == 2){
+        bool complete[4], check, tryAgain;
+        for (int i = 0; i < 4; ++i) complete[i] = false;
+
+        do {
+            if (!complete[0]){
+                if (!settingsExists){
+                    QStringList columns = SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS);
+                    columns.removeAt(1);
+
+                    QList<QVariant> settingsData;
+                    settingsData << ui->edtCompanyName->text()
+                                 << db_manager->pixmapToVariant(cLogo);
+
+                    complete[0] = db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                                          SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS))
+                                    && db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                                             columns,
+                                                             settingsData);
+                }
+                else complete[0] = true;
+            }
+
+            if (!complete[1] || !complete[2] || !complete[3]){
+                if (profileID != -1){
+                    QStringList columns = SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS);
+
+                    complete[1] = db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                        columns.at(0),
+                                                        profileID,
+                                                        QStringList() << columns.at(4),
+                                                        QList<QVariant>() <<  ui->edtDeviceLastAccess->text());
+                    complete[2] = true;
+                    complete[3] = true;
+                }
+                else {
+                    QStringList columns = SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS);
+                    QList<QVariant> data;
+                    data << ui->edtDeviceName->text()
+                         << ui->edtDeviceOS->text()
+                         << ui->edtDeviceOSMV->text()
+                         << ui->edtDeviceLastAccess->text();
+
+                    if (complete[2]) complete[2] = db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                                            columns.mid(1),
+                                                                            data);
+
+                    QList<QVariant> profID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                                     columns.mid(1),
+                                                                     data,
+                                                                     QStringList() << columns.at(0));
+                    complete[3] = profID.size();
+                    if (complete[3]) profileID = profID.at(0).toLongLong();
+                    complete[1] = true;
+                }
+            }
+
+            check = complete[0];
+            for (int i = 1; i < 4; ++i) check = check && complete[i];
+
+            if (!check){
+                QString errors = "";
+                if (!complete[0]) errors += "- It was not possible to create or write in the settings table.\n";
+                if (!complete[1]) errors += "- It was not possible to update an existing ID with your device data.\n";
+                if (!complete[2]) errors += "- It was not possible to create a new ID to your device.\n";
+                if (!complete[3]) errors += "- It was not possible to retrieve the new ID of your device.\n";
+                tryAgain  = QMessageBox::critical(this, tr("Error | SmartClass"),
+                                                  tr("Some errors have occurred while we tried to store your settings into the database.\n"
+                                                     "Here are the details:\n"
+                                                     "\n"
+                                                     "%1\n"
+                                                     "\n"
+                                                     "Would you like to try to save it again?").arg(errors),
+                                                  QMessageBox::Retry, QMessageBox::Abort)
+                                ==  QMessageBox::Retry;
+            }
+            else tryAgain = false;
+        } while (!check && tryAgain);
+        if (!check) return;
+
+        QSettings settings("Nintersoft", "SmartClass");
+
+        settings.beginGroup("dbinfo");
+        if (SmartClassGlobal::databaseType() == DBManager::SQLITE){
+            settings.setValue("database type", QString("SQLITE"));
+            settings.setValue("table prefix", SmartClassGlobal::tablePrefix());
+        }
+        else {
+            settings.setValue("database type", QString("MYSQL"));
+            settings.setValue("host", db_export_data.hostName());
+            settings.setValue("database", db_export_data.databaseName());
+            settings.setValue("port", db_export_data.port());
+            settings.setValue("username", db_export_data.username());
+            settings.setValue("password", db_export_data.password());
+            settings.setValue("table prefix", SmartClassGlobal::tablePrefix());
+        }
+        settings.endGroup();
+
+        settings.beginGroup("language options");
+        settings.setValue("current language index", currentLangIndex);
+        settings.endGroup();
+
+        settings.beginGroup("device settings");
+        settings.setValue("device ID", profileID);
+        settings.endGroup();
+
+        db_manager->closeDB();
+        delete db_manager;
+        db_manager = NULL;
+
+        allowed = true;
+
+        ui->btNextStep->setVisible(false);
+        ui->btNextStep->setVisible(false);
+        ui->btPrevStep->setVisible(false);
+        ui->btPrevStep->setEnabled(false);
+    }
+
+    if (currentTab != 2) {
+        ui->btPrevStep->setVisible(true);
+        ui->btPrevStep->setEnabled(true);
+    }
+
+    ui->tabManager->setCurrentIndex(currentTab + 1);
+}
+
+void frmFirstRun::previousStep(){
+    ui->tabManager->setCurrentIndex(ui->tabManager->currentIndex() - 1);
+
+    int currentTab = ui->tabManager->currentIndex();
+    if (!currentTab){
+        ui->btPrevStep->setVisible(false);
+        ui->btPrevStep->setEnabled(false);
+    }
+    else if (currentTab == 1) profileID = -1;
+}
+
 void frmFirstRun::saveDBSettings(){
-    if (db_manager){
-        delete db_manager;
-        db_manager = NULL;
-    }
-
-    QStringList dbData;
-
-    if (ui->rbSQLite->isChecked()){
-        dbData << getDBPath()
-               << ui->edtDatabasePrefix->text();
-        db_manager = new DBManager(dbData, DBManager::getUniqueConnectionName("firstRun"));
-    }
-    else{
-        dbData << ui->edtHost->text() << ui->edtDatabase->text()
-               << QString::number(ui->edtPortNumber->value()) << ui->edtUsername->text()
-               << ui->edtPassword->text()
-               << ui->edtDatabasePrefix->text();
-        db_manager = new DBManager(dbData, DBManager::getUniqueConnectionName("firstRun"), "MYSQL");
-    }
-
-    if (!db_manager->openDB()){
-        QMessageBox::critical(this, tr("Error | SmartClass"), tr("An error has occurred while we tried to connect to the database. Please, check the input and try again."), QMessageBox::Ok, QMessageBox::NoButton);
-        delete db_manager;
-        db_manager = NULL;
-        return;
-    }
-
-    db_manager->closeDB();
-    delete db_manager;
-    db_manager = NULL;
-
-    QSettings settings("Nintersoft", "SmartClass");
-    settings.beginGroup("company info");
-    settings.setValue("name", ui->edtCompanyName->text().isEmpty() ? tr("Nintersoft Team") : ui->edtCompanyName->text());
-    settings.endGroup();
-
-    settings.beginGroup("language options");
-    settings.setValue("current language index", currentLangIndex);
-    settings.endGroup();
-
-    QString logoPath  = QDir::homePath() + ((QSysInfo::windowsVersion() != QSysInfo::WV_None) ?
-                "/AppData/Roaming/Nintersoft/SmartClass/images/" :
-                "/.Nintersoft/SmartClass/images/");
-    if (!QDir(logoPath).exists()) QDir(logoPath).mkpath(logoPath);
-    logoPath += "Logo.png";
-
-    if (QFile::exists(ui->edtCompanyLogoPath->text()) && !ui->edtCompanyLogoPath->text().isEmpty()){
-        QFile newFile(logoPath);
-        if (newFile.exists()) newFile.remove();
-        QPixmap openFile(ui->edtCompanyLogoPath->text());
-        newFile.open(QIODevice::WriteOnly);
-        openFile.save(&newFile, "PNG");
-        newFile.close();
-    }
-
-    allowed = true;
-    sendData(dbData, currentLangIndex == 0 ? "en" : "pt");
+    sendData(db_export_data, !currentLangIndex ? "en" : "pt");
 }
 
 void frmFirstRun::selectCompanyLogo(){
@@ -140,7 +300,11 @@ void frmFirstRun::selectCompanyLogo(){
     selectLogoDialog.setAcceptMode(QFileDialog::AcceptOpen);
     selectLogoDialog.setNameFilters(QStringList() << tr("Image files (*.png *.jpeg *.jpg)") << tr("All files (*.*)"));
     selectLogoDialog.setDirectory(QDir::homePath());
-    if (selectLogoDialog.exec()) ui->edtCompanyLogoPath->setText(selectLogoDialog.selectedFiles().at(0));
+    if (selectLogoDialog.exec()){
+        ui->edtCompanyLogoPath->setText(selectLogoDialog.selectedFiles().at(0));
+        cLogo = QPixmap(ui->edtCompanyLogoPath->text());
+        ui->lblCompanyLogoImg->setPixmap(cLogo.scaled(ui->lblCompanyLogoImg->size(), Qt::KeepAspectRatio));
+    }
 }
 
 void frmFirstRun::changeLanguage(int index){
@@ -152,7 +316,7 @@ void frmFirstRun::changeLanguage(int index){
 
     canChangeLang = false;
     currentLangIndex = index;
-    if (index == 0) readLanguage("en");
+    if (!index) readLanguage("en");
     else readLanguage("pt");
 }
 
@@ -171,145 +335,5 @@ void frmFirstRun::changeEvent(QEvent *event){
         ui->retranslateUi(this);
         canChangeLang = true;
     }
-    QMainWindow::changeEvent(event);
-}
-
-/*
- * GUI Functions (don't change, unless necessary)
- */
-
-void frmFirstRun::mousePressEvent(QMouseEvent *event)
-{
-    if(event->button() == Qt::LeftButton)
-    {
-        int x = event->x(), y = event->y(), bottom = this->height() - RESIZE_LIMIT, right = this->width() - RESIZE_LIMIT;
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = LockMoveType::TopLeft;
-        }
-        else if (x < RESIZE_LIMIT && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomLeft();
-            locked = LockMoveType::BottomLeft;
-        }
-        else if (x > right && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topRight();
-            locked = LockMoveType::TopRight;
-        }
-        else if (x > right && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = LockMoveType::BottomRight;
-        }
-        else if (x < RESIZE_LIMIT || y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = x < RESIZE_LIMIT ? LockMoveType::Left : LockMoveType::Top;
-        }
-        else if (x > right || y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = x > right ? LockMoveType::Right : LockMoveType::Bottom;
-        }
-        event->accept();
-    }
-}
-
-void frmFirstRun::undefMouseMoveEvent(QObject* object, QMouseEvent* event){
-    if (locked != LockMoveType::None){
-        switch (locked) {
-        case LockMoveType::TopLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::TopRight:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::BottomLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::BottomRight:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::Left:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::Right:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::Top:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        default:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        }
-        return;
-    }
-
-    int x = event->x(), y = event->y(), right = this->width() - RESIZE_LIMIT;
-    if (object->objectName() == "statusBar"){
-        if (x < RESIZE_LIMIT && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (x > right && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        else if (y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    else if (object->objectName() == "titleBar"){
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        if (x > right && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    if (x < RESIZE_LIMIT || x > right){
-        this->setCursor(QCursor(Qt::SizeHorCursor));
-    }
-    else {
-        this->setCursor(QCursor(Qt::ArrowCursor));
-    }
-}
-
-void frmFirstRun::mouseReleaseEvent(QMouseEvent *event){
-    locked = LockMoveType::None;
-    event->accept();
-}
-
-bool frmFirstRun::eventFilter(QObject* object, QEvent* event)
-{
-    if(event->type() == QEvent::MouseMove)
-        undefMouseMoveEvent(object, static_cast<QMouseEvent*>(event));
-    else if (event->type() == QEvent::MouseButtonPress && object->objectName() == "titleBar"){
-        mousePressEvent(static_cast<QMouseEvent*>(event));
-    }
-    return false;
-}
-
-const QString frmFirstRun::getDBPath(){
-    QString tempDir = QDir::homePath();
-    if (QSysInfo::windowsVersion() != QSysInfo::WV_None)
-        tempDir += "/AppData/Roaming/Nintersoft/SmartClass/";
-    else tempDir += "/.Nintersoft/SmartClass/";
-
-    QString dataDir = tempDir + "data/";
-    if (!QDir(dataDir).exists()) QDir(dataDir).mkpath(dataDir);
-
-    return tempDir + "data/classInfo.db";
+    NMainWindow::changeEvent(event);
 }

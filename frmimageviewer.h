@@ -1,23 +1,24 @@
 #ifndef FRMIMAGEVIEWER_H
 #define FRMIMAGEVIEWER_H
 
+#include <QDesktopWidget>
+#include <QStandardPaths>
 #include <QMainWindow>
 #include <QCloseEvent>
 #include <QFileDialog>
-#include <QDesktopWidget>
-#include <QStandardPaths>
 #include <QStringList>
 #include <QPixmap>
 #include <QImage>
 #include <QFile>
 
 #include "printpreviewform.h"
+#include "nmainwindow.h"
 
 namespace Ui {
 class frmImageViewer;
 }
 
-class frmImageViewer : public QMainWindow
+class frmImageViewer : public NMainWindow
 {
     Q_OBJECT
 
@@ -26,32 +27,12 @@ public:
     ~frmImageViewer();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
     void closeEvent(QCloseEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
 
 private:
     Ui::frmImageViewer *ui;
-    const int RESIZE_LIMIT;
-    const QString STUDENT_NAME;
 
-    QPoint posCursor;
-    LockMoveType locked;
+    const QString STUDENT_NAME;
     const QPixmap INITIAL_IMAGE;
     QPixmap currentImage;
 

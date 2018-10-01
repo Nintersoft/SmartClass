@@ -1,27 +1,34 @@
 #ifndef FRMFIRSTRUN_H
 #define FRMFIRSTRUN_H
 
+#include <QDesktopWidget>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QTranslator>
 #include <QFileDialog>
+#include <QDateTime>
+#include <QHostInfo>
 #include <QSettings>
+#include <QVariant>
+#include <QSysInfo>
+#include <QLocale>
 #include <QPixmap>
 #include <QEvent>
 #include <QPoint>
 #include <QFile>
 #include <QDir>
 
+#include "smartclassglobal.h"
+#include "nmainwindow.h"
 #include "dbmanager.h"
 
 namespace Ui {
 class frmFirstRun;
 }
 
-class frmFirstRun : public QMainWindow
+class frmFirstRun : public NMainWindow
 {
     Q_OBJECT
 
@@ -29,56 +36,41 @@ public:
     explicit frmFirstRun(QWidget *parent = 0);
     ~frmFirstRun();
 
-    static const QString getDBPath();
-
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
     void closeEvent(QCloseEvent* event);
     void changeEvent(QEvent* event);
 
     void readLanguage(const QString &langSlug);
 
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
-
 private:
     Ui::frmFirstRun *ui;
 
-    QPoint posCursor;
-    LockMoveType locked;
     DBManager* db_manager;
+    DBManager::DBData db_export_data;
+    QList< QList<QVariant> > activeConnections;
 
-    const int RESIZE_LIMIT;
     int currentLangIndex; //English = 0; Portuguese = 1
+    qlonglong profileID;
 
     QString langPath;
     QTranslator translator;
     QTranslator qtTranslator;
+    QPixmap cLogo;
 
-    bool allowed, canChangeLang;
+    bool allowed, canChangeLang, settingsExists;
 
     void changeTranslator(QTranslator &transl, const QString &filePath);
 
 private slots:
+    void nextStep();
+    void previousStep();
+
     void saveDBSettings();
     void selectCompanyLogo();
     void changeLanguage(int index);
 
 signals:
-    void sendData(const QStringList &data, const QString &langSlug);
+    void sendData(const DBManager::DBData &data, const QString &langSlug);
 };
 
 #endif // FRMFIRSTRUN_H

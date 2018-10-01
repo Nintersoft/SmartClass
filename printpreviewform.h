@@ -1,8 +1,8 @@
 #ifndef PRINTPREVIEWFORM_H
 #define PRINTPREVIEWFORM_H
 
-#include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFontDatabase>
 #include <QPrintDialog>
 #include <QFileDialog>
@@ -18,11 +18,13 @@
 #include <QRect>
 #include <QDir>
 
+#include "nmainwindow.h"
+
 namespace Ui {
 class PrintPreviewForm;
 }
 
-class PrintPreviewForm : public QMainWindow
+class PrintPreviewForm : public NMainWindow
 {
     Q_OBJECT
 
@@ -32,30 +34,8 @@ public:
     explicit PrintPreviewForm(QWidget *parent = 0, const QStringList &content = QStringList(), const QPixmap &pixmap = QPixmap());
     ~PrintPreviewForm();
 
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
-
 private:
     Ui::PrintPreviewForm *ui;
-    const int RESIZE_LIMIT;
-
-    QPoint posCursor;
-    LockMoveType locked;
 
     QWidget* mainWidget;
     QLabel *contract, *companyName, *companyLogo, *parentName;

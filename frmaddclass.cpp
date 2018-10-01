@@ -1,80 +1,51 @@
 #include "frmaddclass.h"
 #include "ui_frmaddclass.h"
 
-frmAddClass::frmAddClass(QWidget *parent, Role role, QString name, const QStringList &dbData) :
-    QMainWindow(parent), ui(new Ui::frmAddClass),
-    RESIZE_LIMIT(2), COURSE_NAME(name),
+frmAddClass::frmAddClass(QWidget *parent, Role role, qint64 courseID, const DBManager::DBData &dbData) :
+    NMainWindow(parent), ui(new Ui::frmAddClass),
+    COURSE_ID(courseID),
     CURRENT_ROLE(role)
 {
-  ui->setupUi(this);
+    ui->setupUi(this);
 
-  this->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
-  this->centralWidget()->installEventFilter(this);
-  ui->titleBar->installEventFilter(this);
-  ui->statusBar->installEventFilter(this);
+    // Sets the custom Widgets on the parent Class
+    // Otherwise, the window resizing feature will not work
+    NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
+    this->setMaximizeButtonEnabled(false);
 
-  this->centralWidget()->setMouseTracking(true);
-  ui->titleBar->setMouseTracking(true);
-  ui->statusBar->setMouseTracking(true);
+    /*
+    * End of GUI operations
+    */
+    myDB = new DBManager(dbData, SmartClassGlobal::tablePrefix(),
+                            SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("importExport"));
 
-  this->setWindowTitle(tr("Manage Class | SmartClass"));
-  locked = LockMoveType::None;
+    switch (CURRENT_ROLE) {
+          case frmAddClass::View:
+              ui->screenManagerLayout->setEnabled(false);
+              ui->btReset->setEnabled(false);
+              ui->btSave->setEnabled(false);
+          case frmAddClass::Edit:
+              courseData = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                                             SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
+                                             QVariant(COURSE_ID));
+              applyCourseData();
+              break;
+          default:
+              ui->edtBeginningDate->setMinimumDate(QDate::currentDate());
+              ui->edtEndDate->setMinimumDate(QDate::currentDate());
+              break;
+    }
 
-  ui->titleBar->setMaximizeButtonEnabled(false);
+    connect(ui->btCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(ui->btReset, SIGNAL(clicked(bool)), this, SLOT(resetNewClass()));
+    connect(ui->btSave, SIGNAL(clicked(bool)), this, SLOT(saveNewClass()));
 
-  this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
-          this->size(), qApp->desktop()->availableGeometry()));
-
-  /*
-   * End of GUI operations
-   */
-  myDB = new DBManager(dbData, DBManager::getUniqueConnectionName("importExport"),
-                       dbData.length() == 2 ? "SQLITE" : "MYSQL");
-
-  studentsData = NULL;
-  paymentData = NULL;
-
-  coursesTable << "course" << "teacher" << "shortDescription"
-               << "longDescription" << "class" << "dayNTime"
-               << "beginningDate" << "endDate" << "price" << "students";
-
-  switch (CURRENT_ROLE) {
-      case frmAddClass::View:
-          ui->screenManagerLayout->setEnabled(false);
-          ui->btReset->setEnabled(false);
-          ui->btSave->setEnabled(false);
-      case frmAddClass::Edit:
-          courseData = myDB->retrieveLine("myclass_courses",
-                                         QStringList() << coursesTable.at(0) << coursesTable.at(4) << coursesTable.at(5) << coursesTable.at(6),
-                                         COURSE_NAME.split("|"));
-          studentsData = myDB->retrieveAll("myclass_students");
-          paymentData = myDB->retrieveAll("myclass_pricing");
-          applyCourseData();
-          break;
-      default:
-          ui->edtBeginningDate->setMinimumDate(QDate::currentDate());
-          ui->edtEndDate->setMinimumDate(QDate::currentDate());
-          break;
-  }
-
-  connect(ui->btCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
-  connect(ui->btReset, SIGNAL(clicked(bool)), this, SLOT(resetNewClass()));
-  connect(ui->btSave, SIGNAL(clicked(bool)), this, SLOT(saveNewClass()));
-
-  connect(ui->btAddDay, SIGNAL(clicked(bool)), this, SLOT(addDayNTime()));
-  connect(ui->btRemoveDay, SIGNAL(clicked(bool)), this, SLOT(removeDayNTime()));
+    connect(ui->btAddDay, SIGNAL(clicked(bool)), this, SLOT(addDayNTime()));
+    connect(ui->btRemoveDay, SIGNAL(clicked(bool)), this, SLOT(removeDayNTime()));
 }
 
 frmAddClass::~frmAddClass()
 {
-    if (studentsData){
-        delete[] studentsData;
-        studentsData = NULL;
-    }
-    if (paymentData){
-        delete[] paymentData;
-        paymentData = NULL;
-    }
     if (myDB->isOpen()) myDB->closeDB();
     delete myDB;
     delete ui;
@@ -105,26 +76,12 @@ void frmAddClass::resetNewClass(){
 }
 
 void frmAddClass::saveNewClass(){
-    QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
+    QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data is either inconsistent or inexistent."
                           " Please, fix the folowing issues before trying to save again:\n");
-    bool error = false;
-
-    int bd = ui->edtBeginningDate->date().day(),
-        bm = ui->edtBeginningDate->date().month(),
-        by = ui->edtBeginningDate->date().year(),
-        ed = ui->edtEndDate->date().day(),
-        em = ui->edtEndDate->date().month(),
-        ey = ui->edtEndDate->date().year(),
-        cd = QDate::currentDate().day(),
-        cm = QDate::currentDate().month(),
-        cy = QDate::currentDate().year();
+    bool error = false, warning = false;
 
     if (ui->edtCourseName->text().isEmpty()){
         errorMsg += tr("\n->The name of the course cannot be empty;");
-        error = true;
-    }
-    if (ui->edtCourseName->text().contains("|")){
-        errorMsg += tr("\n->Unfortunately you cannot use the character \"|\" in the \"Course\" field;");
         error = true;
     }
     if (ui->edtTeacher->text().isEmpty()){
@@ -143,102 +100,111 @@ void frmAddClass::saveNewClass(){
         errorMsg += tr("\n->The days and time of the class cannot be empty;");
         error = true;
     }
-    if (ui->edtBeginningDate->date().toString("dd/MM/yyyy") == ui->edtEndDate->date().toString("dd/MM/yyyy")){
+    if (ui->edtBeginningDate->date() == ui->edtEndDate->date()){
         errorMsg += tr("\n->The initial and end date of the course cannot be the same;");
         error = true;
     }
-    if (by > ey || (by == ey && bm > em) || (by == ey && bm == em && bd > ed)){
+    if (ui->edtBeginningDate->date() > ui->edtEndDate->date()){
         errorMsg += tr("\n->The initial date cannot be major than the end date;");
         error = true;
     }
-    if (by < cy || (by == cy && bm < cm) || (by == cy && bm < cm) || (by == cy && bm == cm && bd < cd))
-        errorMsg += tr("\n->WARNING: The initial date should not be minor than the current date. Use this if only you want to have references to old courses;");
-    if (ui->edtPrice->value() == 0.00){
-        errorMsg += tr("\n->WARNING: The price is set to $0.00;");
-    }
 
     if (error){
-        QMessageBox::information(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
+
+    if (ui->edtBeginningDate->date().toJulianDay() < QDate::currentDate().toJulianDay()){
+        errorMsg += tr("\n->WARNING: The initial date should not be minor than the current date. Use this if only you want to have references to old courses;");
+        warning = true;
+    }
+    if (ui->edtPrice->value() == 0.00){
+        errorMsg += tr("\n->WARNING: The price is set to $0.00;");
+        warning = true;
+    }
+
+    if (warning) QMessageBox::warning(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
 
     QStringList dayNTime;
     for (int i = 0; i < ui->listDaysAndTime->count(); ++i) dayNTime << ui->listDaysAndTime->item(i)->text();
     QString dayNTimeS = dayNTime.join(" , ");
 
-    QStringList newCData;
+    QList<QVariant> newCData;
     newCData << ui->edtCourseName->text()
-            << ui->edtTeacher->text()
-            << ui->edtShortDescription->text()
-            << ui->edtDetailedDescription->toPlainText()
-            << QString::number(ui->edtClassNumber->value())
-            << dayNTimeS
-            << ui->edtBeginningDate->date().toString("dd/MM/yyyy")
-            << ui->edtEndDate->date().toString("dd/MM/yyyy")
-            << QString::number(ui->edtPrice->value());
+             << ui->edtTeacher->text()
+             << ui->edtShortDescription->text()
+             << ui->edtDetailedDescription->toPlainText()
+             << ui->edtClassNumber->value()
+             << dayNTimeS
+             << ui->edtBeginningDate->date()
+             << ui->edtEndDate->date()
+             << ui->edtPrice->value();
 
-    QStringList columsN = (QStringList() << coursesTable.at(0) << coursesTable.at(3) << coursesTable.at(4) << coursesTable.at(5));
-    QStringList dataN = (QStringList() << newCData.at(0) << newCData.at(3) << newCData.at(4) << newCData.at(5));
+    QStringList coursesTable = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS);
+
+    QStringList columsN = (QStringList() << coursesTable.at(1) << coursesTable.at(5) << coursesTable.at(6) << coursesTable.at(7));
+    QList<QVariant> dataN = (QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(5) << newCData.at(6));
+
     if (CURRENT_ROLE != frmAddClass::Edit)
-        if (myDB->lineExists("myclass_courses", columsN, dataN)){
-            QMessageBox::information(this, tr("Warning | SmartClass"), tr("There is another course with the same name, class, days, time and beginning date registered. Please, check this before continue."), QMessageBox::Ok, QMessageBox::Ok);
+        if (myDB->rowExists("myclass_courses", columsN, dataN)){
+            QMessageBox::information(this, tr("Warning | SmartClass"), tr("There is another course with the same name, class, days, time and beginning date registered. Please, check it before continuing."), QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
 
     if (CURRENT_ROLE != frmAddClass::Create){
-        myDB->removeLine("myclass_courses", coursesTable, courseData);
-        newCData << courseData.at(9);
+        if (!myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                             SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
+                             COURSE_ID,
+                             SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).mid(1),
+                             newCData))
+            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to update the course details for you."
+                                                                        "\nHere are the technical details of what happened: %1."
+                                                                        "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close the form)!").arg(myDB->lastError().text()),
+                                    QMessageBox::Ok, QMessageBox::NoButton);
 
-        QString courseSytesis = courseData.at(0) + " [ " + courseData.at(4) + " ] - " + courseData.at(5)
-                + tr(" * starts on: ") + courseData.at(6);
-        QString newCourseSytesis = newCData.at(0) + " [ " + newCData.at(4) + " ] - " + newCData.at(5)
-                + tr(" * starts on: ") + newCData.at(6);
-
-        if (paymentData){
-            int pSize = myDB->rowsCount("myclass_pricing");
-            for (int i = 0; i < pSize; ++i){
-                if (paymentData[i].at(2) == courseSytesis)
-                    myDB->updateLine("myclass_pricing", QStringList() << "course",
-                                    QStringList() << newCourseSytesis, "course", courseSytesis);
-            }
-        }
-
-        if (studentsData){
-            int sSize = myDB->rowsCount("myclass_students");
-            for (int i = 0; i < sSize; ++i){
-                if (QString(studentsData[i].at(9)).contains(courseSytesis))
-                    myDB->updateLine("myclass_students", QStringList() << "courses",
-                                    QStringList() << QString(studentsData[i].at(9)).replace(courseSytesis, newCourseSytesis),
-                                    "courses", studentsData[i].at(9));
-            }
-        }
-
-        emit updatedData(QStringList() << newCData.at(0) << newCData.at(4) << newCData.at(1) << newCData.at(6) << newCData.at(5),
-                                                                                       courseData.at(0));
+        emit updatedData(QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(1)
+                                            << newCData.at(6) << newCData.at(5),
+                            COURSE_ID);
     }
-    else emit newData(QStringList() << newCData.at(0) << newCData.at(4) << newCData.at(1) << newCData.at(6) << newCData.at(5));
-    coursesTable.removeOne("students");
-    myDB->addLine("myclass_courses", coursesTable, newCData);
+    else {
+        if (!myDB->insertRow("myclass_courses", coursesTable.mid(1), newCData)){
+            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to register the course details for you."
+                                                                        "\nHere are the technical details of what happened: %1."
+                                                                        "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close the form)!").arg(myDB->lastError().text()),
+                                    QMessageBox::Ok, QMessageBox::NoButton);
+            return;
+        }
+
+        qlonglong newIndex = -1;
+        QSqlQuery getIndex = myDB->runCustomQuery();
+        getIndex.prepare("SELECT MAX(id) FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS));
+        if (getIndex.exec())
+            if (getIndex.next()) newIndex = getIndex.value(0).toLongLong();
+
+        if (newIndex == -1) QMessageBox::warning(this, tr("Critical | SmartClass"), tr("A new course has been created successfuly. However, we could not retrieve its new ID."
+                                                                                       "\nAlthough the application continues working, we strongly recommend you to restart it, since the new index may not correspond to the recently created course."
+                                                                                       "\nHere are the technical details of what happened: %1.").arg(myDB->lastError().text()),
+                                     QMessageBox::Ok, QMessageBox::NoButton);
+
+        emit newData(QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(1)
+                                        << newCData.at(6) << newCData.at(5) << newIndex);
+    }
     this->close();
 }
 
 void frmAddClass::applyCourseData(){
-    /*
-     * course|class|dayNTime|beginningDate
-     */
-
     ui->listDaysAndTime->clear();
 
-    ui->edtCourseName->setText(courseData.at(0));
-    ui->edtTeacher->setText(courseData.at(1));
-    ui->edtShortDescription->setText(courseData.at(2));
-    ui->edtDetailedDescription->setPlainText(courseData.at(3));
-    ui->edtClassNumber->setValue(QString(courseData.at(4)).toInt());
-    QStringList daysNTime = QString(courseData.at(5)).split(" , ");
+    ui->edtCourseName->setText(courseData.at(1).toString());
+    ui->edtTeacher->setText(courseData.at(2).toString());
+    ui->edtShortDescription->setText(courseData.at(3).toString());
+    ui->edtDetailedDescription->setPlainText(courseData.at(4).toString());
+    ui->edtClassNumber->setValue(courseData.at(5).toInt());
+    QStringList daysNTime = courseData.at(6).toString().split(" , ");
     for (int i = 0; i < daysNTime.count(); ++i) ui->listDaysAndTime->addItem(daysNTime.at(i));
-    ui->edtBeginningDate->setDate(QDate::fromString(courseData.at(6), "dd/MM/yyyy"));
-    ui->edtEndDate->setDate(QDate::fromString(courseData.at(7), "dd/MM/yyyy"));
-    ui->edtPrice->setValue(QString(courseData.at(8)).toDouble());
+    ui->edtBeginningDate->setDate(courseData.at(7).toDate());
+    ui->edtEndDate->setDate(courseData.at(8).toDate());
+    ui->edtPrice->setValue(courseData.at(9).toDouble());
 }
 
 void frmAddClass::addDayNTime(){
@@ -276,132 +242,4 @@ void frmAddClass::removeDayNTime(){
     if (ui->listDaysAndTime->currentRow() < 0) return;
     delete ui->listDaysAndTime->item(ui->listDaysAndTime->currentRow());
     if (ui->listDaysAndTime->count() < 1) ui->btRemoveDay->setEnabled(false);
-}
-
-/*
- * GUI Functions (don't change, unless necessary)
- */
-
-void frmAddClass::mousePressEvent(QMouseEvent *event)
-{
-    if(event->button() == Qt::LeftButton)
-    {
-        int x = event->x(), y = event->y(), bottom = this->height() - RESIZE_LIMIT, right = this->width() - RESIZE_LIMIT;
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = LockMoveType::TopLeft;
-        }
-        else if (x < RESIZE_LIMIT && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomLeft();
-            locked = LockMoveType::BottomLeft;
-        }
-        else if (x > right && y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topRight();
-            locked = LockMoveType::TopRight;
-        }
-        else if (x > right && y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = LockMoveType::BottomRight;
-        }
-        else if (x < RESIZE_LIMIT || y < RESIZE_LIMIT){
-            posCursor = event->globalPos() - this->geometry().topLeft();
-            locked = x < RESIZE_LIMIT ? LockMoveType::Left : LockMoveType::Top;
-        }
-        else if (x > right || y > bottom){
-            posCursor = event->globalPos() - this->geometry().bottomRight();
-            locked = x > right ? LockMoveType::Right : LockMoveType::Bottom;
-        }
-        event->accept();
-    }
-}
-
-void frmAddClass::undefMouseMoveEvent(QObject* object, QMouseEvent* event){
-    if (locked != LockMoveType::None){
-        switch (locked) {
-        case LockMoveType::TopLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::TopRight:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::BottomLeft:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::BottomRight:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), event->globalPos().y() - posCursor.y())));
-            break;
-        case LockMoveType::Left:
-            this->setGeometry(QRect(QPoint(event->globalPos().x() - posCursor.x(), this->geometry().top()),
-                                    this->geometry().bottomRight()));
-            break;
-        case LockMoveType::Right:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(event->globalPos().x() - posCursor.x(), this->geometry().bottom())));
-            break;
-        case LockMoveType::Top:
-            this->setGeometry(QRect(QPoint(this->geometry().left(), event->globalPos().y() - posCursor.y()),
-                                    this->geometry().bottomRight()));
-            break;
-        default:
-            this->setGeometry(QRect(this->geometry().topLeft(),
-                                    QPoint(this->geometry().right(), event->globalPos().y() - posCursor.y())));
-            break;
-        }
-        return;
-    }
-
-    int x = event->x(), y = event->y(), right = this->width() - RESIZE_LIMIT;
-    if (object->objectName() == "statusBar"){
-        if (x < RESIZE_LIMIT && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (x > right && y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        else if (y > (19 - RESIZE_LIMIT)){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    else if (object->objectName() == "titleBar"){
-        if (x < RESIZE_LIMIT && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeFDiagCursor));
-            return;
-        }
-        if (x > right && y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeBDiagCursor));
-            return;
-        }
-        else if (y < RESIZE_LIMIT){
-            this->setCursor(QCursor(Qt::SizeVerCursor));
-            return;
-        }
-    }
-    if (x < RESIZE_LIMIT || x > right){
-        this->setCursor(QCursor(Qt::SizeHorCursor));
-    }
-    else {
-        this->setCursor(QCursor(Qt::ArrowCursor));
-    }
-}
-
-void frmAddClass::mouseReleaseEvent(QMouseEvent *event){
-    locked = LockMoveType::None;
-    event->accept();
-}
-
-bool frmAddClass::eventFilter(QObject* object, QEvent* event)
-{
-    if(event->type() == QEvent::MouseMove)
-        undefMouseMoveEvent(object, static_cast<QMouseEvent*>(event));
-    else if (event->type() == QEvent::MouseButtonPress && object->objectName() == "titleBar"){
-        mousePressEvent(static_cast<QMouseEvent*>(event));
-    }
-    return false;
 }

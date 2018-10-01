@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Manage Class | SmartClass</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -897,9 +897,9 @@ QListWidget {
   <tabstop>edtBeginningDate</tabstop>
   <tabstop>edtEndDate</tabstop>
   <tabstop>edtPrice</tabstop>
-  <tabstop>btCancel</tabstop>
   <tabstop>btSave</tabstop>
   <tabstop>btReset</tabstop>
+  <tabstop>btCancel</tabstop>
   <tabstop>scrollManager</tabstop>
  </tabstops>
  <resources>

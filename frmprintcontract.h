@@ -1,69 +1,46 @@
 #ifndef FRMPRINTCONTRACT_H
 #define FRMPRINTCONTRACT_H
 
-#include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QMessageBox>
 #include <QSettings>
+#include <QVariant>
 #include <QProcess>
 #include <QEvent>
 #include <QDate>
 
-#include "dbmanager.h"
+#include "smartclassglobal.h"
 #include "printpreviewform.h"
+#include "nmainwindow.h"
+#include "dbmanager.h"
 
 namespace Ui {
 class frmPrintContract;
 }
 
-class frmPrintContract : public QMainWindow
+class frmPrintContract : public NMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit frmPrintContract(QWidget *parent = 0, QStringList studentData = QStringList(),
-                              QStringList parentData = QStringList(), QStringList* paymentData = NULL,
-                              int paymentDataSize = 0, QStringList* coursesData = NULL,
-                              int coursesDataSize = 0, const QString &companyName = NULL);
+    explicit frmPrintContract(QWidget *parent = 0, DBManager *db_manager = NULL, qlonglong studentID = -1);
     ~frmPrintContract();
-
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
 
 private:
     Ui::frmPrintContract *ui;
-    const int RESIZE_LIMIT;
 
-    QPoint posCursor;
-    LockMoveType locked;
-    QString currentUser, sessionRole;
+    qlonglong STUDENT_ID;
+    QString externalCommand, programPath, companyName;
+    PrintPreviewForm *frmPrintPrev;
+
+    QList<QVariant> sData, rData;
+    QList< QList<QVariant> > pData, cData;
 
     QString parseArguments();
-
-    QStringList studentData, parentalData;
-    QStringList *paymentData, *coursesData;
-    QString externalCommand, programPath;
-
-    const int PAYMENT_DATA_SIZE, COURSES_DATA_SIZE;
-
-    PrintPreviewForm *frmPrintPrev;
+    DBManager *db_manager;
 
 protected slots:
     void generateContractForm();

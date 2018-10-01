@@ -19,11 +19,11 @@ void QListWidgetPaymentItem::setInstallments(int installments){
     this->installmentsN = installments;
 }
 
-void QListWidgetPaymentItem::setDiscount(int percentage){
+void QListWidgetPaymentItem::setDiscount(double percentage){
     this->discountN = percentage;
 }
 
-int QListWidgetPaymentItem::discount(){
+double QListWidgetPaymentItem::discount(){
    return this->discountN;
 }
 

@@ -16,7 +16,7 @@ TARGET = SmartClass
 TEMPLATE = app
 
 win32 {
-    VERSION = 0.9.2.2
+    VERSION = 1.0.0.32
 
     QMAKE_TARGET_COMPANY = Nintersoft
     QMAKE_TARGET_PRODUCT = SmartClass
@@ -27,7 +27,7 @@ win32 {
 #    RC_LANG = 0x0416
 }
 else {
-    VERSION = 0.9.2
+    VERSION = 1.0.0
 }
 
 # The following define makes your compiler emit warnings if you use
@@ -41,48 +41,62 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+win32: LIBS += -L$$PWD/dbmanager/ -lDBManager
+
+INCLUDEPATH += $$PWD/nmainwindow \
+               $$PWD/dbmanager \
+               $$PWD/qlistwidgetpaymentitem \
+               $$PWD/smartclassglobal
+
+DEPENDPATH += $$PWD/dbmanager
 
 TRANSLATIONS += lang/SmartClass_pt.ts \
                 lang/SmartClass_en.ts
 
 SOURCES += \
-        main.cpp \
-        frmmain.cpp \
-    titlebar.cpp \
+    main.cpp \
+    nmainwindow/nmainwindow.cpp \
+    nmainwindow/titlebar.cpp \
+    qlistwidgetpaymentitem/qlistwidgetpaymentitem.cpp \
+    frmmain.cpp \
     frmlogin.cpp \
-    dbmanager.cpp \
     frmfirstrun.cpp \
     frmmanagestudent.cpp \
     frmimageviewer.cpp \
     frmabout.cpp \
     frmaddclass.cpp \
-    qlistwidgetpaymentitem.cpp \
     printpreviewform.cpp \
     frmreceipt.cpp \
     frmsettings.cpp \
     frmprintcontract.cpp \
-    frmimportexportdb.cpp
+    frmimportexportdb.cpp \
+    frmmanageusers.cpp \
+    frmmanageuser.cpp
 
 HEADERS += \
-        frmmain.h \
-    titlebar.h \
+    nmainwindow/nmainwindow.h \
+    nmainwindow/titlebar.h \
+    smartclassglobal/smartclassglobal.h \
+    qlistwidgetpaymentitem/qlistwidgetpaymentitem.h \
+    frmmain.h \
     frmlogin.h \
-    dbmanager.h \
     frmfirstrun.h \
     frmmanagestudent.h \
     frmimageviewer.h \
     frmabout.h \
     frmaddclass.h \
-    qlistwidgetpaymentitem.h \
     printpreviewform.h \
     frmreceipt.h \
     frmsettings.h \
     frmprintcontract.h \
-    frmimportexportdb.h
+    frmimportexportdb.h \
+    frmmanageusers.h \
+    frmmanageuser.h
 
 FORMS += \
-        frmmain.ui \
-    titlebar.ui \
+    nmainwindow/nmainwindow.ui \
+    nmainwindow/titlebar.ui \
+    frmmain.ui \
     frmlogin.ui \
     frmfirstrun.ui \
     frmmanagestudent.ui \
@@ -93,7 +107,9 @@ FORMS += \
     frmreceipt.ui \
     frmsettings.ui \
     frmprintcontract.ui \
-    frmimportexportdb.ui
+    frmimportexportdb.ui \
+    frmmanageusers.ui \
+    frmmanageuser.ui
 
 RESOURCES += \
     resources.qrc

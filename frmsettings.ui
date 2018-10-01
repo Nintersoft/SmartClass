@@ -585,22 +585,6 @@ QListWidget {
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="TitleBar" name="titleBar" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>30</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>30</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
        <number>5</number>
@@ -675,7 +659,7 @@ QListWidget {
                <x>0</x>
                <y>0</y>
                <width>454</width>
-               <height>392</height>
+               <height>422</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
@@ -729,7 +713,7 @@ I am aware that this course is going to be ministred at %6.</string>
                  <item row="0" column="1">
                   <widget class="QComboBox" name="cbLanguageSelector">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <property name="editable">
                     <bool>false</bool>
@@ -1104,7 +1088,7 @@ I am aware that this course is going to be ministred at %6.</string>
                <x>0</x>
                <y>0</y>
                <width>454</width>
-               <height>392</height>
+               <height>422</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -1373,14 +1357,35 @@ I am aware that this course is going to be ministred at %6.</string>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>TitleBar</class>
-   <extends>QWidget</extends>
-   <header>titlebar.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
+ <tabstops>
+  <tabstop>scrollTabGeneral</tabstop>
+  <tabstop>edtContractText</tabstop>
+  <tabstop>cbLanguageSelector</tabstop>
+  <tabstop>cbEnableDBBackup</tabstop>
+  <tabstop>rbSheduleTime</tabstop>
+  <tabstop>rbScheduleInterval</tabstop>
+  <tabstop>edtSchedule</tabstop>
+  <tabstop>btAddSchedule</tabstop>
+  <tabstop>btRemoveSchedule</tabstop>
+  <tabstop>listSchedules</tabstop>
+  <tabstop>cbBackupInterval</tabstop>
+  <tabstop>edtBackupPath</tabstop>
+  <tabstop>btSearchBackupPath</tabstop>
+  <tabstop>cbUseExternalProgram</tabstop>
+  <tabstop>edtExternalProgramPath</tabstop>
+  <tabstop>btSearchExternalProgram</tabstop>
+  <tabstop>btClArgsHelper</tabstop>
+  <tabstop>edtClArgs</tabstop>
+  <tabstop>edtCompanyName</tabstop>
+  <tabstop>edtCompanyLogo</tabstop>
+  <tabstop>btSearchCompanyLogo</tabstop>
+  <tabstop>btSaveSettings</tabstop>
+  <tabstop>btResetSettings</tabstop>
+  <tabstop>btCancel</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>scrollTabInfo</tabstop>
+  <tabstop>scrollTabBackup</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>

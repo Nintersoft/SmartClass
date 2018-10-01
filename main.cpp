@@ -5,8 +5,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     frmMain w;
-    if (w.returnCode != -1)
-        return w.returnCode;
+
+    if (w.getReturnCode() != -1)
+        return w.getReturnCode();
 
     return a.exec();
 }

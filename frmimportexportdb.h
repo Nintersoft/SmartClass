@@ -1,27 +1,31 @@
 #ifndef FRMIMPORTEXPORTDB_H
 #define FRMIMPORTEXPORTDB_H
 
-#include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QStringList>
-#include <QRegExp>
 #include <QFileInfo>
+#include <QVariant>
+#include <QRegExp>
 #include <QPixmap>
 #include <QEvent>
+#include <QDate>
+#include <QList>
 #include <QFile>
 #include <QDir>
 
 #include "dbmanager.h"
+#include "nmainwindow.h"
 #include "frmlogin.h"
 
 namespace Ui {
 class frmImportExportDB;
 }
 
-class frmImportExportDB : public QMainWindow
+class frmImportExportDB : public NMainWindow
 {
     Q_OBJECT
 
@@ -32,40 +36,19 @@ public:
     };
 
     explicit frmImportExportDB(QWidget *parent = 0, ImportMode mode = frmImportExportDB::Export,
-                               const QStringList &dbData = QStringList());
+                               const DBManager::DBData &dbData = DBManager::DBData());
     ~frmImportExportDB();
-
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
-    bool eventFilter(QObject *watched, QEvent *event);
-
-    enum LockMoveType{
-        Left,
-        Right,
-        Top,
-        Bottom,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight,
-        None
-    };
 
 private:
     Ui::frmImportExportDB *ui;
-    const int RESIZE_LIMIT;
-    const ImportMode CURRENT_MODE;
 
-    QPoint posCursor;
-    LockMoveType locked;
+    const ImportMode CURRENT_MODE;
+    QDir currentImportDir;
     QString currentUser, sessionRole;
 
     DBManager* myDB;
-    QStringList* tableColumns;
 
-    QDir currentImportDir;
+    QList <QVariant> stringToVariant(const QStringList &sList, SmartClassGlobal::TablesSpec tableSpec);
 
 protected slots:
     void importDB();
