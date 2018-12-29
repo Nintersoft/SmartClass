@@ -1,7 +1,7 @@
 #include "frmprintcontract.h"
 #include "ui_frmprintcontract.h"
 
-frmPrintContract::frmPrintContract(QWidget *parent, DBManager *db_manager, qlonglong studentID) :
+frmPrintContract::frmPrintContract(QWidget *parent, qlonglong studentID) :
     NMainWindow(parent),
     ui(new Ui::frmPrintContract),
     STUDENT_ID(studentID)
@@ -21,59 +21,65 @@ frmPrintContract::frmPrintContract(QWidget *parent, DBManager *db_manager, qlong
      *  End of GUI implementation
      */
 
-    if (db_manager){
-        this->db_manager = db_manager;
+    this->db_manager = DBManager::getInstance();
 
-        QSettings mySettings("Nintersoft", "SmartClass");
-        if (mySettings.childGroups().contains("external tools")){
-            mySettings.beginGroup("external tools");
+    QSettings mySettings("Nintersoft", "SmartClass");
+    if (mySettings.childGroups().contains("external tools")){
+        mySettings.beginGroup("external tools");
 
-            programPath = mySettings.value("program path", "").toString();
-            ui->btOpenExternal->setEnabled(mySettings.value("use external tool", false).toBool() &&
-                                           !programPath.isEmpty());
-            if (ui->btOpenExternal->isEnabled()){
-                externalCommand = mySettings.value("command",
-                                                    tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments")).toString();
-            }
-
-            mySettings.endGroup();
+        programPath = mySettings.value("program path", "").toString();
+        ui->btOpenExternal->setEnabled(mySettings.value("use external tool", false).toBool() &&
+                                       !programPath.isEmpty());
+        if (ui->btOpenExternal->isEnabled()){
+            externalCommand = mySettings.value("command",
+                                                tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments")).toString();
         }
 
-        sData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(0),
-                                        STUDENT_ID);
-        rData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                                        sData.at(2));
-        QList< QList<QVariant> > settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
-        if (settings.size() && settings.at(0).size())
+        mySettings.endGroup();
+    }
+
+    sData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(0), STUDENT_ID,
+                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT));
+    rData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0), sData.at(2),
+                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE));
+    QList<QVariantList> settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
+    if (settings.size())
+        if (settings.at(0).size())
             companyName = settings[0][0].toString();
         else companyName = tr("Nintersoft");
+    else companyName = tr("Nintersoft");
 
-        ui->lblStudentName->setText(sData.at(1).toString());
-        ui->lblParentName->setText(rData.at(1).toString());
-        ui->lblParentID->setText(rData.at(6).toString());
-        ui->lblParentCPG->setText(rData.at(7).toString());
-        ui->lblCurrentDate->setText(QDate::currentDate().toString("dd/MM/yyyy"));
-        ui->edtCompanyName->setText(companyName);
+    ui->lblStudentName->setText(sData.at(1).toString());
+    ui->lblParentName->setText(rData.at(1).toString());
+    ui->lblParentID->setText(rData.at(6).toString());
+    ui->lblParentCPG->setText(rData.at(7).toString());
+    ui->lblCurrentDate->setText(QDate::currentDate().toString(tr("dd/MM/yyyy")));
+    ui->edtCompanyName->setText(companyName);
 
-        QList<QVariant> courseAssociation = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                                                                    SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                                                                    STUDENT_ID);
+    QList<QVariantList> courseAssociation = db_manager->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                                                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS),
+                                                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS).at(1),
+                                                                        STUDENT_ID);
 
-        for (int i = 0; i < courseAssociation.length(); ++i){
-            QList<QVariant> courseData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
-                                                                 SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
-                                                                 courseAssociation.at(0));
-            QString courseSyntesis = courseData.at(1).toString() + tr(" ( class #") + courseData.at(5).toString() + tr(" ) - ") + courseData.at(6).toString()
-                            + tr(" * starts on: ") + courseData.at(7).toString();
-            ui->cbStudentCourse->addItem(courseSyntesis, courseData.at(0));
-            cData << courseData;
-        }
+    for (int i = 0; i < courseAssociation.length(); ++i){
+        QVariantList courseData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).at(0),
+                                                          courseAssociation.at(i).at(0));
+        QVariantList paymentData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                                                           SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).mid(0, 2),
+                                                           QVariantList() << STUDENT_ID << courseData.at(0));
 
-        connect(ui->btOpenExternal, SIGNAL(clicked(bool)), this, SLOT(openExternalTool()));
-        connect(ui->btGenerateForm, SIGNAL(clicked(bool)), this, SLOT(generateContractForm()));
+        QString courseSyntesis = courseData.at(1).toString() + tr(" ( class #") + courseData.at(5).toString() + tr(" ) - ") + courseData.at(6).toString()
+                        + tr(" * starts on: ") + courseData.at(7).toString();
+        ui->cbStudentCourse->addItem(courseSyntesis, courseData.at(0));
+        cData << courseData;
+        pData << paymentData;
     }
+
+    connect(ui->btOpenExternal, SIGNAL(clicked(bool)), this, SLOT(openExternalTool()));
+    connect(ui->btGenerateForm, SIGNAL(clicked(bool)), this, SLOT(generateContractForm()));
 }
 
 frmPrintContract::~frmPrintContract()
@@ -90,26 +96,15 @@ void frmPrintContract::openExternalTool(){
     }
     QProcess externalTool;
     externalTool.start(parseArguments());
-    QMessageBox::information(this, tr("Test | SmartClass"), parseArguments(), QMessageBox::Ok);
 }
 
 QString frmPrintContract::parseArguments(){
     QString commandLine = externalCommand;
-    int currentLine = 0;
-    for (int i = 0; i < pData.length(); ++i)
-        if (pData[i].at(0) == ui->cbStudentCourse->currentData(Qt::UserRole)){
-            currentLine = i;
-            break;
-        }
+    int currentLine = ui->cbStudentCourse->currentIndex();
 
     QString cost = "0.00";
-    for (int i = 0; i < cData.length(); ++i){
-        if (cData[i].at(0) == ui->cbStudentCourse->currentData(Qt::UserRole)){
-            cost = QString::number(cData[i].at(9).toDouble(), 'f', 2);
-            cost.replace('.', tr(","));
-            break;
-        }
-    }
+    cost = QString::number(cData[currentLine].at(9).toDouble(), 'f', 2);
+    cost.replace('.', tr(","));
 
     return commandLine.replace(tr("$prog_path"), programPath)
             .replace(tr("$s_name"), "\"" + sData.at(1).toString() + "\"")
@@ -135,7 +130,7 @@ QString frmPrintContract::parseArguments(){
 }
 
 void frmPrintContract::generateContractForm(){
-    QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
+    QString errorMsg = tr("Unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
                           " Please, fix the folowing issues before trying to generate the form again:\n");
     bool error = false;
 
@@ -161,9 +156,10 @@ void frmPrintContract::generateContractForm(){
                                  "\nI am aware that this course is going to be ministred at %6.");
 
     QList< QList<QVariant> > settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
-    if (settings.size() && settings[0].size())
-        if (!settings[0][1].isNull() && settings[0][1].isValid())
-            defaultTemplate = settings[0][1].toString();
+    if (settings.size())
+        if (settings[0].size())
+            if (!settings[0][1].isNull() && settings[0][1].isValid())
+                defaultTemplate = settings[0][1].toString();
 
     defaultTemplate = defaultTemplate.arg(ui->lblParentName->text())
                                      .arg(ui->lblParentID->text())
@@ -172,13 +168,13 @@ void frmPrintContract::generateContractForm(){
                                      .arg(ui->cbStudentCourse->currentText())
                                      .arg(ui->edtCompanyName->text());
 
-    if (ui->cbIncludeCompanyLogo->isChecked()
-            && !settings[0][2].isNull() && settings[0][2].isValid()){
-        frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
-                                                                << ui->lblParentName->text()
-                                                                << ui->edtCompanyName->text(),
-                                            db_manager->variantToPixmap(settings[0][2]));
-    }
+    bool hasImage = ui->cbIncludeCompanyLogo->isChecked() && settings.size();
+    if (hasImage) hasImage &= settings[0].size();
+    if (hasImage) hasImage &= (settings[0][2].isNull() && settings[0][2].isValid());
+    if (hasImage) frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
+                                                                            << ui->lblParentName->text()
+                                                                            << ui->edtCompanyName->text(),
+                                                        db_manager->variantToPixmap(settings[0][2]));
     else frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
                                                     << ui->lblParentName->text()
                                                     << ui->edtCompanyName->text());

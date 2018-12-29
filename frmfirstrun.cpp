@@ -20,7 +20,7 @@ frmFirstRun::frmFirstRun(QWidget *parent) :
     canChangeLang = true;
     settingsExists = false;
 
-    profileID = 0;
+    profileID = -1;
 
     currentLangIndex = 0;
     ui->grpMySQLSettings->setEnabled(false);
@@ -49,9 +49,8 @@ frmFirstRun::frmFirstRun(QWidget *parent) :
 frmFirstRun::~frmFirstRun()
 {
     if (db_manager){
-        if (db_manager->isOpen()) db_manager->closeDB();
+        db_manager->removeInstance();
         delete db_manager;
-        db_manager = NULL;
     }
     delete ui;
 }
@@ -78,78 +77,92 @@ void frmFirstRun::nextStep(){
 
     if (currentTab == 1){
         if (db_manager){
-            delete db_manager;
+            db_manager->removeInstance();
             db_manager = NULL;
         }
 
         DBManager::DBData db_data;
 
         if (ui->rbSQLite->isChecked()){
-            db_data.setDatabaseName(SmartClassGlobal::getDBPath());
             SmartClassGlobal::setTablePrefix(ui->edtDatabasePrefix->text());
             SmartClassGlobal::setDatabaseType(DBManager::SQLITE);
-            db_manager = new DBManager(db_data, SmartClassGlobal::tablePrefix(),
-                                        SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("firstRun"));
+
+            db_data.setDatabaseName(SmartClassGlobal::getDBPath());
+            db_data.setTablePrefix(SmartClassGlobal::tablePrefix());
+            db_data.setDatabaseConnectionType(SmartClassGlobal::databaseType());
+            db_data.setConnectionName(DBManager::getUniqueConnectionName("firstRun"));
+
+            db_manager = DBManager::getInstance(db_data);
         }
         else{
+            SmartClassGlobal::setTablePrefix(ui->edtDatabasePrefix->text());
+            SmartClassGlobal::setDatabaseType(DBManager::MYSQL);
+
             db_data.setHostName(ui->edtHost->text());
             db_data.setDatabaseName(ui->edtDatabase->text());
             db_data.setPort(ui->edtPortNumber->value());
             db_data.setUserName(ui->edtUsername->text());
             db_data.setPassword(ui->edtPassword->text());
-            SmartClassGlobal::setTablePrefix(ui->edtDatabasePrefix->text());
-            SmartClassGlobal::setDatabaseType(DBManager::MYSQL);
-            db_manager = new DBManager(db_data, ui->edtDatabasePrefix->text(),
-                                        SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("firstRun"));
+            db_data.setTablePrefix(SmartClassGlobal::tablePrefix());
+            db_data.setDatabaseConnectionType(SmartClassGlobal::databaseType());
+            db_data.setConnectionName(DBManager::getUniqueConnectionName("firstRun"));
+
+            db_manager = DBManager::getInstance(db_data);
         }
 
-        if (!db_manager->openDB()){
+        if (!db_manager->open()){
             QMessageBox::critical(this, tr("Error | SmartClass"),
                                     tr("An error has occurred while we tried to connect to the database. Please, check the input and try again.\nDetails: %1.").arg(db_manager->lastError().text()),
                                     QMessageBox::Ok, QMessageBox::NoButton);
-            delete db_manager;
+            db_manager->removeInstance();
             db_manager = NULL;
             return;
         }
 
         db_export_data = db_data;
 
-        QSqlQuery checkSettings = db_manager->runCustomQuery();
-        checkSettings.prepare("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS) + "LIMIT 1");
+        QSqlQuery checkSettings = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS) + "LIMIT 1");
         if (checkSettings.exec()){
-            ui->grpCompanySettings->setEnabled(false);
-            settingsExists = true;
+            QVariantList settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
 
-            if (db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS)).size()){
-                QList<QVariant> settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS)).at(0);
+            settingsExists = settings.size();
+            if (settingsExists){
+                QVariantList settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS)).at(0);
                 ui->edtCompanyName->setText(settings.at(0).toString());
-                cLogo = db_manager->variantToPixmap(settings.at(2));
+                cLogo = DBManager::variantToPixmap(settings.at(2));
                 ui->lblCompanyLogoImg->setPixmap(cLogo.scaled(ui->lblCompanyLogoImg->size(), Qt::KeepAspectRatio));
+
+                ui->grpCompanySettings->setEnabled(false);
             }
         }
+        else settingsExists = false;
 
         ui->edtDeviceName->setText(QHostInfo::localHostName());
         ui->edtDeviceOS->setText(QSysInfo::productType());
         ui->edtDeviceOSMV->setText(QSysInfo::productVersion());
         ui->edtDeviceLastAccess->setText(QDateTime::currentDateTime().toString("dd/MM/yyyy - HH:mm:ss"));
 
-        QSqlQuery checkActiveC = db_manager->runCustomQuery();
-        checkActiveC.prepare("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS) + "LIMIT 1");
+        QSqlQuery checkUsers = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::USERS) + " LIMIT 1");
+        if (!checkUsers.exec()){
+            db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                                    SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS));
+        }
+
+        QSqlQuery checkActiveC = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS) + " LIMIT 1");
         if (checkActiveC.exec()){
-            activeConnections = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS));
-            for (int i = 0; i < activeConnections.size(); ++i){
-                if (activeConnections[i].at(1).toString() == ui->edtDeviceName->text()
-                        && activeConnections[i].at(2).toString() == ui->edtDeviceOS->text()
-                        && activeConnections[i].at(3).toString() == ui->edtDeviceOSMV->text()){
-                    profileID = activeConnections[i].at(0).toLongLong();
-                    break;
-                }
-            }
+            QVariantList connection = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                              SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).mid(1, 3),
+                                                              QVariantList() << ui->edtDeviceName->text() << ui->edtDeviceOS->text() << ui->edtDeviceOSMV->text(),
+                                                              SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS));
+            if (connection.size())
+                profileID = connection.at(0).toLongLong();
         }
         else if(!db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
-                                         SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS))){
+                                         SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS) <<
+                                         SmartClassGlobal::getTableConstraints(SmartClassGlobal::ACTIVECONNECTIONS))){
             QMessageBox::critical(this, tr("Error | SmartClass"),
-                                  tr("It was not possible to create the table of device access control. Please, try again."), QMessageBox::Ok, QMessageBox::NoButton);
+                                  tr("It was not possible to create the table of device access control. Please, try again later. Details: %1 .").arg(db_manager->lastError().text()),
+                                  QMessageBox::Ok, QMessageBox::NoButton);
             return;
         }
     }
@@ -160,16 +173,17 @@ void frmFirstRun::nextStep(){
         do {
             if (!complete[0]){
                 if (!settingsExists){
-                    QStringList columns = SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS);
+                    QStringList columns = SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS);
                     columns.removeAt(1);
 
-                    QList<QVariant> settingsData;
+                    QVariantList settingsData;
                     settingsData << ui->edtCompanyName->text()
                                  << db_manager->pixmapToVariant(cLogo);
 
                     complete[0] = db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
-                                                          SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS))
-                                    && db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                                          SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS));
+                    if (complete[0])
+                        complete[0] &= db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
                                                              columns,
                                                              settingsData);
                 }
@@ -177,41 +191,42 @@ void frmFirstRun::nextStep(){
             }
 
             if (!complete[1] || !complete[2] || !complete[3]){
-                if (profileID != -1){
-                    QStringList columns = SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS);
+                QStringList columns = SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS);
 
+                if (profileID != -1){
                     complete[1] = db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
                                                         columns.at(0),
                                                         profileID,
                                                         QStringList() << columns.at(4),
-                                                        QList<QVariant>() <<  ui->edtDeviceLastAccess->text());
+                                                        QVariantList() <<  ui->edtDeviceLastAccess->text());
                     complete[2] = true;
                     complete[3] = true;
                 }
                 else {
-                    QStringList columns = SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS);
-                    QList<QVariant> data;
+                    QVariantList data;
                     data << ui->edtDeviceName->text()
                          << ui->edtDeviceOS->text()
                          << ui->edtDeviceOSMV->text()
                          << ui->edtDeviceLastAccess->text();
 
-                    if (complete[2]) complete[2] = db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
-                                                                            columns.mid(1),
-                                                                            data);
+                    if (!complete[2]) complete[2] = db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                                          columns.mid(1),
+                                                                          data);
 
-                    QList<QVariant> profID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
-                                                                     columns.mid(1),
-                                                                     data,
-                                                                     QStringList() << columns.at(0));
-                    complete[3] = profID.size();
-                    if (complete[3]) profileID = profID.at(0).toLongLong();
-                    complete[1] = true;
+                    if (complete[2]){
+                        QVariantList profID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                                      columns.mid(1),
+                                                                      data,
+                                                                      QStringList() << columns.at(0));
+                        complete[3] = profID.size();
+                        if (complete[3]) profileID = profID.at(0).toLongLong();
+                        complete[1] = true;
+                    }
                 }
             }
 
             check = complete[0];
-            for (int i = 1; i < 4; ++i) check = check && complete[i];
+            for (int i = 1; i < 4; ++i) check &= complete[i];
 
             if (!check){
                 QString errors = "";
@@ -223,7 +238,7 @@ void frmFirstRun::nextStep(){
                                                   tr("Some errors have occurred while we tried to store your settings into the database.\n"
                                                      "Here are the details:\n"
                                                      "\n"
-                                                     "%1\n"
+                                                     "%1"
                                                      "\n"
                                                      "Would you like to try to save it again?").arg(errors),
                                                   QMessageBox::Retry, QMessageBox::Abort)
@@ -236,19 +251,19 @@ void frmFirstRun::nextStep(){
         QSettings settings("Nintersoft", "SmartClass");
 
         settings.beginGroup("dbinfo");
-        if (SmartClassGlobal::databaseType() == DBManager::SQLITE){
-            settings.setValue("database type", QString("SQLITE"));
-            settings.setValue("table prefix", SmartClassGlobal::tablePrefix());
-        }
-        else {
+
+        settings.setValue("table prefix", SmartClassGlobal::tablePrefix());
+
+        if (SmartClassGlobal::databaseType() == DBManager::MYSQL){
             settings.setValue("database type", QString("MYSQL"));
-            settings.setValue("host", db_export_data.hostName());
             settings.setValue("database", db_export_data.databaseName());
+            settings.setValue("host", db_export_data.hostName());
             settings.setValue("port", db_export_data.port());
             settings.setValue("username", db_export_data.username());
             settings.setValue("password", db_export_data.password());
-            settings.setValue("table prefix", SmartClassGlobal::tablePrefix());
         }
+        else settings.setValue("database type", QString("SQLITE"));
+
         settings.endGroup();
 
         settings.beginGroup("language options");
@@ -259,11 +274,9 @@ void frmFirstRun::nextStep(){
         settings.setValue("device ID", profileID);
         settings.endGroup();
 
-        db_manager->closeDB();
-        delete db_manager;
+        db_manager->close();
+        db_manager->removeInstance();
         db_manager = NULL;
-
-        allowed = true;
 
         ui->btNextStep->setVisible(false);
         ui->btNextStep->setVisible(false);
@@ -291,6 +304,7 @@ void frmFirstRun::previousStep(){
 }
 
 void frmFirstRun::saveDBSettings(){
+    allowed = true;
     sendData(db_export_data, !currentLangIndex ? "en" : "pt");
 }
 

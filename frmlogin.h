@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QSettings>
+#include <QDateTime>
+#include <QHostInfo>
 #include <QVariant>
 #include <QSysInfo>
 #include <QFile>
@@ -29,7 +31,7 @@ class frmLogin : public NMainWindow
     Q_OBJECT
 
 public:
-    explicit frmLogin(QWidget *parent = 0, const DBManager::DBData dbData = DBManager::DBData());
+    explicit frmLogin(QWidget *parent = 0);
     ~frmLogin();
 
     inline static QString randomSalt(int size){
@@ -84,7 +86,7 @@ protected slots:
 private:
     Ui::frmLogin *ui;
 
-    DBManager *myDb;
+    DBManager *db_manager;
     qlonglong dID;
 
 signals:

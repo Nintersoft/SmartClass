@@ -1,7 +1,7 @@
 #include "frmsettings.h"
 #include "ui_frmsettings.h"
 
-frmSettings::frmSettings(QWidget *parent, DBManager *db_manager, OpenMode mode) :
+frmSettings::frmSettings(QWidget *parent, OpenMode mode) :
     NMainWindow(parent),
     ui(new Ui::frmSettings),
     programSettings("Nintersoft", "SmartClass")
@@ -17,67 +17,67 @@ frmSettings::frmSettings(QWidget *parent, DBManager *db_manager, OpenMode mode) 
      *  End of GUI implementation
      */
 
-    if (db_manager){
-        this->db_manager = db_manager;
+    db_manager = DBManager::getInstance();
 
-        if (mode == frmSettings::Info) ui->tabWidget->setCurrentIndex(2);
-        this->setMaximumSize(this->size());
-        this->setMinimumSize(this->size());
+    this->db_manager = db_manager;
 
-        ui->lblScheduleTime->setVisible(false);
-        ui->edtSchedule->setVisible(false);
-        ui->btAddSchedule->setVisible(false);
-        ui->btRemoveSchedule->setVisible(false);
-        ui->listSchedules->setVisible(false);
+    if (mode == frmSettings::Info) ui->tabWidget->setCurrentIndex(2);
+    this->setMaximumSize(this->size());
+    this->setMinimumSize(this->size());
 
-        ui->edtBackupPath->setText(QDir::homePath() + "/.SmartClassBKP/");
+    ui->lblScheduleTime->setVisible(false);
+    ui->edtSchedule->setVisible(false);
+    ui->btAddSchedule->setVisible(false);
+    ui->btRemoveSchedule->setVisible(false);
+    ui->listSchedules->setVisible(false);
 
-        connect(ui->btSearchBackupPath, SIGNAL(clicked(bool)), this, SLOT(selectBackupPath()));
-        connect(ui->btSearchCompanyLogo, SIGNAL(clicked(bool)), this, SLOT(selectNewLogo()));
-        connect(ui->btSearchExternalProgram, SIGNAL(clicked(bool)), this, SLOT(selectExternalProgram()));
+    ui->edtBackupPath->setText(QDir::homePath() + "/.SmartClassBKP/");
 
-        connect(ui->btClArgsHelper, SIGNAL(clicked(bool)), this, SLOT(openExternalProgramHelper()));
+    connect(ui->btSearchBackupPath, SIGNAL(clicked(bool)), this, SLOT(selectBackupPath()));
+    connect(ui->btSearchCompanyLogo, SIGNAL(clicked(bool)), this, SLOT(selectNewLogo()));
+    connect(ui->btSearchExternalProgram, SIGNAL(clicked(bool)), this, SLOT(selectExternalProgram()));
 
-        connect(ui->btAddSchedule, SIGNAL(clicked(bool)), this, SLOT(addSchedule()));
-        connect(ui->btRemoveSchedule, SIGNAL(clicked(bool)), this, SLOT(removeSchedule()));
+    connect(ui->btClArgsHelper, SIGNAL(clicked(bool)), this, SLOT(openExternalProgramHelper()));
 
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->rbScheduleInterval, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->rbSheduleTime, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblScheduleTime, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->edtSchedule, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->btAddSchedule, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->listSchedules, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblBackupInterval, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->cbBackupInterval, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblBackupIntervalDesc, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblBackupPath, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->edtBackupPath, SLOT(setEnabled(bool)));
-        connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->btSearchBackupPath, SLOT(setEnabled(bool)));
+    connect(ui->btAddSchedule, SIGNAL(clicked(bool)), this, SLOT(addSchedule()));
+    connect(ui->btRemoveSchedule, SIGNAL(clicked(bool)), this, SLOT(removeSchedule()));
 
-        connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->edtExternalProgramPath, SLOT(setEnabled(bool)));
-        connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->lblExternalProgramPath, SLOT(setEnabled(bool)));
-        connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->btSearchExternalProgram, SLOT(setEnabled(bool)));
-        connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->lblClArgs, SLOT(setEnabled(bool)));
-        connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->btClArgsHelper, SLOT(setEnabled(bool)));
-        connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->edtClArgs, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->rbScheduleInterval, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->rbSheduleTime, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblScheduleTime, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->edtSchedule, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->btAddSchedule, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->listSchedules, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblBackupInterval, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->cbBackupInterval, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblBackupIntervalDesc, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->lblBackupPath, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->edtBackupPath, SLOT(setEnabled(bool)));
+    connect(ui->cbEnableDBBackup, SIGNAL(toggled(bool)), ui->btSearchBackupPath, SLOT(setEnabled(bool)));
 
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->lblBackupInterval, SLOT(setVisible(bool)));
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->lblBackupIntervalDesc, SLOT(setVisible(bool)));
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->cbBackupInterval, SLOT(setVisible(bool)));
+    connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->edtExternalProgramPath, SLOT(setEnabled(bool)));
+    connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->lblExternalProgramPath, SLOT(setEnabled(bool)));
+    connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->btSearchExternalProgram, SLOT(setEnabled(bool)));
+    connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->lblClArgs, SLOT(setEnabled(bool)));
+    connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->btClArgsHelper, SLOT(setEnabled(bool)));
+    connect(ui->cbUseExternalProgram, SIGNAL(toggled(bool)), ui->edtClArgs, SLOT(setEnabled(bool)));
 
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->lblScheduleTime, SLOT(setHidden(bool)));
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->edtSchedule, SLOT(setHidden(bool)));
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->btAddSchedule, SLOT(setHidden(bool)));
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->btRemoveSchedule, SLOT(setHidden(bool)));
-        connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->listSchedules, SLOT(setHidden(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->lblBackupInterval, SLOT(setVisible(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->lblBackupIntervalDesc, SLOT(setVisible(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->cbBackupInterval, SLOT(setVisible(bool)));
 
-        retrieveSettings();
-        connect(ui->btSaveSettings, SIGNAL(clicked(bool)), this, SLOT(saveOptions()));
-        connect(ui->btResetSettings, SIGNAL(clicked(bool)), this, SLOT(resetSettings()));
-        connect(ui->btCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->lblScheduleTime, SLOT(setHidden(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->edtSchedule, SLOT(setHidden(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->btAddSchedule, SLOT(setHidden(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->btRemoveSchedule, SLOT(setHidden(bool)));
+    connect(ui->rbScheduleInterval, SIGNAL(toggled(bool)), ui->listSchedules, SLOT(setHidden(bool)));
 
-        langSettings = ui->cbLanguageSelector->currentIndex();
-    }
+    retrieveSettings();
+    connect(ui->btSaveSettings, SIGNAL(clicked(bool)), this, SLOT(saveOptions()));
+    connect(ui->btResetSettings, SIGNAL(clicked(bool)), this, SLOT(resetSettings()));
+    connect(ui->btCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
+
+    langSettings = ui->cbLanguageSelector->currentIndex();
 }
 
 frmSettings::~frmSettings()
@@ -86,26 +86,26 @@ frmSettings::~frmSettings()
 }
 
 void frmSettings::retrieveSettings(){
-    gSettings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
-    if (gSettings.size() && gSettings.at(0).size()){
-        if (gSettings[0][1].isValid() && !gSettings[0][1].isNull())
-            ui->edtContractText->setPlainText(gSettings[0][1].toString());
-        else ui->edtContractText->setPlainText(tr("I, %1, owner of the ID %2 and CPG %3,"
-                                                  " hereby confirm that I am enrolling my son/daugther %4 on the following course:"
-                                                  "\n"
-                                                  "\n - %5."
-                                                  "\n"
-                                                  "\nI am aware that this course is going to be ministred at %6."));
-        if (gSettings[0][0].isValid() && !gSettings[0][0].isNull())
-            ui->edtCompanyName->setText(gSettings[0][0].toString());
-        else ui->edtCompanyName->setText(tr("Nintersoft Team"));
+    gSettings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS));
+    if (gSettings.size()){
+        if (gSettings.at(0).size()){
+            if (gSettings[0][0].isValid() && !gSettings[0][0].isNull())
+                ui->edtCompanyName->setText(gSettings[0][0].toString());
+            else ui->edtCompanyName->setText(tr("Nintersoft Team"));
 
-        if (gSettings[0][0].isValid() && !gSettings[0][0].isNull())
-            ui->edtCompanyName->setText(gSettings[0][0].toString());
-        else ui->edtCompanyName->setText(tr("Nintersoft Team"));
+            if (gSettings[0][1].isValid() && !gSettings[0][1].isNull())
+                ui->edtContractText->setPlainText(gSettings[0][1].toString());
+            else ui->edtContractText->setPlainText(tr("I, %1, owner of the ID %2 and CPG %3,"
+                                                      " hereby confirm that I am enrolling my son/daugther %4 on the following course:"
+                                                      "\n"
+                                                      "\n - %5."
+                                                      "\n"
+                                                      "\nI am aware that this course is going to be ministred at %6."));
 
-        if (gSettings[0][2].isValid() && !gSettings[0][2].isNull())
-            ui->lblLogoImage->setPixmap(db_manager->variantToPixmap(gSettings[0][2]));
+            if (gSettings[0][2].isValid() && !gSettings[0][2].isNull())
+                ui->lblLogoImage->setPixmap(DBManager::variantToPixmap(gSettings[0][2]));
+        }
     }
 
     if (programSettings.childGroups().contains("language options")){
@@ -118,7 +118,7 @@ void frmSettings::retrieveSettings(){
         ui->cbEnableDBBackup->setChecked(programSettings.value("enable backup", true).toBool());
         if (programSettings.value("backup type").toInt() == 1) ui->rbScheduleInterval->setChecked(true);
         else ui->rbSheduleTime->setChecked(true);
-        ui->cbBackupInterval->setCurrentIndex(programSettings.value("backup interval index").toInt());
+        ui->cbBackupInterval->setCurrentIndex(programSettings.value("backup interval index", 7).toInt());
 
         QStringList scheduledTimes = programSettings.value("scheduled backups", "").toString().split(';', QString::SkipEmptyParts);
         if (!scheduledTimes.isEmpty()){
@@ -162,22 +162,22 @@ void frmSettings::resetSettings(){
 }
 
 void frmSettings::saveOptions(){
-    QList<QVariant> globalSettings;
+    QVariantList globalSettings;
     globalSettings << (ui->edtCompanyName->text().isEmpty() ? tr("Nintersoft Team") : ui->edtCompanyName->text())
                    << ui->edtContractText->toPlainText();
 
     if (!ui->edtCompanyLogo->text().isEmpty() && QFile::exists(ui->edtCompanyLogo->text()))
-        globalSettings << db_manager->pixmapToVariant(ui->edtCompanyLogo->text());
+        globalSettings << DBManager::pixmapToVariant(QPixmap(ui->edtCompanyLogo->text()));
     else globalSettings << QVariant();
 
     if (gSettings.size() && gSettings[0].size())
         db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
-                              SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS).at(0),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS).at(0),
                               gSettings[0][0],
-                              SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS),
                               globalSettings);
     else db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
-                               SmartClassGlobal::getTableStructure(SmartClassGlobal::SETTINGS),
+                               SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS),
                                globalSettings);
 
     programSettings.beginGroup("language options");
@@ -257,7 +257,6 @@ void frmSettings::addSchedule(){
 
 void frmSettings::removeSchedule(){
     int currentRow = ui->listSchedules->currentRow();
-    if (currentRow < 0) return;
 
     if (currentRow < 0){
         ui->btRemoveSchedule->setEnabled(false);

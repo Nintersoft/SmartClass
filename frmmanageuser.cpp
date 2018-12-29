@@ -24,6 +24,8 @@ frmManageUser::frmManageUser(QWidget *parent, const QList<QVariant> &data,
     ui->edtQuestion->setText(data.at(2).toString());
     ui->cbRole->setCurrentIndex(data.at(3).toInt());
 
+    ui->cbRole->setEnabled(!ui->cbRole->currentIndex());
+
     connect(ui->btSave, SIGNAL(clicked(bool)), this, SLOT(saveData()));
     connect(ui->btPassHelp, SIGNAL(clicked(bool)), this, SLOT(showCHelp()));
     connect(ui->btAnswerHelp, SIGNAL(clicked(bool)), this, SLOT(showCHelp()));

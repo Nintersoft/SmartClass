@@ -30,7 +30,7 @@
 #include "frmprintcontract.h"
 #include "frmmanageusers.h"
 #include "frmfirstrun.h"
-#include "frmaddclass.h"
+#include "frmmanageclass.h"
 #include "frmsettings.h"
 #include "frmreceipt.h"
 #include "titlebar.h"
@@ -116,7 +116,7 @@ private:
     frmLogin *loginScr;
     frmManageStudent *manageStudent;
     frmAbout *frmAbt;
-    frmAddClass *addClass;
+    frmManageClass *manageClass;
     frmSettings *frmConfig;
     frmReceipt *frmPayment;
     frmPrintContract *frmContract;

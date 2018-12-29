@@ -32,7 +32,6 @@ protected:
 private:
     Ui::frmImageViewer *ui;
 
-    const QString STUDENT_NAME;
     const QPixmap INITIAL_IMAGE;
     QPixmap currentImage;
 

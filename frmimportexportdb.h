@@ -17,8 +17,8 @@
 #include <QFile>
 #include <QDir>
 
-#include "dbmanager.h"
 #include "nmainwindow.h"
+#include "dbmanager.h"
 #include "frmlogin.h"
 
 namespace Ui {
@@ -35,8 +35,7 @@ public:
         Export
     };
 
-    explicit frmImportExportDB(QWidget *parent = 0, ImportMode mode = frmImportExportDB::Export,
-                               const DBManager::DBData &dbData = DBManager::DBData());
+    explicit frmImportExportDB(QWidget *parent = 0, ImportMode mode = frmImportExportDB::Export);
     ~frmImportExportDB();
 
 private:
@@ -46,18 +45,28 @@ private:
     QDir currentImportDir;
     QString currentUser, sessionRole;
 
-    DBManager* myDB;
+    DBManager* db_manager;
 
-    QList <QVariant> stringToVariant(const QStringList &sList, SmartClassGlobal::TablesSpec tableSpec);
+    QVariantList stringToVariant(const QStringList &sList, SmartClassGlobal::TablesSpec tableSpec);
 
-protected slots:
-    void importDB();
-    void exportDB();
+protected:
+
+    enum ImportOperation{
+        Insert,
+        Update,
+        NoOperation
+    };
 
 private slots:
     void getExportDir();
     void getImportFilePath();
     void getImportDir();
+
+protected slots:
+    void importDB();
+    void importCheckingErrors();
+    void importWithoutCheckErrors();
+    void exportDB();
 };
 
 #endif // FRMIMPORTEXPORTDB_H

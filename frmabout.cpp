@@ -24,16 +24,16 @@ frmAbout::frmAbout(QWidget *parent) :
 
     isCommercial = true;
 
-    QString logoPath  = QDir::homePath() + ((QSysInfo::windowsVersion() != QSysInfo::WV_None) ?
-                "/AppData/Roaming/Nintersoft/SmartClass/images/Logo.png" :
-                "/.Nintersoft/SmartClass/images/Logo.png");
-    if (QFile::exists(logoPath)) ui->lblCompanyLogo->setPixmap(QPixmap(logoPath, "PNG").scaled(100, 100, Qt::KeepAspectRatio));
+    QList< QVariantList > settingsRow = DBManager::getInstance()->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                                                              SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS));
+    if (settingsRow.size()){
+        QPixmap logo(settingsRow.at(0).at(2));
+        if (!logo.isNull())
+            ui->lblCompanyLogo->setPixmap(logo.scaled(100, 100, Qt::KeepAspectRatio));
 
-    QSettings settings("Nintersoft", "SmartClass");
-    if (settings.childGroups().contains("company info", Qt::CaseInsensitive)){
-        settings.beginGroup("company info");
-        ui->lblLicencedTo->setText(settings.value("name", tr("Nintersoft Team")).toString());
-        settings.endGroup();
+        ui->lblLicencedTo->setText(settingsRow.at(0).at(0).isNull() ?
+                                     tr("Nintersoft Team") :
+                                     settingsRow.at(0).at(0).toString());
     }
 
 

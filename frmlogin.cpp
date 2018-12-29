@@ -1,7 +1,7 @@
 #include "frmlogin.h"
 #include "ui_frmlogin.h"
 
-frmLogin::frmLogin(QWidget *parent, const DBManager::DBData dbData) :
+frmLogin::frmLogin(QWidget *parent) :
     NMainWindow(parent),
     ui(new Ui::frmLogin)
 {
@@ -11,6 +11,21 @@ frmLogin::frmLogin(QWidget *parent, const DBManager::DBData dbData) :
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     this->setMaximizeButtonEnabled(false);
+
+    /*
+     * End GUI properties
+     */
+
+    db_manager = DBManager::getInstance();
+
+    if (!db_manager->isOpen())
+        db_manager->open();
+
+    QSettings settings("Nintersoft", "SmartClass");
+
+    settings.beginGroup("device settings");
+    dID = settings.value("device ID", -1).toLongLong();
+    settings.endGroup();
 
     connect(ui->edtUsernameFLogin, SIGNAL(returnPressed()), this, SLOT(login()));
     connect(ui->edtPasswordFLogin, SIGNAL(returnPressed()), this, SLOT(login()));
@@ -30,51 +45,61 @@ frmLogin::frmLogin(QWidget *parent, const DBManager::DBData dbData) :
     connect(ui->btRegisterFRegister, SIGNAL(clicked(bool)), this, SLOT(registerUser()));
     connect(ui->btAskFRecover, SIGNAL(clicked(bool)), this, SLOT(askQuestion()));
     connect(ui->btRecoverFRecover, SIGNAL(clicked(bool)), this, SLOT(changePassword()));
-
-    /*
-     * End GUI properties
-     */
-
-    myDb = new DBManager(dbData, SmartClassGlobal::tablePrefix(),
-                            SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("login"));
-
-    myDb->openDB();
-
-    QSettings settings("Nintersoft", "SmartClass");
-
-    settings.beginGroup("device settings");
-    dID = settings.value("device ID", -1).toLongLong();
-    settings.endGroup();
-
-    myDb->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
-                      SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS));
 }
 
 frmLogin::~frmLogin()
 {
     delete ui;
-    if (myDb->isOpen()) myDb->closeDB();
-    delete myDb;
 }
 
 void frmLogin::login(){
     QString username = ui->edtUsernameFLogin->text(),
             password = ui->edtPasswordFLogin->text();
-    QStringList uTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS);
+    QStringList uTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS);
 
-    if (username.isEmpty() || !myDb->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), uTableSchema.at(1), username) || password.isEmpty()){
+    if (username.isEmpty() || !db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), uTableSchema.at(1), username) || password.isEmpty()){
         QMessageBox::information(this, tr("Error | SmartClass"), tr("Seems that either the username or the password or both are incorrect. Please, check your data and try again."), QMessageBox::Ok);
         return;
     }
 
-    QList<QVariant> userInfo(myDb->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), uTableSchema.at(1), username));
-    QString tempHash = QString(QCryptographicHash::hash(QString(userInfo.at(2).toString() + ui->edtPasswordFLogin->text()).toUtf8(), QCryptographicHash::Sha512).toHex());
-    if (tempHash == userInfo.at(3).toString()){
-        myDb->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS).at(0),
-                        dID,
-                        QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS).at(4),
-                        QList<QVariant>() << QDate::currentDate());
+    QVariantList userInfo(db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), uTableSchema.at(1), username));
+    QString tempHash = QString(QCryptographicHash::hash(QString(userInfo.at(3).toString() + ui->edtPasswordFLogin->text()).toUtf8(), QCryptographicHash::Sha512).toHex());
+    if (tempHash == userInfo.at(4).toString()){
+        if (dID != -1)
+            db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).at(0),
+                                  dID,
+                                  QStringList() << SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).at(4),
+                                  QList<QVariant>() << QDate::currentDate());
+        else {
+            QVariantList data;
+            data << QHostInfo::localHostName()
+                 << QSysInfo::productType()
+                 << QSysInfo::productVersion()
+                 << QDateTime::currentDateTime().toString("dd/MM/yyyy - HH:mm:ss");
+
+            if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).mid(1),
+                                      data)){
+                dID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                              SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).mid(1),
+                                              data).at(0).toLongLong();
+            }
+            else {
+                db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).mid(1),
+                                      data);
+                QVariantList dData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
+                                                             SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).mid(1),
+                                                             data);
+                if (dData.size()) dID = dData.at(0).toLongLong();
+            }
+
+            QSettings settings("Nintersoft", "SmartClass");
+            settings.beginGroup("device settings");
+            settings.setValue("device ID", dID);
+            settings.endGroup();
+        }
         emit dataReady(userInfo);
     }
     else QMessageBox::information(this, tr("Error | SmartClass"), tr("Seems that either the username or the password or both are incorrect. Please, check your data and try again."), QMessageBox::Ok);
@@ -92,7 +117,7 @@ void frmLogin::registerUser(){
             return;
         }
 
-    if (myDb->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), "username", userInfo.at(0))){
+    if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), "username", userInfo.at(0))){
         QMessageBox::warning(this, tr("Error | SmartClass"), tr("Sorry, but unfortunately this user is already being used. Please, type a different username."), QMessageBox::Ok);
         return;
     }
@@ -118,13 +143,13 @@ void frmLogin::registerUser(){
                      << salt << getHash(passwordPSalt)
                      << userInfo.at(4) << answerSalt
                      << getHash(answerPSalt);
-    if (myDb->rowsCount(SmartClassGlobal::getTableName(SmartClassGlobal::USERS)) < 1) completeUserData << (int)SmartClassGlobal::ADMIN;
+    if (db_manager->rowsCount(SmartClassGlobal::getTableName(SmartClassGlobal::USERS)) < 1) completeUserData << (int)SmartClassGlobal::ADMIN;
     else completeUserData << (int)SmartClassGlobal::NEW;
 
-    if (!myDb->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
-                         SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS).mid(1),
+    if (!db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                         SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).mid(1),
                          completeUserData)){
-        QMessageBox::critical(this, tr("Database connection error | SmartClass"), tr("Unfortunately it was not possible to register this user at the database. Contact the application developer for further assistance."), QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Database connection error | SmartClass"), tr("Unfortunately it was not possible to register this user in the database. Contact the application developer for further assistance."), QMessageBox::Ok);
         return;
     }
 
@@ -145,37 +170,38 @@ void frmLogin::registerUser(){
 
 void frmLogin::askQuestion(){
     QString username = ui->edtUsernameFRecover->text();
-    if (!myDb->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
-                         SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS).at(1),
-                         username) || username.isEmpty() || username.isNull()){
+    bool userExists = db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                                            SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(1),
+                                            username) || username.isEmpty() || username.isNull();
+    ui->lblQuestionLabelFRecover->setEnabled(userExists);
+    ui->lblQuestionFRecover->setEnabled(userExists);
+    ui->edtAnswerFRecover->setEnabled(userExists);
+    ui->lblNewPasswordFRecover->setEnabled(userExists);
+    ui->edtNewPasswordFRecover->setEnabled(userExists);
+    ui->btRecoverFRecover->setEnabled(userExists);
+
+    if (!userExists){
         ui->lblQuestionFRecover->setText(tr("There is no question for this user..."));
-        ui->lblQuestionLabelFRecover->setEnabled(false);
-        ui->lblQuestionFRecover->setEnabled(false);
-        ui->edtAnswerFRecover->setEnabled(false);
-        ui->lblNewPasswordFRecover->setEnabled(false);
-        ui->edtNewPasswordFRecover->setEnabled(false);
-        ui->btRecoverFRecover->setEnabled(false);
         QMessageBox::warning(this, tr("Warning | SmartClass"), tr("This user does not exists."), QMessageBox::Ok);
     }
-    else {
-        ui->lblQuestionFRecover->setText(myDb->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
-                                                           SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS).at(1),
-                                                           username).at(5).toString());
-        ui->lblQuestionLabelFRecover->setEnabled(true);
-        ui->lblQuestionFRecover->setEnabled(true);
-        ui->edtAnswerFRecover->setEnabled(true);
-        ui->lblNewPasswordFRecover->setEnabled(true);
-        ui->edtNewPasswordFRecover->setEnabled(true);
-        ui->btRecoverFRecover->setEnabled(true);
-    }
+
+    ui->lblQuestionFRecover->setText(db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                                                             SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(1),
+                                                             username).at(5).toString());
     ui->edtAnswerFRecover->clear();
 }
 
 void frmLogin::changePassword(){
     QString username = ui->edtUsernameFRecover->text();
-    QList<QVariant> userInfo = myDb->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
-                                                 SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS).at(1),
-                                                 username);
+    QVariantList userInfo = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(1),
+                                                    username);
+    if (!userInfo.size()){
+        ui->lblQuestionFRecover->setText(tr("There is no question for this user..."));
+        QMessageBox::warning(this, tr("Warning | SmartClass"), tr("This user does not exists."), QMessageBox::Ok);
+        return;
+    }
+
     QString generatedHashAnswer = QString(QCryptographicHash::hash(QString(userInfo.at(6).toString() + ui->edtAnswerFRecover->text()).toUtf8(), QCryptographicHash::Sha512).toHex());
     if (generatedHashAnswer == userInfo.at(7).toString()){
         QString newPassword = ui->edtNewPasswordFRecover->text();
@@ -192,11 +218,11 @@ void frmLogin::changePassword(){
         QString newPasswordHash = QString(QCryptographicHash::hash(QString(newPasswordSalt + newPassword).toUtf8(), QCryptographicHash::Sha512).toHex());
         userInfo.replace(3, newPasswordSalt);
         userInfo.replace(4, newPasswordHash);
-        if (!myDb->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
-                             SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS).at(1),
-                             username,
-                             SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS).mid(1),
-                             userInfo.mid(1))){
+        if (!db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(1),
+                                   username,
+                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).mid(1),
+                                   userInfo.mid(1))){
             QMessageBox::critical(this, tr("Database connection error | SmartClass"), tr("Unfortunately it was not possible to update the information about this user in the database. Contact the application developer for further assistance."), QMessageBox::Ok);
             return;
         }

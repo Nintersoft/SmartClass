@@ -26,7 +26,7 @@ class frmPrintContract : public NMainWindow
     Q_OBJECT
 
 public:
-    explicit frmPrintContract(QWidget *parent = 0, DBManager *db_manager = NULL, qlonglong studentID = -1);
+    explicit frmPrintContract(QWidget *parent = 0, qlonglong studentID = -1);
     ~frmPrintContract();
 
 private:
@@ -37,7 +37,7 @@ private:
     PrintPreviewForm *frmPrintPrev;
 
     QList<QVariant> sData, rData;
-    QList< QList<QVariant> > pData, cData;
+    QList< QVariantList > pData, cData;
 
     QString parseArguments();
     DBManager *db_manager;

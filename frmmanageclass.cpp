@@ -1,8 +1,8 @@
-#include "frmaddclass.h"
-#include "ui_frmaddclass.h"
+#include "frmmanageclass.h"
+#include "ui_frmmanageclass.h"
 
-frmAddClass::frmAddClass(QWidget *parent, Role role, qint64 courseID, const DBManager::DBData &dbData) :
-    NMainWindow(parent), ui(new Ui::frmAddClass),
+frmManageClass::frmManageClass(QWidget *parent, Role role, qint64 courseID) :
+    NMainWindow(parent), ui(new Ui::frmManageClass),
     COURSE_ID(courseID),
     CURRENT_ROLE(role)
 {
@@ -16,17 +16,17 @@ frmAddClass::frmAddClass(QWidget *parent, Role role, qint64 courseID, const DBMa
     /*
     * End of GUI operations
     */
-    myDB = new DBManager(dbData, SmartClassGlobal::tablePrefix(),
-                            SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("importExport"));
+
+    myDB = DBManager::getInstance();
 
     switch (CURRENT_ROLE) {
-          case frmAddClass::View:
+          case frmManageClass::View:
               ui->screenManagerLayout->setEnabled(false);
               ui->btReset->setEnabled(false);
               ui->btSave->setEnabled(false);
-          case frmAddClass::Edit:
+          case frmManageClass::Edit:
               courseData = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
-                                             SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
+                                             SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).at(0),
                                              QVariant(COURSE_ID));
               applyCourseData();
               break;
@@ -44,14 +44,14 @@ frmAddClass::frmAddClass(QWidget *parent, Role role, qint64 courseID, const DBMa
     connect(ui->btRemoveDay, SIGNAL(clicked(bool)), this, SLOT(removeDayNTime()));
 }
 
-frmAddClass::~frmAddClass()
+frmManageClass::~frmManageClass()
 {
     if (myDB->isOpen()) myDB->closeDB();
     delete myDB;
     delete ui;
 }
 
-void frmAddClass::resetNewClass(){
+void frmManageClass::resetNewClass(){
     QMessageBox confirmation;
     confirmation.setWindowTitle(tr("Reset confirmation | SmartClass"));
     confirmation.setText(tr("You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you steel want to proceed?"));
@@ -75,7 +75,7 @@ void frmAddClass::resetNewClass(){
     }
 }
 
-void frmAddClass::saveNewClass(){
+void frmManageClass::saveNewClass(){
     QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data is either inconsistent or inexistent."
                           " Please, fix the folowing issues before trying to save again:\n");
     bool error = false, warning = false;
@@ -110,7 +110,7 @@ void frmAddClass::saveNewClass(){
     }
 
     if (error){
-        QMessageBox::critical(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::critical(this, tr("Critical | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
@@ -129,7 +129,7 @@ void frmAddClass::saveNewClass(){
     for (int i = 0; i < ui->listDaysAndTime->count(); ++i) dayNTime << ui->listDaysAndTime->item(i)->text();
     QString dayNTimeS = dayNTime.join(" , ");
 
-    QList<QVariant> newCData;
+    QVariantList newCData;
     newCData << ui->edtCourseName->text()
              << ui->edtTeacher->text()
              << ui->edtShortDescription->text()
@@ -140,50 +140,51 @@ void frmAddClass::saveNewClass(){
              << ui->edtEndDate->date()
              << ui->edtPrice->value();
 
-    QStringList coursesTable = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS);
+    QStringList coursesTable = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS);
 
     QStringList columsN = (QStringList() << coursesTable.at(1) << coursesTable.at(5) << coursesTable.at(6) << coursesTable.at(7));
-    QList<QVariant> dataN = (QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(5) << newCData.at(6));
+    QVariantList dataN = (QVariantList() << newCData.at(0) << newCData.at(4) << newCData.at(5) << newCData.at(6));
 
-    if (CURRENT_ROLE != frmAddClass::Edit)
-        if (myDB->rowExists("myclass_courses", columsN, dataN)){
+    if (CURRENT_ROLE != frmManageClass::Edit)
+        if (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                            columsN, dataN)){
             QMessageBox::information(this, tr("Warning | SmartClass"), tr("There is another course with the same name, class, days, time and beginning date registered. Please, check it before continuing."), QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
 
-    if (CURRENT_ROLE != frmAddClass::Create){
+    if (CURRENT_ROLE != frmManageClass::Create){
         if (!myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
-                             SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
+                             SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).at(0),
                              COURSE_ID,
-                             SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).mid(1),
+                             SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).mid(1),
                              newCData))
-            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to update the course details for you."
+            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to update the course details."
                                                                         "\nHere are the technical details of what happened: %1."
-                                                                        "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close the form)!").arg(myDB->lastError().text()),
+                                                                        "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close this form)!").arg(myDB->lastError().text()),
                                     QMessageBox::Ok, QMessageBox::NoButton);
 
-        emit updatedData(QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(1)
+        emit updatedData(QVariantList() << newCData.at(0) << newCData.at(4) << newCData.at(1)
                                             << newCData.at(6) << newCData.at(5),
                             COURSE_ID);
     }
     else {
-        if (!myDB->insertRow("myclass_courses", coursesTable.mid(1), newCData)){
-            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to register the course details for you."
+        if (!myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                             coursesTable.mid(1), newCData)){
+            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to register the course details."
                                                                         "\nHere are the technical details of what happened: %1."
-                                                                        "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close the form)!").arg(myDB->lastError().text()),
+                                                                        "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close this form)!").arg(myDB->lastError().text()),
                                     QMessageBox::Ok, QMessageBox::NoButton);
             return;
         }
 
         qlonglong newIndex = -1;
-        QSqlQuery getIndex = myDB->runCustomQuery();
-        getIndex.prepare("SELECT MAX(id) FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS));
-        if (getIndex.exec())
-            if (getIndex.next()) newIndex = getIndex.value(0).toLongLong();
-
-        if (newIndex == -1) QMessageBox::warning(this, tr("Critical | SmartClass"), tr("A new course has been created successfuly. However, we could not retrieve its new ID."
-                                                                                       "\nAlthough the application continues working, we strongly recommend you to restart it, since the new index may not correspond to the recently created course."
-                                                                                       "\nHere are the technical details of what happened: %1.").arg(myDB->lastError().text()),
+        QVariantList newCourseD = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                                                    columsN, dataN);
+        if (newCourseD.size())
+            newIndex = newCourseD.at(0).toLongLong();
+        else QMessageBox::warning(this, tr("Warning | SmartClass"), tr("A new course has been created successfuly. However, we could not retrieve its new ID."
+                                                                        "\nAlthough the application continues working, we strongly recommend you to restart it, since the new index may not correspond to the recently created course."
+                                                                        "\nHere are the technical details of what happened: %1.").arg(myDB->lastError().text()),
                                      QMessageBox::Ok, QMessageBox::NoButton);
 
         emit newData(QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(1)
@@ -192,7 +193,7 @@ void frmAddClass::saveNewClass(){
     this->close();
 }
 
-void frmAddClass::applyCourseData(){
+void frmManageClass::applyCourseData(){
     ui->listDaysAndTime->clear();
 
     ui->edtCourseName->setText(courseData.at(1).toString());
@@ -207,7 +208,7 @@ void frmAddClass::applyCourseData(){
     ui->edtPrice->setValue(courseData.at(9).toDouble());
 }
 
-void frmAddClass::addDayNTime(){
+void frmManageClass::addDayNTime(){
     bool error = false;
     QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
                           " Please, fix the folowing issues before trying to add the day and the time:\n");
@@ -238,7 +239,7 @@ void frmAddClass::addDayNTime(){
     if (!ui->btRemoveDay->isEnabled()) ui->btRemoveDay->setEnabled(true);
 }
 
-void frmAddClass::removeDayNTime(){
+void frmManageClass::removeDayNTime(){
     if (ui->listDaysAndTime->currentRow() < 0) return;
     delete ui->listDaysAndTime->item(ui->listDaysAndTime->currentRow());
     if (ui->listDaysAndTime->count() < 1) ui->btRemoveDay->setEnabled(false);

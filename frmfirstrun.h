@@ -47,7 +47,6 @@ private:
 
     DBManager* db_manager;
     DBManager::DBData db_export_data;
-    QList< QList<QVariant> > activeConnections;
 
     int currentLangIndex; //English = 0; Portuguese = 1
     qlonglong profileID;

@@ -17,6 +17,11 @@ public:
     inline static void setDatabaseType(const DBManager::DBConnectionType &db_type) { databaseTypeS =  db_type; }
     inline static DBManager::DBConnectionType databaseType() { return databaseTypeS; }
 
+    static QString globalConnection;
+
+    inline static void setGlobalConnectionName(const QString &cName) { globalConnection = cName; }
+    inline static QString connectionName() { return DBManager::getUniqueConnectionName(globalConnection); }
+
     inline static const QString getDBPath(){
         QString tempDir = QDir::homePath();
         if (QOperatingSystemVersion::currentType() == QOperatingSystemVersion::Windows)
@@ -84,7 +89,7 @@ public:
         QString id, blobType;
 
         if (isSQLite){
-            id = "id INTEGER PRIMARY KEY";
+            id = "id INTEGER PRIMARY KEY AUTOINCREMENT";
             blobType = "BLOB";
         }
         else{
@@ -95,12 +100,12 @@ public:
         QStringList tableStructure;
         switch (table) {
             case USERS:
-                tableStructure << id << "username TE    XT NOT NULL" << "name TEXT NOT NULL"
-                                << "salt  TEXT NOT NULL" << "hash TEXT NOT NULL" << "question TEXT"
+                tableStructure << id << "username TEXT NOT NULL" << "name TEXT NOT NULL"
+                                << "salt TEXT NOT NULL" << "hash TEXT NOT NULL" << "question TEXT"
                                 << "answerSalt TEXT NOT NULL" << "answerHash TEXT NOT NULL" << "role INTEGER";
                 break;
             case STUDENT:
-                tableStructure << id << "name TEXT NOT NULL" << ("parent INTEGER" + isSQLite ? "" : "(64)")
+                tableStructure << id << "name TEXT NOT NULL" << ("rID INTEGER" + isSQLite ? "" : "(64)")
                                 << "birthday DATE" << "studentID TEXT" << "school TEXT" << "observations TEXT"
                                 << "experimentalClass TEXT" << "experimentalClassDate DATETIME"
                                 << "experimentalClassObservations TEXT";
@@ -125,7 +130,8 @@ public:
                                 << "price DOUBLE";
                 break;
             case COURSEENROLLMENTS:
-                tableStructure << ("cid INTEGER" + isSQLite ? "" : "(64)") << ("sid INTEGER" + isSQLite ? "" : "(64)");
+                tableStructure << ("cid INTEGER" + isSQLite ? "" : "(64)")
+                                << ("sid INTEGER" + isSQLite ? "" : "(64)");
                 break;
             case PAYMENTDETAILS:
                 tableStructure << ("sid INTEGER" + isSQLite ? "" : "(64)") << ("cid INTEGER" + isSQLite ? "" : "(64)")
@@ -137,10 +143,93 @@ public:
                 //activeConnections
             default:
                 tableStructure << id << "deviceName TEXT" << "OS TEXT" << "OSVersion TEXT"
-                                << "lastAccess DATE";
+                                << "lastAccess TEXT";
                 break;
         }
         return tableStructure;
+    }
+    inline static const QStringList getTableAliases(TablesSpec table){
+        QStringList tableStructure;
+        switch (table) {
+            case USERS:
+                tableStructure << "id" << "username" << "name"
+                                << "salt" << "hash" << "question"
+                                << "answerSalt" << "answerHash" << "role";
+                break;
+            case STUDENT:
+                tableStructure << "id" << "name" << "rID"
+                                << "birthday" << "studentID" << "school" << "observations"
+                                << "experimentalClass" << "experimentalClassDate"
+                                << "experimentalClassObservations";
+                break;
+            case RESPONSIBLE:
+                tableStructure << "id" << "name" << "phone" << "mobileOperator"
+                                << "mobile" << "email" << "responsibleID" << "responsibleCPG"
+                                << "meeting" << "address";
+                break;
+            case STUDENTIMAGES:
+                tableStructure << "id" << "picture" << "studentID";
+                break;
+            case RESPONSIBLEIMAGES:
+                tableStructure << "id" << "responsibleID"
+                                << "responsibleCPG" << "addressComprobation";
+                break;
+            case COURSEDETAILS:
+                tableStructure << "id" << "course" << "teacher"
+                                << "shortDescription" << "longDescription" << "class"
+                                << "dayNTime" << "beginningDate" << "endDate" << "price";
+                break;
+            case COURSEENROLLMENTS:
+                tableStructure << "cid" << "sid";
+                break;
+            case PAYMENTDETAILS:
+                tableStructure << "sid" << "cid" << "discount" << "beginningDate"
+                               << "installments INTEGER";
+                break;
+            case SETTINGS:
+                tableStructure << "companyName" << "contract" << "logo";
+                break;
+                //activeConnections
+            default:
+                tableStructure << "id" << "deviceName" << "OS" << "OSVersion"
+                                << "lastAccess";
+                break;
+        }
+        return tableStructure;
+    }
+    inline static const QStringList getTableConstraints(TablesSpec spec){
+        QStringList tableConstraints;
+        switch (spec) {
+        case STUDENT:
+            tableConstraints << "CONSTRAINT FK_Rid FOREIGN KEY (rID) REFERENCES " +
+                                tablePrefix() + getTableName(RESPONSIBLE) + "(id)";
+            break;
+        case STUDENTIMAGES:
+            tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (id) REFERENCES " +
+                                tablePrefix() + getTableName(STUDENT) + "(id)";
+            break;
+        case RESPONSIBLEIMAGES:
+            tableConstraints << "CONSTRAINT FK_Rid FOREIGN KEY (id) REFERENCES " +
+                                tablePrefix() + getTableName(RESPONSIBLE) + "(id)";
+            break;
+        case COURSEENROLLMENTS:
+            tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (sid) REFERENCES " +
+                                tablePrefix() + getTableName(STUDENT) + "(id)";
+            tableConstraints << "CONSTRAINT FK_Cid FOREIGN KEY (cid) REFERENCES " +
+                                tablePrefix() + getTableName(COURSEDETAILS) + "(id)";
+            tableConstraints << "CONSTRAINT PK_Enrollment PRIMARY KEY (sid, cid)";
+            break;
+        case PAYMENTDETAILS:
+            tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (sid) REFERENCES " +
+                                tablePrefix() + getTableName(STUDENT) + "(id)";
+            tableConstraints << "CONSTRAINT FK_Cid FOREIGN KEY (cid) REFERENCES " +
+                                tablePrefix() + getTableName(COURSEDETAILS) + "(id)";
+            tableConstraints << "CONSTRAINT PK_Payment PRIMARY KEY (sid, cid)";
+            break;
+        default:
+            break;
+        }
+        return tableConstraints;
     }
 
     enum UserRoles{

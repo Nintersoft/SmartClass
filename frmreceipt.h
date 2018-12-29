@@ -24,7 +24,7 @@ class frmReceipt : public NMainWindow
     Q_OBJECT
 
 public:
-    explicit frmReceipt(QWidget *parent = 0, DBManager *db_manager = NULL);
+    explicit frmReceipt(QWidget *parent = 0);
     ~frmReceipt();
 
 private:
@@ -33,7 +33,9 @@ private:
     DBManager *db_manager;
     double totalWDiscount, totalIntegral;
 
-    QList< QList<QVariant> > sData, pData, cData;
+    QList< QVariantList > pData;
+    QStringList columns;
+    QString table;
 
 private slots:
     void switchTableVisibility(bool show);

@@ -1,5 +1,5 @@
-#ifndef FRMADDCLASS_H
-#define FRMADDCLASS_H
+#ifndef FRMMANAGECLASS_H
+#define FRMMANAGECLASS_H
 
 #include <QListWidgetItem>
 #include <QDesktopWidget>
@@ -14,10 +14,10 @@
 #include "frmlogin.h"
 
 namespace Ui {
-class frmAddClass;
+class frmManageClass;
 }
 
-class frmAddClass : public NMainWindow
+class frmManageClass : public NMainWindow
 {
     Q_OBJECT
 
@@ -28,12 +28,11 @@ public:
         Create
     };
 
-    explicit frmAddClass(QWidget *parent = 0, Role role = Create, qint64 courseID = -1,
-                         const DBManager::DBData &dbData = DBManager::DBData());
-    ~frmAddClass();
+    explicit frmManageClass(QWidget *parent = 0, Role role = Create, qint64 courseID = -1);
+    ~frmManageClass();
 
 private:
-    Ui::frmAddClass *ui;
+    Ui::frmManageClass *ui;
     const qint64 COURSE_ID;
     const Role CURRENT_ROLE;
 
@@ -55,4 +54,4 @@ signals:
     void updatedData(const QList<QVariant> &newData, const qlonglong oldIndex);
 };
 
-#endif // FRMADDCLASS_H
+#endif // FRMMANAGECLASS_H

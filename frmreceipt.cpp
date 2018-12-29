@@ -1,7 +1,7 @@
 #include "frmreceipt.h"
 #include "ui_frmreceipt.h"
 
-frmReceipt::frmReceipt(QWidget *parent, DBManager *db_manager) :
+frmReceipt::frmReceipt(QWidget *parent) :
     NMainWindow(parent),
     ui(new Ui::frmReceipt)
 {
@@ -19,27 +19,44 @@ frmReceipt::frmReceipt(QWidget *parent, DBManager *db_manager) :
     totalWDiscount = 0;
     totalIntegral = 0;
 
-    if (db_manager){
-        this->db_manager = db_manager;
+    this->db_manager = db_manager;
 
-        connect(ui->cbShowTable, SIGNAL(toggled(bool)), this, SLOT(switchTableVisibility(bool)));
-        connect(ui->btExport, SIGNAL(clicked(bool)), this, SLOT(exportCSV()));
+    connect(ui->cbShowTable, SIGNAL(toggled(bool)), this, SLOT(switchTableVisibility(bool)));
+    connect(ui->btExport, SIGNAL(clicked(bool)), this, SLOT(exportCSV()));
 
-        ui->lblDate->setText(QDate::currentDate().toString("dd/MM/yyyy"));
+    ui->lblDate->setText(QDate::currentDate().toString("dd/MM/yyyy"));
 
-        for (int i = -24; i < 25; ++i){
-            QDate nDate = QDate::currentDate().addMonths(i);
-            ui->cbCustomMonthNYear->addItem(nDate.toString("MM/yyyy"), QVariant(nDate));
-        }
-        ui->cbCustomMonthNYear->setCurrentIndex(24);
-
-        sData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT));
-        pData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS));
-        cData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS));
-
-        connect(ui->cbCustomMonthNYear, SIGNAL(currentIndexChanged(int)), this, SLOT(generateTable()));
-        generateTable();
+    for (int i = -24; i < 25; ++i){
+        QDate nDate = QDate::currentDate().addMonths(i);
+        ui->cbCustomMonthNYear->addItem(nDate.toString("MM/yyyy"), QVariant(nDate));
     }
+    ui->cbCustomMonthNYear->setCurrentIndex(24);
+
+    QString courseDetailsName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+            studentInfoName = SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+            paymentInfoName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS);
+
+    QStringList courseDetailsAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS),
+                studentInfoAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT),
+                paymentInfoAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS);
+
+    QString joinTable = paymentInfoName + " INNER JOIN " + studentInfoName + " ON " + paymentInfoName + "." + paymentInfoAliases.at(0) + " = " + studentInfoName + "." + studentInfoAliases.at(0)
+            + " INNER JOIN " + courseDetailsName + " ON " + paymentInfoName + "." + paymentInfoAliases.at(1) + " = " + courseDetailsName + "." + courseDetailsAliases.at(0);
+
+    columns << (studentInfoName + "." + studentInfoAliases.at(1))
+            << (courseDetailsName + "." + courseDetailsAliases.at(1))
+            << (courseDetailsName + "." + courseDetailsAliases.at(5))
+            << (courseDetailsName + "." + courseDetailsAliases.at(6))
+            << (courseDetailsName + "." + courseDetailsAliases.at(7))
+            << (courseDetailsName + "." + courseDetailsAliases.at(9));
+
+    for (int i = 2; i < paymentInfoAliases.size(); ++i)
+        columns << (paymentInfoName + "." + paymentInfoAliases.at(i));
+
+    pData = db_manager->retrieveAll(joinTable, columns);
+
+    connect(ui->cbCustomMonthNYear, SIGNAL(currentIndexChanged(int)), this, SLOT(generateTable()));
+    generateTable();
 }
 
 frmReceipt::~frmReceipt()
@@ -67,10 +84,10 @@ void frmReceipt::generateTable(){
     ui->tablePricing->setRowCount(0);
 
     for (int i = 0; i < pData.size(); ++i){
-        int installments = pData[i].at(4).toInt();
+        int installments = pData[i].at(8).toInt();
 
         QDate choosenDate = ui->cbCustomMonthNYear->currentData(Qt::UserRole).toDate();
-        QDate initialDate = pData[i].at(3).toDate();
+        QDate initialDate = pData[i].at(7).toDate();
         QDate finalDate = initialDate.addMonths(installments - 1);
 
         if (choosenDate.year() < initialDate.year() || finalDate.year() < choosenDate.year()
@@ -79,28 +96,16 @@ void frmReceipt::generateTable(){
 
 
         int currentRow = ui->tablePricing->rowCount();
-        int cIndex = -1;
         ui->tablePricing->insertRow(currentRow);
 
-        for (int k = 0; k < sData.size(); ++k)
-            if (pData[i].at(0) == sData[k].at(0)){
-                ui->tablePricing->setItem(currentRow, 0, new QTableWidgetItem(sData[i].at(1).toString()));
-                break;
-            }
-        for (int k = 0; k < cData.size(); ++k)
-            if (pData[i].at(1) == cData[k].at(0)){
-                QString courseSyntesis = cData[k].at(1).toString() + tr(" ( class #") + cData[k].at(5).toString() + tr(" ) - ") + cData[k].at(6).toString()
-                                + tr(" * starts on: ") + cData[k].at(7).toString();
-                ui->tablePricing->setItem(currentRow, 1, new QTableWidgetItem(courseSyntesis));
-                cIndex = k;
-                break;
-            }
-        ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(choosenDate.month() - initialDate.month() + 1).arg(pData[i].at(4).toInt())));
+        ui->tablePricing->setItem(currentRow, 0, new QTableWidgetItem(pData[i].at(0).toString()));
+        QString courseSyntesis = pData[i].at(1).toString() + tr(" ( class #") + pData[i].at(2).toString() + tr(" ) - ") + pData[i].at(3).toString()
+                        + tr(" * starts on: ") + pData[i].at(4).toString();
+        ui->tablePricing->setItem(currentRow, 1, new QTableWidgetItem(courseSyntesis));
+        ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(choosenDate.month() - initialDate.month() + 1).arg(installments)));
 
-        double price = 0;
-        double discount = pData[i].at(2).toDouble();
-
-        if (cIndex != -1) price = cData[cIndex].at(9).toDouble();
+        double price = pData[i].at(5).toDouble();
+        double discount = pData[i].at(6).toDouble();
 
         totalIntegral += (price / installments);
         totalWDiscount += ((price / installments) * (1 - (discount/100.0f)));
@@ -136,7 +141,8 @@ void frmReceipt::exportCSV(){
         for (int i = 0; i < ui->tablePricing->rowCount(); ++i){
             data += (ui->tablePricing->item(i, 0)->text() + ";"
                      + ui->tablePricing->item(i, 1)->text() + ";"
-                     + ui->tablePricing->item(i, 2)->text().replace("/", "|") + ";"
+                     + ui->tablePricing->item(i, 2)->text() + ";"
+                     //+ ui->tablePricing->item(i, 2)->text().replace("/", "|") + ";"
                      + ui->tablePricing->item(i, 3)->text() + ";"
                      + ui->tablePricing->item(i, 4)->text() + "\n");
         }

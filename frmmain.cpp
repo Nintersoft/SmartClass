@@ -16,6 +16,7 @@ frmMain::frmMain(QWidget *parent) :
      */
 
     returnCode = -1;
+    SmartClassGlobal::setGlobalConnectionName("smart_class_c");
 
     upgradeAvailable = false;
 
@@ -52,7 +53,7 @@ frmMain::frmMain(QWidget *parent) :
                 settings->endGroup();
             }
 
-            loginScr = new frmLogin(NULL, db_data);
+            loginScr = new frmLogin(NULL);
             connect(loginScr, SIGNAL(dataReady(QList<QVariant>)), this, SLOT(setSessionRole(QList<QVariant>)));
             loginScr->show();
 
@@ -111,7 +112,7 @@ frmMain::frmMain(QWidget *parent) :
         frmContract = NULL;
         frmPayment = NULL;
         frmConfig= NULL;
-        addClass = NULL;
+        manageClass = NULL;
         frmMngUsers = NULL;
     }
 }
@@ -119,8 +120,8 @@ frmMain::frmMain(QWidget *parent) :
 frmMain::~frmMain()
 {
     if (myDB){
-        if (myDB->isOpen()) myDB->closeDB();
-        delete myDB;
+        if (myDB->isOpen()) myDB->close();
+        myDB->removeInstance();
     }
 
     if (firstRunScr) delete firstRunScr;
@@ -187,20 +188,25 @@ void frmMain::createTables(){
         else returnCode = 1;
     }
 
-    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                      SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
                       SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE));
+    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT) <<
+                      SmartClassGlobal::getTableConstraints(SmartClassGlobal::STUDENT));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
-                      SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES));
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES) <<
+                      SmartClassGlobal::getTableConstraints(SmartClassGlobal::STUDENTIMAGES));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                      SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES));
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES) <<
+                      SmartClassGlobal::getTableConstraints(SmartClassGlobal::RESPONSIBLEIMAGES));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
                       SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                      SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS));
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS) <<
+                      SmartClassGlobal::getTableConstraints(SmartClassGlobal::COURSEENROLLMENTS));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                      SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS));
+                      SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS) <<
+                      SmartClassGlobal::getTableConstraints(SmartClassGlobal::PAYMENTDETAILS));
 }
 
 void frmMain::setupDBConnection(){
@@ -232,15 +238,17 @@ void frmMain::setupDBConnection(){
     }
     settings->endGroup();
 
-    myDB = new DBManager(db_data, SmartClassGlobal::tablePrefix(),
-                         SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("mainConnection"));
+    db_data.setTablePrefix(SmartClassGlobal::tablePrefix());
+    db_data.setDatabaseConnectionType(SmartClassGlobal::databaseType());
+
+    myDB = DBManager::getInstance(db_data);
+
     createTables();
 }
 
 void frmMain::getFirstSettings(const DBManager::DBData &sqlData, const QString &langSlug){
     db_data = sqlData;
-    myDB = new DBManager(sqlData, SmartClassGlobal::tablePrefix(),
-                         SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("mainConnection"));
+    myDB = DBManager::getInstance(db_data);
 
     if (langSlug != "en") changeLanguage(langSlug);
 
@@ -342,18 +350,18 @@ void frmMain::openStudentManager(){
 }
 
 void frmMain::openClassesManager(){
-    if (addClass) {
-        disconnect(addClass, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
+    if (manageClass) {
+        disconnect(manageClass, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
                    this, SLOT(receiveCourseUpdatedData(QList<QVariant>,qlonglong)));
-        disconnect(addClass, SIGNAL(newData(QList<QVariant>)),
+        disconnect(manageClass, SIGNAL(newData(QList<QVariant>)),
                    this, SLOT(receiveNewCourseData(QList<QVariant>)));
 
-        delete addClass;
-        addClass = NULL;
+        delete manageClass;
+        manageClass = NULL;
     }
 
     QString senderName = sender()->objectName();
-    if (senderName == "btAddCourse") addClass = new frmAddClass(NULL, frmAddClass::Create, -1, db_data);
+    if (senderName == "btAddCourse") manageClass = new frmManageClass(NULL, frmManageClass::Create, -1, db_data);
     else if (ui->tableCourses->currentRow() < 0){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the courses table in order to execute this command."), QMessageBox::Ok);
         return;
@@ -363,14 +371,14 @@ void frmMain::openClassesManager(){
         return;
     }
     else if (senderName == "btUpdateCourse" && (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR))
-        addClass = new frmAddClass(NULL, frmAddClass::Role::Edit, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
-    else addClass = new frmAddClass(NULL, frmAddClass::Role::View, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
+        manageClass = new frmManageClass(NULL, frmManageClass::Role::Edit, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
+    else manageClass = new frmManageClass(NULL, frmManageClass::Role::View, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong(), db_data);
 
-    connect(addClass, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
+    connect(manageClass, SIGNAL(updatedData(QList<QVariant>,qlonglong)),
                this, SLOT(receiveCourseUpdatedData(QList<QVariant>,qlonglong)));
-    connect(addClass, SIGNAL(newData(QList<QVariant>)),
+    connect(manageClass, SIGNAL(newData(QList<QVariant>)),
                this, SLOT(receiveNewCourseData(QList<QVariant>)));
-    addClass->show();
+    manageClass->show();
 }
 
 void frmMain::openUserManager(){
@@ -471,8 +479,8 @@ void frmMain::setUIToRole(){
 }
 
 void frmMain::getStudents(){
-    QStringList sTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT),
-                rTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE),
+    QStringList sTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT),
+                rTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE),
                 sNewTableSchema, rNewTableSchema;
     sNewTableSchema << sTableSchema.at(0)
                     << sTableSchema.at(1)
@@ -519,7 +527,7 @@ void frmMain::getStudents(){
 }
 
 void frmMain::getCourses(){
-    QStringList cTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS),
+    QStringList cTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS),
                 cNewTableSchema;
     cNewTableSchema << cTableSchema.at(0)  // ID
                     << cTableSchema.at(1)  // Course
@@ -645,12 +653,12 @@ void frmMain::removeStudent(){
     const qlonglong STUDENT_ID = ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong();
     const qlonglong RESPONSIBLE_ID = ui->tableStudents->item(ui->tableStudents->currentRow(), 1)->data(Qt::UserRole).toLongLong();
 
-    QStringList sTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT),
-                rTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE),
-                pTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS),
-                siTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES),
-                riTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES),
-                ceTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS);
+    QStringList sTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT),
+                rTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE),
+                pTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
+                siTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES),
+                riTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES),
+                ceTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS);
 
     myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
                     sTableSchema.at(0), STUDENT_ID);
@@ -690,13 +698,13 @@ void frmMain::removeCourse(){
     qlonglong COURSE_ID = ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong();
 
     myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
-                    SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS).at(0),
+                    SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).at(0),
                     COURSE_ID);
 
     QString pTableName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
             ceTableName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS);
-    QStringList pTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS),
-                ceTableSchema = SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS);
+    QStringList pTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
+                ceTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS);
 
     while (myDB->rowExists(ceTableName, ceTableSchema.at(0), COURSE_ID))
         myDB->removeRow(ceTableName, ceTableSchema.at(0), COURSE_ID);
@@ -734,9 +742,9 @@ void frmMain::restoreDataBase(){
                 delete manageStudent;
                 manageStudent = NULL;
             }
-            if (addClass){
-                delete addClass;
-                addClass = NULL;
+            if (manageClass){
+                delete manageClass;
+                manageClass = NULL;
             }
 
             myDB->closeDB();
@@ -769,9 +777,9 @@ void frmMain::backupDataBase(){
         delete manageStudent;
         manageStudent = NULL;
     }
-    if (addClass){
-        delete addClass;
-        addClass = NULL;
+    if (manageClass){
+        delete manageClass;
+        manageClass = NULL;
     }
 
     myDB->closeDB();
@@ -829,9 +837,9 @@ void frmMain::removeDataBase(){
                 delete manageStudent;
                 manageStudent = NULL;
             }
-            if (addClass){
-                delete addClass;
-                addClass = NULL;
+            if (manageClass){
+                delete manageClass;
+                manageClass = NULL;
             }
 
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS));
@@ -858,9 +866,9 @@ void frmMain::removeDataBase(){
                 delete manageStudent;
                 manageStudent = NULL;
             }
-            if (addClass){
-                delete addClass;
-                addClass = NULL;
+            if (manageClass){
+                delete manageClass;
+                manageClass = NULL;
             }
 
             myDB->closeDB();
@@ -998,9 +1006,9 @@ void frmMain::scheduledBackup(){
         delete manageStudent;
         manageStudent = NULL;
     }
-    if (addClass){
-        delete addClass;
-        addClass = NULL;
+    if (manageClass){
+        delete manageClass;
+        manageClass = NULL;
     }
 
     myDB->closeDB();

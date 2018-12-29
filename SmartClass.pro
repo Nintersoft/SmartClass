@@ -64,7 +64,7 @@ SOURCES += \
     frmmanagestudent.cpp \
     frmimageviewer.cpp \
     frmabout.cpp \
-    frmaddclass.cpp \
+    frmmanageclass.cpp \
     printpreviewform.cpp \
     frmreceipt.cpp \
     frmsettings.cpp \
@@ -84,14 +84,14 @@ HEADERS += \
     frmmanagestudent.h \
     frmimageviewer.h \
     frmabout.h \
-    frmaddclass.h \
     printpreviewform.h \
     frmreceipt.h \
     frmsettings.h \
     frmprintcontract.h \
     frmimportexportdb.h \
     frmmanageusers.h \
-    frmmanageuser.h
+    frmmanageuser.h \
+    frmmanageclass.h
 
 FORMS += \
     nmainwindow/nmainwindow.ui \
@@ -102,14 +102,14 @@ FORMS += \
     frmmanagestudent.ui \
     frmimageviewer.ui \
     frmabout.ui \
-    frmaddclass.ui \
     printpreviewform.ui \
     frmreceipt.ui \
     frmsettings.ui \
     frmprintcontract.ui \
     frmimportexportdb.ui \
     frmmanageusers.ui \
-    frmmanageuser.ui
+    frmmanageuser.ui \
+    frmmanageclass.ui
 
 RESOURCES += \
     resources.qrc

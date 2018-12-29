@@ -1,8 +1,7 @@
 #include "frmmanagestudent.h"
 #include "ui_frmmanagestudent.h"
 
-frmManageStudent::frmManageStudent(QWidget *parent, Role role, const qint64 &studentID,
-                                   const DBManager::DBData &dbData) :
+frmManageStudent::frmManageStudent(QWidget *parent, Role role, const qint64 &studentID) :
     NMainWindow(parent),
     ui(new Ui::frmManageStudent),
     CURRENT_ROLE(role),
@@ -22,8 +21,7 @@ frmManageStudent::frmManageStudent(QWidget *parent, Role role, const qint64 &stu
      * End of GUI operations
      */
 
-    myDB = new DBManager(dbData, SmartClassGlobal::tablePrefix(),
-                            SmartClassGlobal::databaseType(), DBManager::getUniqueConnectionName("manageStudent"));
+    db_manager = DBManager::getInstance();
 
     blockPaymentUpdate = false;
 
@@ -57,8 +55,6 @@ frmManageStudent::frmManageStudent(QWidget *parent, Role role, const qint64 &stu
 
     connect(ui->listCourses, SIGNAL(currentRowChanged(int)), this, SLOT(enableRegistrationDetails(int)));
 
-    myDB->openDB();
-
     this->retrieveData();
 
     if (role == frmManageStudent::Create) ui->edtParentName->setCurrentText("");
@@ -71,8 +67,6 @@ frmManageStudent::~frmManageStudent()
     for (int i = 0; i < 5; ++i) delete pics[i];
     delete[] pics;
 
-    if (myDB->isOpen()) myDB->closeDB();
-    delete myDB;
     delete ui;
 }
 
@@ -112,36 +106,30 @@ void frmManageStudent::enableRegistrationDetails(int index){
 }
 
 void frmManageStudent::saveData(){
-    QString errorMessage = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
-                              " Please, fix the folowing issues before trying to save again:\n");
-    bool error = false;
+    QString baseMessage = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
+                             " Please, fix the folowing issues before trying to save again:\n"),
+            errorMessage = "";
 
-    if (ui->edtStudentName->text().isEmpty()){
+    if (ui->edtStudentName->text().isEmpty())
         errorMessage += tr("\n->The name of the student cannot be empty;");
-        error = true;
-    }
-    else if (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                             SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(1),
-                             ui->edtStudentName->text())
-             && CURRENT_ROLE == frmManageStudent::Create){
-        errorMessage += tr("\n->A student with the same same name already exists in your database. If you want to update him/her, please, use the update button available in the main screen;");
-        error = true;
-    }
-    if (!ui->edtStudentBirthday->date().isValid()){
-        errorMessage += tr("\n->The birthday of the student is invalid;");
-        error = true;
-    }
-    if (ui->edtParentName->currentText().isEmpty()){
-        errorMessage += tr("\n->The name of the parent cannot be empty;");
-        error = true;
-    }
-    if  (ui->edtParentPhone->text().isEmpty() && ui->edtParentEmail->text().isEmpty() && ui->edtParentMobile->text().isEmpty()){
-        errorMessage += tr("\n->It must have either the parent's email or telephone. Currently, both of them are empty;");
-        error = true;
-    }
+    else if (CURRENT_ROLE == frmManageStudent::Create)
+        if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(1),
+                                  ui->edtStudentName->text()))
+            errorMessage += tr("\n->A student with the same same name already exists in your database. If you want to update him/her, please, use the update button available in the main screen;");
 
-    if (error){
-        QMessageBox::information(this, tr("Warning | SmartClass"), errorMessage, QMessageBox::Ok, QMessageBox::Ok);
+    if (!ui->edtStudentBirthday->date().isValid())
+        errorMessage += tr("\n->The birthday of the student is invalid;");
+
+    if (ui->edtParentName->currentText().isEmpty())
+        errorMessage += tr("\n->The name of the parent cannot be empty;");
+
+    if  (ui->edtParentPhone->text().isEmpty() && ui->edtParentEmail->text().isEmpty() && ui->edtParentMobile->text().isEmpty())
+        errorMessage += tr("\n->It must have either the parent's email or telephone. Currently, both of them are empty;");
+
+    if (!errorMessage.isEmpty()){
+        baseMessage += errorMessage;
+        QMessageBox::information(this, tr("Warning | SmartClass"), baseMessage, QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
@@ -149,7 +137,7 @@ void frmManageStudent::saveData(){
     for (int i = 0; i < ui->listCourses->count(); ++i)
         courses << QString::number(ui->listCourses->item(i)->data(Qt::UserRole).toLongLong());
 
-    QList<QVariant> studentInfo, responsibleInfo, courseInfo;
+    QVariantList studentInfo, responsibleInfo;
     studentInfo << ui->edtStudentName->text()
                 << ui->edtStudentBirthday->date()
                 << ui->edtStudentID->text()
@@ -160,85 +148,85 @@ void frmManageStudent::saveData(){
                 << ui->edtExperimentalClassObservations->toPlainText();
 
     responsibleInfo << ui->edtParentName->currentText()
-               << ui->edtParentPhone->text()
-               << ui->cbParentMobileOperator->currentIndex()
-               << ui->edtParentMobile->text()
-               << ui->edtParentEmail->text()
-               << ui->edtParentID->text()
-               << ui->edtParentCPG->text()
-               << ui->cbParentIndication->currentText()
-               << ui->edtRegistrationAddress->text();
+                    << ui->edtParentPhone->text()
+                    << ui->cbParentMobileOperator->currentIndex()
+                    << ui->edtParentMobile->text()
+                    << ui->edtParentEmail->text()
+                    << ui->edtParentID->text()
+                    << ui->edtParentCPG->text()
+                    << ui->cbParentIndication->currentText()
+                    << ui->edtRegistrationAddress->text();
 
     if (CURRENT_ROLE == frmManageStudent::Create){
         qlonglong sID, rID;
 
         if (ui->edtParentName->currentIndex() < 0 ||
                 ui->edtParentName->currentText() != ui->edtParentName->itemText(ui->edtParentName->currentIndex())){
-            myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                            responsibleInfo);
-            rID = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                    SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(1),
-                                    responsibleInfo.at(0)).at(0).toLongLong();
+            db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                                  responsibleInfo);
+            rID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(1),
+                                          responsibleInfo.at(0)).at(0).toLongLong();
         }
         else {
             rID = ui->edtParentName->itemData(ui->edtParentName->currentIndex(), Qt::UserRole).toLongLong();
-            myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                            rID,
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                            responsibleInfo);
+            db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                                  rID,
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                                  responsibleInfo);
         }
 
-        studentInfo.insert(2, rID);
-        myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).mid(1),
-                        studentInfo);
+        studentInfo.insert(1, rID);
+        db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).mid(1),
+                              studentInfo);
 
-        sID = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                                SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(1),
-                                studentInfo.at(0)).at(0).toLongLong();
+        sID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(1),
+                                      studentInfo.at(0)).at(0).toLongLong();
 
         for (int i = 0; i < ui->listCourses->count(); ++i){
-            QList<QVariant> csRow;
+            QVariantList csRow();
             csRow << ui->listCourses->item(i)->data(Qt::UserRole) << sID;
-            myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS),
-                            csRow);
+            db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS),
+                                  csRow);
         }
 
         for (int i = 0; i < ui->listPaymentCourses->count(); ++i){
             QListWidgetPaymentItem* item =  static_cast<QListWidgetPaymentItem*>(ui->listPaymentCourses->item(i));
 
-            QList<QVariant> paymentInfo;
+            QVariantList paymentInfo;
             paymentInfo << sID
                         << item->data(Qt::UserRole)
                         << item->discount()
                         << item->date()
                         << item->installments();
 
-            myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS),
-                            paymentInfo);
+            db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
+                                  paymentInfo);
         }
 
         QList<QVariant> sImages, rImages;
         sImages << sID
-                << myDB->pixmapToVariant(*pics[0])
-                << myDB->pixmapToVariant(*pics[1]);
+                << db_manager->pixmapToVariant(*pics[0])
+                << db_manager->pixmapToVariant(*pics[1]);
 
         rImages << rID
-                << myDB->pixmapToVariant(*pics[2])
-                << myDB->pixmapToVariant(*pics[3])
-                << myDB->pixmapToVariant(*pics[4]);
+                << db_manager->pixmapToVariant(*pics[2])
+                << db_manager->pixmapToVariant(*pics[3])
+                << db_manager->pixmapToVariant(*pics[4]);
 
-        myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES),
-                        sImages);
+        db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES),
+                              sImages);
 
-        myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES),
-                        rImages);
+        db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES),
+                              rImages);
 
         emit newData(QList<QVariant>() << sID
                                        << studentInfo.at(0)
@@ -252,38 +240,46 @@ void frmManageStudent::saveData(){
 
     qlonglong rID;
 
-    QList< QList<QVariant> > siblingsData = myDB->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                                                                  SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(2),
-                                                                  responsibleData.at(0));
+    QList< QVariantList > siblingsData = db_manager->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                                                     SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(2),
+                                                                     responsibleData.at(0));
     int siblings = siblingsData.length();
 
     if (responsibleInfo.at(0) != responsibleData.at(1) && ui->edtParentName->currentIndex() >= 0 &&
             ui->edtParentName->itemText(ui->edtParentName->currentIndex()) == responsibleInfo.at(0)
             && siblings == 1){
         rID = ui->edtParentName->itemData(ui->edtParentName->currentIndex(), Qt::UserRole).toLongLong();
-        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                        responsibleData.at(0));
 
-        myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                        rID,
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                        responsibleInfo);
+        db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                              rID,
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                              responsibleInfo);
+
+        if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                                  responsibleData.at(0)))
+            db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                                  responsibleData.at(0));
+
+        db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                              responsibleData.at(0));
     }
     else if (responsibleInfo.at(0) == responsibleData.at(1) || siblings == 1){
         rID = responsibleData.at(0).toLongLong();
-        myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
+        db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                        SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
                         responsibleData.at(0),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
+                        SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
                         responsibleInfo);
     }
     else {
         QMessageBox parentWarning;
         parentWarning.setIcon(QMessageBox::Information);
         parentWarning.setWindowTitle(tr("Parent data changed | SmartClass"));
-        parentWarning.setText(tr("Looks like the name of the parent has changed. You have three options from now on.\n\n"
+        parentWarning.setText(tr("Looks like the name of the responsible has changed. You have three options from now on.\n\n"
                                  "-> Update : If you choose this option, the responsible data will be changed for every student attached to him/her.\n"
                                  "-> Ignore : If you choose this option, the responsible name will remain the same.\n"
                                  "-> Change : If you choose this option, the responsible data will be updated just for this student. Other students related to this parent will remain intact."));
@@ -297,131 +293,139 @@ void frmManageStudent::saveData(){
             if (ui->edtParentName->currentIndex() >= 0 &&
                     ui->edtParentName->itemText(ui->edtParentName->currentIndex()) == responsibleInfo.at(0)){
                 rID = ui->edtParentName->itemData(ui->edtParentName->currentIndex(), Qt::UserRole).toLongLong();
-                myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                                responsibleData.at(0));
+                db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                                      rID,
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                                      responsibleInfo);
 
-                myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                                rID,
-                                SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                                responsibleInfo);
+                if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                                          responsibleData.at(0)))
+                    db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                                          responsibleData.at(0));
+
+                db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                                      responsibleData.at(0));
+
                 for (int i = 0; i < siblings; ++i)
                     if (siblingsData[i][0].toLongLong() != STUDENT_ID)
-                        myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(0),
-                                        siblingsData[i][0].toLongLong(),
-                                        QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(2),
-                                        QList<QVariant>() << rID);
+                        db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                              SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(0),
+                                              siblingsData[i][0].toLongLong(),
+                                              QStringList() << SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(2),
+                                              QList<QVariant>() << rID);
             }
             else {
                 rID = responsibleData.at(0).toLongLong();
-                myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                                responsibleData.at(0),
-                                SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                                responsibleInfo);
+                db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                                      responsibleData.at(0),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                                      responsibleInfo);
             }
         }
         else if (choice == QMessageBox::Ignore){
             rID = responsibleData.at(0).toLongLong();
             responsibleInfo.replace(0, responsibleData.at(1));
-            myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                            responsibleData.at(0),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                            responsibleInfo);
+            db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                                  responsibleData.at(0),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                                  responsibleInfo);
         }
         else {
-            myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                            SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).mid(1),
-                            responsibleInfo);
-            rID = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                    SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(1),
-                                    responsibleInfo.at(0)).at(0).toLongLong();
+            db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                                  responsibleInfo);
+            rID = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(1),
+                                          responsibleInfo.at(0)).at(0).toLongLong();
         }
     }
 
-    while (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                           SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                           STUDENT_ID))
-        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                        STUDENT_ID);
+    while (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                                 SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS).at(1),
+                                 STUDENT_ID))
+        db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS).at(1),
+                              STUDENT_ID);
 
     for (int i = 0; i < ui->listCourses->count(); ++i)
-        myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS),
-                        QList<QVariant>() << ui->listCourses->item(i)->data(Qt::UserRole) << STUDENT_ID);
+        db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS),
+                              QVariantList() << ui->listCourses->item(i)->data(Qt::UserRole) << STUDENT_ID);
 
-    while(myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                          SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS).at(0),
-                          STUDENT_ID))
-        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS).at(0),
-                        STUDENT_ID);
+    while(db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                                SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).at(0),
+                                STUDENT_ID))
+        db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).at(0),
+                              STUDENT_ID);
 
     for (int i = 0; i < ui->listPaymentCourses->count(); ++i){
         QListWidgetPaymentItem* item =  static_cast<QListWidgetPaymentItem*>(ui->listPaymentCourses->item(i));
 
-        QList<QVariant> paymentInfo;
+        QVariantList paymentInfo;
         paymentInfo << STUDENT_ID
                     << item->data(Qt::UserRole)
                     << item->discount()
                     << item->date()
                     << item->installments();
 
-        myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS),
-                        paymentInfo);
+        db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
+                              paymentInfo);
     }
 
     studentInfo.insert(2, rID);
-    myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                    SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(0),
-                    STUDENT_ID,
-                    SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).mid(1),
-                    studentInfo);
+    db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                          SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(0),
+                          STUDENT_ID,
+                          SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).mid(1),
+                          studentInfo);
 
-    QList<QVariant> sImages, rImages;
+    QVariantList sImages, rImages;
     sImages << STUDENT_ID
-            << myDB->pixmapToVariant(*pics[0])
-            << myDB->pixmapToVariant(*pics[1]);
+            << DBManager::pixmapToVariant(*pics[0])
+            << DBManager::pixmapToVariant(*pics[1]);
 
     rImages << rID
-            << myDB->pixmapToVariant(*pics[2])
-            << myDB->pixmapToVariant(*pics[3])
-            << myDB->pixmapToVariant(*pics[4]);
+            << DBManager::pixmapToVariant(*pics[2])
+            << DBManager::pixmapToVariant(*pics[3])
+            << DBManager::pixmapToVariant(*pics[4]);
 
-    if (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES).at(0),
-                        STUDENT_ID))
-        myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES).at(0),
-                        STUDENT_ID,
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES),
-                        sImages);
-    else myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
-                         SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES),
-                         sImages);
+    if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES).at(0),
+                              STUDENT_ID))
+        db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES).at(0),
+                              STUDENT_ID,
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES),
+                              sImages);
+    else db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                               SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES),
+                               sImages);
 
-    if (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
-                        rID))
-        myDB->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
-                        rID,
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES),
-                        rImages);
-    else myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                         SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES),
-                         rImages);
+    if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                              rID))
+        db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                              rID,
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES),
+                              rImages);
+    else db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                               SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES),
+                               rImages);
 
-    emit updatedData(QList<QVariant>() << studentInfo.at(0)
-                                       << rID
-                                       << responsibleInfo.at(0)
-                                       << studentInfo.at(4)
-                                       << studentInfo.at(5),
+    emit updatedData(QVariantList() << studentInfo.at(0)
+                                    << rID
+                                    << responsibleInfo.at(0)
+                                    << studentInfo.at(4)
+                                    << studentInfo.at(5),
                      STUDENT_ID);
     this->close();
 }
@@ -477,8 +481,8 @@ void frmManageStudent::retrieveData(){
         while (ui->cbRegistrationCourse->count() != 1)
             ui->cbRegistrationCourse->removeItem(1);
     }
-    courseData = myDB->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
-                                   SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS));
+    courseData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
+                                         SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS));
     courseDataCount = courseData.length();
 
     for (int i = 0; i < courseDataCount; ++i){
@@ -490,25 +494,23 @@ void frmManageStudent::retrieveData(){
         }
     }
 
-    QList< QList<QVariant>> allResponsibleData = myDB->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                                                   QStringList() << "id" << "parent" << "students");
+    QList< QVariantList > allResponsibleData = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                                                       SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(0, 2),
+                                                                       QStringList(),
+                                                                       QStringList() << (SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(1) + " ASC"));
     int aPDataSize = allResponsibleData.length();
-    QStringList responsibleNames;
+    int responsibleIndex = -1;
 
-    if (!allResponsibleData.isEmpty()){
-        for (int i = 0; i < aPDataSize; ++i)
-            responsibleNames << allResponsibleData[i].at(1).toString();
+    studentData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
+                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(0),
+                                          QVariant(STUDENT_ID));
 
-        responsibleNames.sort(Qt::CaseInsensitive);
-        ui->edtParentName->addItems(responsibleNames);
-
-        for (int i = 0; i < aPDataSize; ++i)
-            for (int j = 0; j < aPDataSize; ++j)
-                if (ui->edtParentName->itemText(j) == allResponsibleData[i][1].toString()){
-                    ui->edtParentName->setItemData(j, allResponsibleData[i][0], Qt::UserRole);
-                    break;
-                }
-    }
+    if (!allResponsibleData.isEmpty())
+        for (int i = 0; i < aPDataSize; ++i){
+            ui->edtParentName->addItem(allResponsibleData[i].at(1).toString(),
+                                       allResponsibleData[i].at(0));
+            if (allResponsibleData[i].at(0) == studentData.at(2)) responsibleIndex = i;
+        }
 
     if (CURRENT_ROLE == frmManageStudent::Create) return;
     if (CURRENT_ROLE == frmManageStudent::View) ui->screenManagerLayout->setEnabled(false);
@@ -518,42 +520,24 @@ void frmManageStudent::retrieveData(){
         pics[i] = NULL;
     }
 
-    studentData = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                                    SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENT).at(0),
-                                    QVariant(STUDENT_ID));
+    responsibleData = allResponsibleData.at(responsibleIndex);
 
-    qlonglong responsibleIndex = -1;
-    for (int i = 0; i < aPDataSize; ++i)
-        if (allResponsibleData[i].at(0).toLongLong() == studentData.at(2).toLongLong()){
-            responsibleIndex = i;
-            break;
-        }
+    QVariantList rImages = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).mid(0, 1),
+                                                   QVariantList() << responsibleData.at(0),
+                                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).mid(1));
+    QVariantList sImages = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
+                                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES).mid(0, 1),
+                                                   QVariantList() << studentData.at(0),
+                                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES).mid(1));
 
-    responsibleData = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(0),
-                                        QVariant(allResponsibleData[responsibleIndex].at(0).toLongLong()));
-
-    QList<QVariant> rImages = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                                                QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
-                                                QList<QVariant>() << allResponsibleData[responsibleIndex].at(0),
-                                                SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES).mid(1));
-    QList<QVariant> sImages = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
-                                                QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES).at(0),
-                                                QList<QVariant>() << studentData.at(0),
-                                                SmartClassGlobal::getTableStructure(SmartClassGlobal::STUDENTIMAGES).mid(1));
-
-    pics[0] = new QPixmap(myDB->variantToPixmap(sImages.at(0)));
-    pics[1] = new QPixmap(myDB->variantToPixmap(sImages.at(1)));
-    pics[2] = new QPixmap(myDB->variantToPixmap(rImages.at(0)));
-    pics[3] = new QPixmap(myDB->variantToPixmap(rImages.at(1)));
-    pics[4] = new QPixmap(myDB->variantToPixmap(rImages.at(2)));
+    pics[0] = new QPixmap(DBManager::variantToPixmap(sImages.at(0)));
+    pics[1] = new QPixmap(DBManager::variantToPixmap(sImages.at(1)));
+    pics[2] = new QPixmap(DBManager::variantToPixmap(rImages.at(0)));
+    pics[3] = new QPixmap(DBManager::variantToPixmap(rImages.at(1)));
+    pics[4] = new QPixmap(DBManager::variantToPixmap(rImages.at(2)));
 
     if (!pics[0]->isNull()) ui->lblStudentImage->setPixmap(*pics[0]);    
-
-    paymentData = myDB->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                                        SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS).at(0),
-                                        STUDENT_ID);
-    paymentDataCount = paymentData.length();
 
     ui->edtStudentName->setText(studentData.at(1).toString());
     ui->edtStudentBirthday->setDate(studentData.at(3).toDate());
@@ -574,42 +558,71 @@ void frmManageStudent::retrieveData(){
     ui->cbParentIndication->setCurrentText(responsibleData.at(8).toString());
     ui->edtRegistrationAddress->setText(responsibleData.at(9).toString());
 
-    QList< QList<QVariant> > studentCoursesID = myDB->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                                                                      SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                                                                      STUDENT_ID);
+    QString crName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS), cerName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS);
+    QStringList studentCoursesRelationAliases, cAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS),
+            cerAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS);
 
+    QString studentCoursesRelation = cerName + " INNER JOIN " + crName + " ON " + cerName + "." + cerAliases.at(0)
+                                        + " = " + crName + "." + cAliases.at(0);
 
-    for (int i = 0; i < studentCoursesID.length(); ++i){
-        for (int k = 0; k < courseDataCount; ++k){
-            if (studentCoursesID[i][0].toLongLong() == courseData[k].at(0).toLongLong()){
-                QString courseSyntesis = courseData[k][1].toString() + tr(" ( class #") + courseData[k][5].toString() + tr(" ) - ") + courseData[k][6].toString()
-                                            + tr(" * starts on: ") + courseData[k][7].toString();
-                QListWidgetItem *newItem = new QListWidgetItem(courseSyntesis);
-                newItem->setData(Qt::UserRole, courseData[k][0]);
-                ui->listCourses->addItem(newItem);
-                ui->listCourses->setCurrentItem(newItem);
-            }
-        }
+    studentCoursesRelationAliases << crName + "." + cAliases.at(0)
+                                  << crName + "." + cAliases.at(1)
+                                  << crName + "." + cAliases.at(5)
+                                  << crName + "." + cAliases.at(6)
+                                  << crName + "." + cAliases.at(7);
+
+    QList< QVariantList > scRelation = db_manager->retrieveAllCond(studentCoursesRelation,
+                                                                   studentCoursesRelationAliases,
+                                                                   cerName + "." + cerAliases.at(1),
+                                                                   STUDENT_ID);
+
+    for (int i = 0; i < scRelation.size(); ++i){
+        QString courseSyntesis = scRelation[i][1].toString() + tr(" ( class #")
+                                    + QString::number(scRelation[i][2].toInt())
+                                    + tr(" ) - ") + scRelation[i][3].toString()+ tr(" * starts on: ")
+                                    + scRelation[i][4].toDate().toString(tr("dd/MM/yyyy"));
+        QListWidgetItem *newItem = new QListWidgetItem(courseSyntesis);
+        newItem->setData(Qt::UserRole, scRelation[i].at(0));
+        ui->listCourses->addItem(newItem);
     }
+    ui->listCourses->setCurrentIndex(ui->listCourses->count() - 1);
+
+    QString perName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS);
+    QStringList perAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS), paymentDataAliases;
+    QString paymentCoursesRelation = perName + " INNER JOIN " + crName + " ON " + perName + "." + perAliases.at(1)
+                                        + " = " + crName + "." + cAliases.at(0);
+
+    paymentDataAliases << crName + "." + cAliases.at(0)
+                       << crName + "." + cAliases.at(1)
+                       << crName + "." + cAliases.at(5)
+                       << crName + "." + cAliases.at(6)
+                       << crName + "." + cAliases.at(7)
+                       << crName + "." + cAliases.at(9)
+                       << perName + "." + perAliases.at(2)
+                       << perName + "." + perAliases.at(3)
+                       << perName + "." + perAliases.at(4);
+
+    QList< QVariantList > paymentData = db_manager->retrieveAllCond(paymentCoursesRelation,
+                                                                    paymentDataAliases,
+                                                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).at(0),
+                                                                    STUDENT_ID);
+    int paymentDataCount = paymentData.length();
 
     for (int i = 0; i < paymentDataCount; ++i){
-        for (int k = 0; k < courseDataCount; k++){
-            if (courseData[k][0].toLongLong() == paymentData[i][1].toLongLong()){
-                QString courseSyntesis = courseData[k][1].toString() + tr(" ( class #") + courseData[k][5].toString() + tr(" ) - ") + courseData[k][6].toString()
-                                            + tr(" * starts on: ") + courseData[k][7].toString();
+        QString courseSyntesis = paymentData[i][1].toString() + tr(" ( class #")
+                                    + QString::number(paymentData[i][2].toInt())
+                                    + tr(" ) - ") + paymentData[i][3].toString()+ tr(" * starts on: ")
+                                    + paymentData[i][4].toDate().toString(tr("dd/MM/yyyy"));
 
-                QListWidgetPaymentItem *item;
-                item = new QListWidgetPaymentItem(courseSyntesis,courseData[k][9].toDouble());
-                item->setData(Qt::UserRole, courseData[k][0]);
-                item->setDiscount(paymentData[i][2].toDouble());
-                item->setDate(paymentData[i][3].toDate());
-                item->setInstallments(paymentData[i][4].toInt());
+        QListWidgetPaymentItem *item = new QListWidgetPaymentItem(courseSyntesis, paymentData[i][5].toDouble());
+        item->setData(Qt::UserRole, paymentData[i][0]);
+        item->setDiscount(paymentData[i][6].toDouble());
+        item->setDate(paymentData[i][7].toDate());
+        item->setInstallments(paymentData[i][8].toInt());
 
-                ui->listPaymentCourses->addItem(static_cast<QListWidgetItem*>(item));
-                ui->listPaymentCourses->setCurrentRow(ui->listPaymentCourses->count() - 1);
-            }
-        }
+        ui->listPaymentCourses->addItem(static_cast<QListWidgetItem*>(item));
     }
+    ui->listPaymentCourses->setCurrentRow(ui->listPaymentCourses->count() - 1);
 
     this->courseQuantityChanged();
 }
@@ -618,7 +631,7 @@ void frmManageStudent::addCourse(){
     if (!ui->cbRegistrationCourse->currentIndex()) return;
 
     for (int i = 0; i < ui->listCourses->count(); ++i){
-        if (ui->listCourses->item(i)->data(Qt::UserRole).toLongLong() == ui->cbRegistrationCourse->currentData(Qt::UserRole).toLongLong()){
+        if (ui->listCourses->item(i)->data(Qt::UserRole) == ui->cbRegistrationCourse->currentData(Qt::UserRole)){
             QMessageBox::information(this, tr("Warning | SmartClass"), tr("This student is already registered on this course!"), QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
@@ -640,13 +653,13 @@ void frmManageStudent::removeCourse(){
 
     QListWidgetItem* item = ui->listCourses->item(ui->listCourses->currentRow());
     QString itemText = item->text();
-    qlonglong itemID = item->data(Qt::UserRole).toLongLong();
+    qlonglong itemID = item->data(Qt::UserRole);
 
     if (QMessageBox::question(this, tr("SmartClass | Confirmation"), tr("You are going to remove the student from the %1 course. Are you sure?").arg(itemText), QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::No) return;
 
     for (int i = 0; i < ui->listPaymentCourses->count(); ++i){
-        if (itemID == ui->listPaymentCourses->item(i)->data(Qt::UserRole).toLongLong()){
+        if (itemID == ui->listPaymentCourses->item(i)->data(Qt::UserRole)){
             delete ui->listPaymentCourses->item(i);
             break;
         }
@@ -728,22 +741,27 @@ void frmManageStudent::courseIndexChanged(){
 
 void frmManageStudent::updateParentInfo(const QString &pName){
     if (pName.isEmpty() || pName.isNull()) return;
-    QList<QVariant> tempParentData;
-    bool exists = false;
-    if (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                        SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(1),
-                        pName)){
-        tempParentData = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                           SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLE).at(1),
-                                           pName);
-        exists = true;
+    QVariantList tempParentData;
+    bool exists = db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(1),
+                                        pName);
+
+    if (exists){
+        tempParentData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                                 SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(1),
+                                                 pName);
+    }
+    else if (QMessageBox::question(this, tr("Inexistent parental data | SmartClass"),
+                                   tr("We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?"),
+                                   QMessageBox::Yes | QMessageBox::No) == QMessageBox::No){
+                  return;
     }
 
-    if (!exists)
-        if (QMessageBox::question(this, tr("Inexistent parental data | SmartClass"),
-                              tr("We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?"),
-                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-            return;
+    for (int i = 2; i < 5; ++i){
+        delete pics[i];
+        pics[i] = NULL;
+    }
+
     if (exists){
         ui->edtParentPhone->setText(tempParentData.at(2).toString());
         ui->cbParentMobileOperator->setCurrentIndex(tempParentData.at(3).toInt());
@@ -752,6 +770,22 @@ void frmManageStudent::updateParentInfo(const QString &pName){
         ui->edtParentID->setText(tempParentData.at(6).toString());
         ui->edtParentCPG->setText(tempParentData.at(7).toString());
         ui->cbParentIndication->setCurrentText(tempParentData.at(8).toString());
+
+        QVariantList rows = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                              QStringList() << SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                                              QVariantList() << QVariant(tempParentData.at(0)),
+                                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).mid(1));
+
+        if (rows.size() > 2){
+            pics[2] = new QPixmap(db_manager->variantToPixmap(rows.at(0)));
+            pics[3] = new QPixmap(db_manager->variantToPixmap(rows.at(1)));
+            pics[4] = new QPixmap(db_manager->variantToPixmap(rows.at(2)));
+        }
+        else {
+            pics[2] = new QPixmap();
+            pics[3] = new QPixmap();
+            pics[4] = new QPixmap();
+        }
     }
     else {
         ui->edtParentPhone->setText("");
@@ -761,23 +795,7 @@ void frmManageStudent::updateParentInfo(const QString &pName){
         ui->edtParentID->setText("");
         ui->edtParentCPG->setText("");
         ui->cbParentIndication->setCurrentText(tr("Online advertisements"));
-    }
 
-    for (int i = 2; i < 5; ++i){
-        delete pics[i];
-        pics[i] = NULL;
-    }
-
-    if (exists){
-        QList<QVariant> rows = myDB->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                                                 QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
-                                                 QList<QVariant>() << QVariant(tempParentData.at(0)),
-                                                 SmartClassGlobal::getTableStructure(SmartClassGlobal::RESPONSIBLEIMAGES).mid(1));
-        pics[2] = new QPixmap(myDB->variantToPixmap(rows.at(0)));
-        pics[3] = new QPixmap(myDB->variantToPixmap(rows.at(1)));
-        pics[4] = new QPixmap(myDB->variantToPixmap(rows.at(2)));
-    }
-    else {
         pics[2] = new QPixmap();
         pics[3] = new QPixmap();
         pics[4] = new QPixmap();

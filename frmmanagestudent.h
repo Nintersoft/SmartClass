@@ -29,8 +29,7 @@ public:
         Create
     };
 
-    explicit frmManageStudent(QWidget *parent = 0, Role role = Create, const qint64 &studentID = -1,
-                              const DBManager::DBData &dbData = DBManager::DBData());
+    explicit frmManageStudent(QWidget *parent = 0, Role role = Create, const qint64 &studentID = -1);
     ~frmManageStudent();
 
 protected:
@@ -50,14 +49,14 @@ private:
     const Role CURRENT_ROLE;
     const qlonglong STUDENT_ID;
 
-    DBManager* myDB;
+    DBManager* db_manager;
     frmImageViewer* frmImgViewer;
 
     QString imageViewerSender;
-    QList<QVariant> studentData, responsibleData;
-    QList< QList<QVariant> > courseData, paymentData, courseEnrollments;
+    QVariantList studentData, responsibleData;
+    QList< QVariantList > courseData;
 
-    int courseDataCount, paymentDataCount;
+    int courseDataCount;
 
     CurrentImageManagement currentImg;
     QPixmap **pics;

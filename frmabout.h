@@ -14,7 +14,9 @@
 #include <QDir>
 #include <QUrl>
 
+#include "smartclassglobal.h"
 #include "nmainwindow.h"
+#include "dbmanager.h"
 
 namespace Ui {
 class frmAbout;

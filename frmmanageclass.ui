@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frmAddClass</class>
- <widget class="QMainWindow" name="frmAddClass">
+ <class>frmManageClass</class>
+ <widget class="QMainWindow" name="frmManageClass">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>

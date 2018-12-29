@@ -34,7 +34,7 @@ public:
         Info
     };
 
-    explicit frmSettings(QWidget *parent = 0, DBManager *db_manager = NULL, OpenMode mode = frmSettings::Normal);
+    explicit frmSettings(QWidget *parent = 0, OpenMode mode = frmSettings::Normal);
     ~frmSettings();
 
 private:
