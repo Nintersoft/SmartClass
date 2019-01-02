@@ -390,7 +390,7 @@ void frmImportExportDB::importCheckingErrors(){
                 if (linesCount < 5) importErrors += tr("The quantity of lines does not match with the minimal requirements to import into %1 table. This file has been skipped.").arg(tables.at(7));
             }
             else {
-                QString argument = QString(tables.at(i)).split("_").at(1);
+                QString argument = QString(tables.at(7)).split("_").at(1);
                 QMessageBox::information(this, tr("Error | SmartClass"),
                                          tr("The file \"%1\" could not be opened."
                                             " This file has been skipped during the process of importation.").arg(argument),

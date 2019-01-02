@@ -90,7 +90,7 @@ private:
     qlonglong dID;
 
 signals:
-    void dataReady(const QList<QVariant> &userInfo);
+    void dataReady(const QVariantList &userInfo);
 };
 
 #endif // FRMLOGIN_H

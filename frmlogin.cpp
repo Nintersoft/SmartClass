@@ -62,7 +62,9 @@ void frmLogin::login(){
         return;
     }
 
-    QVariantList userInfo(db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), uTableSchema.at(1), username));
+    QVariantList userInfo(db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
+                                                  uTableSchema.mid(1,1), QVariantList() << username,
+                                                  uTableSchema));
     QString tempHash = QString(QCryptographicHash::hash(QString(userInfo.at(3).toString() + ui->edtPasswordFLogin->text()).toUtf8(), QCryptographicHash::Sha512).toHex());
     if (tempHash == userInfo.at(4).toString()){
         if (dID != -1)

@@ -39,10 +39,12 @@ frmPrintContract::frmPrintContract(QWidget *parent, qlonglong studentID) :
     }
 
     sData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(0), STUDENT_ID,
+                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).mid(0,1),
+                                    QVariantList() << STUDENT_ID,
                                     SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT));
     rData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0), sData.at(2),
+                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(0,1),
+                                    QVariantList() << sData.at(2),
                                     SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE));
     QList<QVariantList> settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
     if (settings.size())
@@ -169,7 +171,7 @@ void frmPrintContract::generateContractForm(){
                                      .arg(ui->edtCompanyName->text());
 
     bool hasImage = ui->cbIncludeCompanyLogo->isChecked() && settings.size();
-    if (hasImage) hasImage &= settings[0].size();
+    if (hasImage) hasImage &= (bool)settings[0].size();
     if (hasImage) hasImage &= (settings[0][2].isNull() && settings[0][2].isValid());
     if (hasImage) frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
                                                                             << ui->lblParentName->text()

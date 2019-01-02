@@ -28,9 +28,9 @@
 #include "frmimportexportdb.h"
 #include "frmmanagestudent.h"
 #include "frmprintcontract.h"
+#include "frmmanageclass.h"
 #include "frmmanageusers.h"
 #include "frmfirstrun.h"
-#include "frmmanageclass.h"
 #include "frmsettings.h"
 #include "frmreceipt.h"
 #include "titlebar.h"
@@ -52,7 +52,7 @@ public:
     inline int getReturnCode() { return this->returnCode; }
 
 private slots:
-    void setSessionRole(const QList<QVariant> &userInfo);
+    void setSessionRole(const QVariantList &userInfo);
     void logOut();
 
     void openStudentManager();
@@ -82,11 +82,11 @@ private slots:
     void setUpgradeAvailable();
 
 protected slots:
-    void receiveNewStudentData(const QList<QVariant> &data);
-    void receiveStudentUpdatedData(const QList<QVariant> &data, const qlonglong &oldStudent);
+    void receiveNewStudentData(const QVariantList &data);
+    void receiveStudentUpdatedData(const QVariantList &data, const qlonglong &oldStudent);
 
-    void receiveNewCourseData(const QList<QVariant> &data);
-    void receiveCourseUpdatedData(const QList<QVariant> &data, const qlonglong &oldCourse);
+    void receiveNewCourseData(const QVariantList &data);
+    void receiveCourseUpdatedData(const QVariantList &data, const qlonglong &oldCourse);
 
     void getFirstSettings(const DBManager::DBData &sqlData, const QString &langSlug);
 

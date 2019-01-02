@@ -17,8 +17,6 @@ public:
     inline static void setDatabaseType(const DBManager::DBConnectionType &db_type) { databaseTypeS =  db_type; }
     inline static DBManager::DBConnectionType databaseType() { return databaseTypeS; }
 
-    static QString globalConnection;
-
     inline static void setGlobalConnectionName(const QString &cName) { globalConnection = cName; }
     inline static QString connectionName() { return DBManager::getUniqueConnectionName(globalConnection); }
 
@@ -239,7 +237,8 @@ public:
         NEW = 3
     };
 
-private:
+protected:
+    static QString globalConnection;
     static QString databaseTablePrefix;
     static DBManager::DBConnectionType databaseTypeS;
 };

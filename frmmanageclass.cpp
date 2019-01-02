@@ -46,8 +46,6 @@ frmManageClass::frmManageClass(QWidget *parent, Role role, qint64 courseID) :
 
 frmManageClass::~frmManageClass()
 {
-    if (myDB->isOpen()) myDB->closeDB();
-    delete myDB;
     delete ui;
 }
 
@@ -187,7 +185,7 @@ void frmManageClass::saveNewClass(){
                                                                         "\nHere are the technical details of what happened: %1.").arg(myDB->lastError().text()),
                                      QMessageBox::Ok, QMessageBox::NoButton);
 
-        emit newData(QList<QVariant>() << newCData.at(0) << newCData.at(4) << newCData.at(1)
+        emit newData(QVariantList() << newCData.at(0) << newCData.at(4) << newCData.at(1)
                                         << newCData.at(6) << newCData.at(5) << newIndex);
     }
     this->close();

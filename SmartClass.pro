@@ -57,6 +57,7 @@ SOURCES += \
     main.cpp \
     nmainwindow/nmainwindow.cpp \
     nmainwindow/titlebar.cpp \
+    smartclassglobal/smartclassglobal.cpp \
     qlistwidgetpaymentitem/qlistwidgetpaymentitem.cpp \
     frmmain.cpp \
     frmlogin.cpp \
@@ -71,7 +72,7 @@ SOURCES += \
     frmprintcontract.cpp \
     frmimportexportdb.cpp \
     frmmanageusers.cpp \
-    frmmanageuser.cpp
+    frmmanageuser.cpp \
 
 HEADERS += \
     nmainwindow/nmainwindow.h \

@@ -48,10 +48,8 @@ frmFirstRun::frmFirstRun(QWidget *parent) :
 
 frmFirstRun::~frmFirstRun()
 {
-    if (db_manager){
+    if (db_manager)
         db_manager->removeInstance();
-        delete db_manager;
-    }
     delete ui;
 }
 
@@ -123,11 +121,11 @@ void frmFirstRun::nextStep(){
 
         QSqlQuery checkSettings = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS) + "LIMIT 1");
         if (checkSettings.exec()){
-            QVariantList settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
+            QList< QVariantList > settingsb = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
 
-            settingsExists = settings.size();
+            settingsExists = settingsb.size();
             if (settingsExists){
-                QVariantList settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS)).at(0);
+                QVariantList settings = settingsb.at(0);
                 ui->edtCompanyName->setText(settings.at(0).toString());
                 cLogo = DBManager::variantToPixmap(settings.at(2));
                 ui->lblCompanyLogoImg->setPixmap(cLogo.scaled(ui->lblCompanyLogoImg->size(), Qt::KeepAspectRatio));
@@ -158,7 +156,7 @@ void frmFirstRun::nextStep(){
                 profileID = connection.at(0).toLongLong();
         }
         else if(!db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
-                                         SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS) <<
+                                         QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS) <<
                                          SmartClassGlobal::getTableConstraints(SmartClassGlobal::ACTIVECONNECTIONS))){
             QMessageBox::critical(this, tr("Error | SmartClass"),
                                   tr("It was not possible to create the table of device access control. Please, try again later. Details: %1 .").arg(db_manager->lastError().text()),
