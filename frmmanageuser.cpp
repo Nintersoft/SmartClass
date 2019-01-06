@@ -15,6 +15,9 @@ frmManageUser::frmManageUser(QWidget *parent, const QList<QVariant> &data,
     NMainWindow::setMaximizeButtonEnabled(false);
     NMainWindow::setMinimizeButtonEnabled(false);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+            this->size(), qApp->desktop()->availableGeometry()));
+
     /*
      *  End of GUI implementation
      */

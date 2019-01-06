@@ -8,6 +8,7 @@
 #include <QCloseEvent>
 #include <QTranslator>
 #include <QFileDialog>
+#include <QSqlQuery>
 #include <QDateTime>
 #include <QHostInfo>
 #include <QSettings>
@@ -66,6 +67,7 @@ private slots:
 
     void saveDBSettings();
     void selectCompanyLogo();
+    void removeCompanyLogo();
     void changeLanguage(int index);
 
 signals:

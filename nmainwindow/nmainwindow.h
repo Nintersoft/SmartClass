@@ -14,7 +14,6 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QPoint>
-#include <QDebug>
 
 #include "titlebar.h"
 
@@ -43,7 +42,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void undefMouseMoveEvent(QObject *object, QMouseEvent* event);
     bool eventFilter(QObject *watched, QEvent *event);
-    
+
+    bool event(QEvent *event);
+
     enum LockMoveType{
         Left,
         Right,
@@ -62,6 +63,8 @@ private:
 
     QPoint posCursor;
     LockMoveType locked;
+
+    QSize oldMinimum;
 };
 
 #endif // NMAINWINDOW_H

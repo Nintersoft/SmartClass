@@ -10,15 +10,19 @@
 #include <QTranslator>
 #include <QMessageBox>
 #include <QStringList>
+#include <QClipboard>
 #include <QSettings>
 #include <QDateTime>
 #include <QSettings>
 #include <QVariant>
+#include <QAction>
 #include <QTimer>
 #include <QPoint>
 #include <QTimer>
+#include <QMenu>
 #include <QFile>
 #include <QTime>
+#include <QIcon>
 #include <QDir>
 
 #include "smartclassglobal.h"
@@ -77,6 +81,9 @@ private slots:
 
     void alternateTable();
     void changeTable(bool student);
+
+    void openStudentTableContextMenu(const QPoint &pos);
+    void openClassTableContextMenu(const QPoint &pos);
 
     void changeLanguage(const QString &slug);
     void setUpgradeAvailable();

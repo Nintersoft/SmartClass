@@ -11,6 +11,9 @@ PrintPreviewForm::PrintPreviewForm(QWidget *parent, const QPixmap &pixmap) :
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+            this->size(), qApp->desktop()->availableGeometry()));
+
     /*
      *  End of GUI implementation
      */

@@ -19,6 +19,7 @@ NMainWindow::NMainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
     centralWidget()->installEventFilter(this);
+    ui->headerWidget->installEventFilter(this);
     ui->titleBar->installEventFilter(this);
     ui->statusBar->installEventFilter(this);
 
@@ -200,8 +201,22 @@ bool NMainWindow::eventFilter(QObject* object, QEvent* event)
 {
     if(event->type() == QEvent::MouseMove)
         undefMouseMoveEvent(object, static_cast<QMouseEvent*>(event));
-    else if (event->type() == QEvent::MouseButtonPress && object->objectName() == "titleBar"){
+    else if (event->type() == QEvent::MouseButtonPress && object->objectName() == "titleBar")
         mousePressEvent(static_cast<QMouseEvent*>(event));
-    }
     return false;
+}
+
+bool NMainWindow::event(QEvent *event){
+    switch (event->type()) {
+        case QEvent::WindowBlocked:
+            oldMinimum = ui->headerWidget->minimumSize();
+            ui->headerWidget->setMinimumSize(this->width(), 35);
+            break;
+        case QEvent::WindowUnblocked:
+            ui->headerWidget->setMinimumSize(oldMinimum);
+            ui->headerWidget->resize(this->width(), ui->headerWidget->height());
+        default:
+            break;
+    }
+    return QMainWindow::event(event);
 }

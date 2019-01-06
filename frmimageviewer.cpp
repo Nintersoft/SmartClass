@@ -13,6 +13,9 @@ frmImageViewer::frmImageViewer(QWidget *parent, const QPixmap &image) :
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     this->setMaximizeButtonEnabled(false);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+            this->size(), qApp->desktop()->availableGeometry()));
+
     /*
      * End of GUI operations
      */

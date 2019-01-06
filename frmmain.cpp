@@ -74,6 +74,9 @@ frmMain::frmMain(QWidget *parent) :
     if (returnCode == -1){
         this->hide();
 
+        ui->tableStudents->setContextMenuPolicy(Qt::CustomContextMenu);
+        ui->tableCourses->setContextMenuPolicy(Qt::CustomContextMenu);
+
         connect(ui->btLogOff, SIGNAL(clicked(bool)), this, SLOT(logOut()));
         connect(ui->rbStudentsTable, SIGNAL(toggled(bool)), this, SLOT(changeTable(bool)));
 
@@ -83,6 +86,9 @@ frmMain::frmMain(QWidget *parent) :
         connect(ui->btAddCourse, SIGNAL(clicked(bool)), this, SLOT(openClassesManager()));
         connect(ui->btUpdateCourse, SIGNAL(clicked(bool)), this, SLOT(openClassesManager()));
         connect(ui->btRemoveCourse, SIGNAL(clicked(bool)), this, SLOT(removeCourse()));
+
+        connect(ui->tableStudents, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(openStudentTableContextMenu(QPoint)));
+        connect(ui->tableCourses, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(openClassTableContextMenu(QPoint)));
 
         connect(ui->btSettings, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
         connect(ui->btManageUsers, SIGNAL(clicked(bool)), this, SLOT(openUserManager()));
@@ -333,7 +339,7 @@ void frmMain::openStudentManager(){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of students must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
-    else if (senderName == "btUpdateStudent" && (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR))
+    else if (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR)
         manageStudent = new frmManageStudent(NULL, frmManageStudent::Role::Edit, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong());
     else manageStudent = new frmManageStudent(NULL, frmManageStudent::Role::View, ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->data(Qt::UserRole).toLongLong());
 
@@ -365,7 +371,7 @@ void frmMain::openClassesManager(){
         QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of courses must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
-    else if (senderName == "btUpdateCourse" && (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR))
+    else if (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR)
         manageClass = new frmManageClass(NULL, frmManageClass::Role::Edit, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong());
     else manageClass = new frmManageClass(NULL, frmManageClass::Role::View, ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong());
 
@@ -382,7 +388,7 @@ void frmMain::openUserManager(){
         frmMngUsers = NULL;
     }
 
-    frmMngUsers = new frmManageUsers(this, myDB, currentUser);
+    frmMngUsers = new frmManageUsers(this, currentUser);
     frmMngUsers->show();
 }
 
@@ -459,13 +465,10 @@ void frmMain::setUIToRole(){
     ui->btAddStudent->setEnabled(enable);
     ui->btRemoveStudent->setEnabled(enable);
     ui->btAddCourse->setEnabled(enable);
-    ui->btRemoveCourse->setEnabled(enable);
 
     if (sessionRole == SmartClassGlobal::VIEWER) enable = true;
 
     ui->btUpdateStudent->setEnabled(enable);
-    ui->btUpdateCourse->setEnabled(enable);
-
     ui->btPrintStudentForms->setEnabled(enable);
 
     if (enable) return;
@@ -474,8 +477,8 @@ void frmMain::setUIToRole(){
 }
 
 void frmMain::getStudents(){
-    QString sTableName = SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-            rTableName = SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+    QString sTableName = SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT, true),
+            rTableName = SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE, true),
             srJoin;
     QStringList sTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT),
                 rTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE),
@@ -488,7 +491,7 @@ void frmMain::getStudents(){
                      << rTableName + "." + rTableSchema.at(0)
                      << rTableName + "." + rTableSchema.at(1);
 
-    srJoin = sTableName + " INNER JOIN " + rTableName + " ON " +
+    srJoin = SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT) + " INNER JOIN " + rTableName + " ON " +
              sTableName + "." + sTableSchema.at(2) + " = " + srNewTableSchema.at(4);
 
     QList< QVariantList > srJoinRelation = myDB->retrieveAll(srJoin, srNewTableSchema, QStringList(),
@@ -555,8 +558,8 @@ void frmMain::receiveNewStudentData(const QVariantList &data){
     ui->tableStudents->setItem(oldRCount, 2, new QTableWidgetItem(data.at(4).toString()));
     ui->tableStudents->setItem(oldRCount, 3, new QTableWidgetItem(data.at(5).toString()));
 
-    ui->tableStudents->item(ui->tableStudents->rowCount(), 0)->setData(Qt::UserRole, data.at(0));
-    ui->tableStudents->item(ui->tableStudents->rowCount(), 1)->setData(Qt::UserRole, data.at(2));
+    ui->tableStudents->item(oldRCount, 0)->setData(Qt::UserRole, data.at(0));
+    ui->tableStudents->item(oldRCount, 1)->setData(Qt::UserRole, data.at(2));
 }
 
 void frmMain::receiveStudentUpdatedData(const QVariantList &data, const qlonglong &oldStudent){
@@ -956,21 +959,8 @@ void frmMain::openSupportEmail(){
 }
 
 void frmMain::alternateTable(){
-    bool isStudentTable = ui->rbStudentsTable->isChecked();
-
-    if (isStudentTable) ui->rbCoursesTable->setChecked(true);
+    if (ui->rbStudentsTable->isChecked()) ui->rbCoursesTable->setChecked(true);
     else ui->rbStudentsTable->setChecked(true);
-
-    if (sessionRole == SmartClassGlobal::NEW) return;
-
-    ui->btPrintStudentForms->setEnabled(isStudentTable);
-    ui->btUpdateStudent->setEnabled(isStudentTable);
-    ui->btUpdateCourse->setEnabled(!isStudentTable);
-
-    if (sessionRole == SmartClassGlobal::VIEWER) return;
-
-    ui->btRemoveStudent->setEnabled(isStudentTable);
-    ui->btRemoveCourse->setEnabled(!isStudentTable);
 }
 
 void frmMain::changeTable(bool student){
@@ -978,6 +968,65 @@ void frmMain::changeTable(bool student){
     ui->cbStudentFilter->setVisible(student);
     ui->tableCourses->setVisible(!student);
     ui->cbCourseFilter->setVisible(!student);
+
+    if (sessionRole == SmartClassGlobal::NEW) return;
+
+    ui->btPrintStudentForms->setEnabled(student);
+    ui->btUpdateStudent->setEnabled(student);
+    ui->btUpdateCourse->setEnabled(!student);
+
+    if (sessionRole == SmartClassGlobal::VIEWER) return;
+
+    ui->btRemoveStudent->setEnabled(student);
+    ui->btRemoveCourse->setEnabled(!student);
+}
+
+void frmMain::openStudentTableContextMenu(const QPoint &pos){
+    if (ui->tableStudents->currentRow() < 0) return;
+
+    QMenu contextMenu(tr("Students table menu | SmartClass"), ui->tableStudents);
+
+    QAction action1(QIcon(":/images/buttons/UpdateStudent.PNG"), tr("View/Update student data"), ui->tableStudents);
+    connect(&action1, SIGNAL(triggered(bool)), this, SLOT(openStudentManager()));
+    QAction action2(QIcon(":/images/buttons/RemoveStudent.PNG"), tr("Remove student"), ui->tableStudents);
+    connect(&action2, SIGNAL(triggered(bool)), this, SLOT(removeStudent()));
+
+    switch (sessionRole) {
+        case SmartClassGlobal::ADMIN:
+        case SmartClassGlobal::EDITOR:
+            contextMenu.addActions({&action1, &action2});
+            break;
+        case SmartClassGlobal::VIEWER:
+            contextMenu.addActions({&action1});
+        default:
+            break;
+    }
+
+    contextMenu.exec(ui->tableStudents->mapToGlobal(pos));
+}
+
+void frmMain::openClassTableContextMenu(const QPoint &pos){
+    if (ui->tableCourses->currentRow() < 0) return;
+
+    QMenu contextMenu(tr("Courses table menu | SmartClass"), ui->tableCourses);
+
+    QAction action1(QIcon(":/images/buttons/UpdateClasses.PNG"), tr("View/Update course data"), ui->tableCourses);
+    connect(&action1, SIGNAL(triggered(bool)), this, SLOT(openStudentManager()));
+    QAction action2(QIcon(":/images/buttons/RemoveClasses.PNG"), tr("Remove course"), ui->tableCourses);
+    connect(&action2, SIGNAL(triggered(bool)), this, SLOT(removeStudent()));
+
+    switch (sessionRole) {
+        case SmartClassGlobal::ADMIN:
+        case SmartClassGlobal::EDITOR:
+            contextMenu.addActions({&action1, &action2});
+            break;
+        case SmartClassGlobal::VIEWER:
+            contextMenu.addActions({&action1});
+        default:
+            break;
+    }
+
+    contextMenu.exec(ui->tableCourses->mapToGlobal(pos));
 }
 
 void frmMain::changeLanguage(const QString &slug){

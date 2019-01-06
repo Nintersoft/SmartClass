@@ -11,8 +11,7 @@ frmPrintContract::frmPrintContract(QWidget *parent, qlonglong studentID) :
     // Sets the custom Widgets on the parent Class
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
-
-    ui->titleBar->setMaximizeButtonEnabled(false);
+    NMainWindow::setMaximizeButtonEnabled(false);
 
     this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
             this->size(), qApp->desktop()->availableGeometry()));

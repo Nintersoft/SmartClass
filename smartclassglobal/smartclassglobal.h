@@ -45,8 +45,8 @@ public:
         ACTIVECONNECTIONS
     };
 
-    inline static const QString getTableName(TablesSpec table){
-        QString tableName = databaseTablePrefix;
+    inline static const QString getTableName(TablesSpec table, bool includePrefix = false){
+        QString tableName = (includePrefix ? databaseTablePrefix : "");
         switch (table) {
             case USERS:
                 tableName += "smartclass_users";
@@ -61,7 +61,7 @@ public:
                 tableName += "smartclass_simages";
                 break;
             case RESPONSIBLEIMAGES:
-                tableName += "smartclass_pimages";
+                tableName += "smartclass_rimages";
                 break;
             case COURSEDETAILS:
                 tableName += "smartclass_courses";
@@ -103,7 +103,7 @@ public:
                                 << "answerSalt TEXT NOT NULL" << "answerHash TEXT NOT NULL" << "role INTEGER";
                 break;
             case STUDENT:
-                tableStructure << id << "name TEXT NOT NULL" << ("rID INTEGER" + isSQLite ? "" : "(64)")
+                tableStructure << id << "name TEXT NOT NULL" << (isSQLite ? "rID INTEGER" : "rID INTEGER(64)")
                                 << "birthday DATE" << "studentID TEXT" << "school TEXT" << "observations TEXT"
                                 << "experimentalClass TEXT" << "experimentalClassDate DATETIME"
                                 << "experimentalClassObservations TEXT";
@@ -114,11 +114,11 @@ public:
                                 << "meeting TEXT" << "address TEXT";
                 break;
             case STUDENTIMAGES:
-                tableStructure << ("id INTEGER" + isSQLite ? "" : "(64)") << ("picture " + blobType)
+                tableStructure << (isSQLite ? "id INTEGER" : "id INTEGER(64)") << ("picture " + blobType)
                                 << ("studentID " + blobType);
                 break;
             case RESPONSIBLEIMAGES:
-                tableStructure << ("id INTEGER" + isSQLite ? "" : "(64)") << ("responsibleID " + blobType)
+                tableStructure << (isSQLite ? "id INTEGER" : "id INTEGER(64)") << ("responsibleID " + blobType)
                                 << ("responsibleCPG " + blobType) << ("addressComprobation " + blobType);
                 break;
             case COURSEDETAILS:
@@ -128,11 +128,11 @@ public:
                                 << "price DOUBLE";
                 break;
             case COURSEENROLLMENTS:
-                tableStructure << ("cid INTEGER" + isSQLite ? "" : "(64)")
-                                << ("sid INTEGER" + isSQLite ? "" : "(64)");
+                tableStructure << (isSQLite ? "cid INTEGER" : "cid INTEGER(64)")
+                                << (isSQLite ? "sid INTEGER" : "sid INTEGER(64)");
                 break;
             case PAYMENTDETAILS:
-                tableStructure << ("sid INTEGER" + isSQLite ? "" : "(64)") << ("cid INTEGER" + isSQLite ? "" : "(64)")
+                tableStructure << (isSQLite ? "sid INTEGER" : "sid INTEGER(64)") << (isSQLite ? "cid INTEGER" : "cid INTEGER(64)")
                                 << "discount DOUBLE" << "beginningDate DATE" << "installments INTEGER";
                 break;
             case SETTINGS:
@@ -182,7 +182,7 @@ public:
                 break;
             case PAYMENTDETAILS:
                 tableStructure << "sid" << "cid" << "discount" << "beginningDate"
-                               << "installments INTEGER";
+                               << "installments";
                 break;
             case SETTINGS:
                 tableStructure << "companyName" << "contract" << "logo";

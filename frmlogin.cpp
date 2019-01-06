@@ -12,6 +12,9 @@ frmLogin::frmLogin(QWidget *parent) :
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     this->setMaximizeButtonEnabled(false);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+            this->size(), qApp->desktop()->availableGeometry()));
+
     /*
      * End GUI properties
      */

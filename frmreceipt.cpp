@@ -10,7 +10,10 @@ frmReceipt::frmReceipt(QWidget *parent) :
     // Sets the custom Widgets on the parent Class
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
-    ui->titleBar->setMaximizeButtonEnabled(false);
+    NMainWindow::setMaximizeButtonEnabled(false);
+
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+            this->size(), qApp->desktop()->availableGeometry()));
 
     /*
      *  End of GUI implementation
@@ -19,7 +22,7 @@ frmReceipt::frmReceipt(QWidget *parent) :
     totalWDiscount = 0;
     totalIntegral = 0;
 
-    this->db_manager = db_manager;
+    this->db_manager = DBManager::getInstance();
 
     connect(ui->cbShowTable, SIGNAL(toggled(bool)), this, SLOT(switchTableVisibility(bool)));
     connect(ui->btExport, SIGNAL(clicked(bool)), this, SLOT(exportCSV()));
@@ -32,15 +35,16 @@ frmReceipt::frmReceipt(QWidget *parent) :
     }
     ui->cbCustomMonthNYear->setCurrentIndex(24);
 
-    QString courseDetailsName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
-            studentInfoName = SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
-            paymentInfoName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS);
+    QString courseDetailsName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS, true),
+            studentInfoName = SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT, true),
+            paymentInfoName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS, true);
 
     QStringList courseDetailsAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS),
                 studentInfoAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT),
                 paymentInfoAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS);
 
-    QString joinTable = paymentInfoName + " INNER JOIN " + studentInfoName + " ON " + paymentInfoName + "." + paymentInfoAliases.at(0) + " = " + studentInfoName + "." + studentInfoAliases.at(0)
+    QString joinTable = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS) + " INNER JOIN "
+            + studentInfoName + " ON " + paymentInfoName + "." + paymentInfoAliases.at(0) + " = " + studentInfoName + "." + studentInfoAliases.at(0)
             + " INNER JOIN " + courseDetailsName + " ON " + paymentInfoName + "." + paymentInfoAliases.at(1) + " = " + courseDetailsName + "." + courseDetailsAliases.at(0);
 
     columns << (studentInfoName + "." + studentInfoAliases.at(1))

@@ -8,6 +8,8 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include <QVariant>
+#include <QAction>
+#include <QMenu>
 #include <QList>
 
 #include "smartclassglobal.h"
@@ -25,8 +27,7 @@ class frmManageUsers : public NMainWindow
     Q_OBJECT
 
 public:
-    explicit frmManageUsers(QWidget *parent = 0, DBManager *dbManager = 0,
-                                const QString &currentUser = "");
+    explicit frmManageUsers(QWidget *parent = 0, const QString &currentUser = "");
     ~frmManageUsers();
 
 private:
@@ -40,12 +41,15 @@ private:
 
     QString CURRENT_USER;
 
+protected slots:
+    void createUsersCustomMenu(const QPoint &pos);
+
 private slots:
     void setToolsEnabled(int row);
 
     void removeUser();
     void openUserManager();
-    void getModifiedData(const QList<QVariant> newData);
+    void getModifiedData(const QVariantList newData);
 };
 
 #endif // FRMMANAGEUSERS_H

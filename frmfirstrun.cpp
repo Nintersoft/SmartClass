@@ -28,11 +28,13 @@ frmFirstRun::frmFirstRun(QWidget *parent) :
     ui->btPrevStep->setEnabled(false);
     ui->tabManager->tabBar()->hide();
 
+    //NMainWindow::setTitleBarFixedWidth(this->width());
+
     connect(ui->btNextStep, SIGNAL(clicked(bool)), this, SLOT(nextStep()));
     connect(ui->btPrevStep, SIGNAL(clicked(bool)), this, SLOT(previousStep()));
 
     connect(ui->btSearchCompanyLogo, SIGNAL(clicked(bool)), this, SLOT(selectCompanyLogo()));
-    connect(ui->btRemoveLogo, SIGNAL(clicked(bool)), ui->edtCompanyLogoPath, SLOT(clear()));
+    connect(ui->btRemoveLogo, SIGNAL(clicked(bool)), this, SLOT(removeCompanyLogo()));
 
     connect(ui->btSaveData, SIGNAL(clicked(bool)), this, SLOT(saveDBSettings()));
     connect(ui->rbMySQL, SIGNAL(toggled(bool)), ui->grpMySQLSettings, SLOT(setEnabled(bool)));
@@ -116,14 +118,13 @@ void frmFirstRun::nextStep(){
             db_manager = NULL;
             return;
         }
-
         db_export_data = db_data;
 
-        QSqlQuery checkSettings = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS) + "LIMIT 1");
+        QSqlQuery checkSettings = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
         if (checkSettings.exec()){
             QList< QVariantList > settingsb = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
 
-            settingsExists = settingsb.size();
+            settingsExists = (bool)settingsb.size();
             if (settingsExists){
                 QVariantList settings = settingsb.at(0);
                 ui->edtCompanyName->setText(settings.at(0).toString());
@@ -275,30 +276,25 @@ void frmFirstRun::nextStep(){
         db_manager->close();
         db_manager->removeInstance();
         db_manager = NULL;
-
-        ui->btNextStep->setVisible(false);
-        ui->btNextStep->setVisible(false);
-        ui->btPrevStep->setVisible(false);
-        ui->btPrevStep->setEnabled(false);
     }
 
-    if (currentTab != 2) {
-        ui->btPrevStep->setVisible(true);
-        ui->btPrevStep->setEnabled(true);
-    }
+    bool appSettingsS = currentTab != 2;
+    ui->btPrevStep->setVisible(appSettingsS);
+    ui->btPrevStep->setEnabled(appSettingsS);
+    ui->btNextStep->setVisible(appSettingsS);
+    ui->btNextStep->setEnabled(appSettingsS);
 
-    ui->tabManager->setCurrentIndex(currentTab + 1);
+    ui->tabManager->setCurrentIndex(++currentTab);
 }
 
 void frmFirstRun::previousStep(){
-    ui->tabManager->setCurrentIndex(ui->tabManager->currentIndex() - 1);
-
     int currentTab = ui->tabManager->currentIndex();
-    if (!currentTab){
-        ui->btPrevStep->setVisible(false);
-        ui->btPrevStep->setEnabled(false);
-    }
-    else if (currentTab == 1) profileID = -1;
+    ui->tabManager->setCurrentIndex(--currentTab);
+
+    ui->btPrevStep->setVisible(currentTab);
+    ui->btPrevStep->setEnabled(currentTab);
+
+    if (currentTab == 2) profileID = -1;
 }
 
 void frmFirstRun::saveDBSettings(){
@@ -317,6 +313,11 @@ void frmFirstRun::selectCompanyLogo(){
         cLogo = QPixmap(ui->edtCompanyLogoPath->text());
         ui->lblCompanyLogoImg->setPixmap(cLogo.scaled(ui->lblCompanyLogoImg->size(), Qt::KeepAspectRatio));
     }
+}
+
+void frmFirstRun::removeCompanyLogo(){
+    ui->edtCompanyLogoPath->clear();
+    ui->lblCompanyLogoImg->setPixmap(QPixmap(QString::fromUtf8(":/images/logos/ns-watermark.png")));
 }
 
 void frmFirstRun::changeLanguage(int index){

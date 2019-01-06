@@ -143,6 +143,119 @@ QWidget#tabLogin, QWidget#tabRegister, QWidget#tabRecover{
 </string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true">QWidget#titleBar{
+	background-color: #FFF;
+	border-top: 1px solid orange;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+	color: #000;
+}
+
+QWidget#centralWidget, QStatusBar{
+	background-color: #FFF;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+}
+
+QStatusBar{
+	border-bottom: 1px solid orange;
+}
+
+QWidget{
+	font-size: 14px;
+}
+
+QLineEdit{
+	border: 1px solid orange;
+	min-height: 20px;
+}
+
+QPushButton{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+	color: white;
+}
+
+QPushButton::hover{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+QPushButton::pressed{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+}
+
+QPushButton::!enabled{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+/*QTabWidget::pane {
+    border-top: 1px solid orange;
+}*/
+
+QSlider::handle:horizontal {
+    background: orange;
+}
+
+/* Vertical and horizontal line customization */
+
+QFrame[frameShape=&quot;4&quot;]
+{
+    color: orange;
+}
+
+QFrame[frameShape=&quot;5&quot;]
+{
+    color: orange;
+}
+
+/* QTabWidget elements customization */
+
+QTabWidget::pane {
+/*	border-top: 1px solid orange;*/
+	background: white;
+}
+
+QTabWidget::tab-bar {
+    left: 5px;
+}
+
+QTabBar::tab {
+	background: white;
+    min-height: 120px;
+    min-width: 20px;
+    padding: 2px;
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-right: 6px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+	background: white;
+	border-top: 1px solid orange;
+	border-right: 1px solid orange;
+	border-bottom: 1px solid orange;
+}
+
+QTabBar::tab:selected {
+	background: white;
+	border-top: 2px solid orange;
+	border-right: 2px solid orange;
+	border-bottom: 2px solid orange;
+}
+
+QTabBar::tab:!selected {
+    margin-left: 3px;
+}
+
+QWidget#tabLogin, QWidget#tabRegister, QWidget#tabRecover{
+	background: white;
+}
+</string>
+   </property>
    <layout class="QGridLayout" name="gridLayout_5">
     <property name="leftMargin">
      <number>0</number>
@@ -162,10 +275,10 @@ QWidget#tabLogin, QWidget#tabRegister, QWidget#tabRecover{
     <item row="0" column="0">
      <layout class="QGridLayout" name="centralLayout">
       <property name="leftMargin">
-       <number>6</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>6</number>
+       <number>0</number>
       </property>
       <property name="spacing">
        <number>0</number>

@@ -32,7 +32,7 @@ private slots:
     void saveData();
 
 signals:
-    void sendNewData(QList<QVariant> newData);
+    void sendNewData(QVariantList newData);
 };
 
 #endif // FRMMANAGEUSER_H

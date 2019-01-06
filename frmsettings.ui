@@ -568,6 +568,553 @@ QListWidget {
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true">QWidget#titleBar{
+	background-color: #FFF;
+	border-top: 1px solid orange;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+	color: #000;
+}
+
+QWidget#centralWidget, QStatusBar{
+	background-color: #FFF;
+	border-left: 1px solid orange;
+	border-right: 1px solid orange;
+}
+
+QStatusBar{
+	border-bottom: 1px solid orange;
+}
+
+/*QTabWidget::pane {
+    border-top: 1px solid orange;
+}*/
+
+QSlider::handle:horizontal {
+    background: orange;
+}
+
+/* Vertical and horizontal line customization */
+
+QFrame[frameShape=&quot;4&quot;]
+{
+    color: orange;
+}
+
+QFrame[frameShape=&quot;5&quot;]
+{
+    color: orange;
+}
+
+/* QTabWidget elements customization */
+
+QTabWidget::pane {
+/*	border-top: 1px solid orange;*/
+	background: white;
+}
+
+QTabWidget::tab-bar {
+    left: 5px;
+}
+
+QTabBar::tab {
+	background: white;
+    min-width: 120px;
+    min-height: 20px;
+    padding: 2px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-top: 6px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+	background: white;
+	border-top: 1px solid orange;
+	border-right: 1px solid orange;
+	border-left: 1px solid orange;
+}
+
+QTabBar::tab:selected {
+	background: white;
+	border-top: 2px solid orange;
+	border-right: 2px solid orange;
+	border-left: 2px solid orange;
+}
+
+QTabBar::tab:!selected {
+    margin-bottom: 3px;
+}
+
+QTabBar QToolButton{
+	background-color: white;
+	border: none;
+	color: black;
+}
+
+QTabBar QToolButton::hover{
+	background-color: darkorange;
+}
+
+QTabBar QToolButton::pressed{
+	background-color: orange;
+}
+
+QTabBar QToolButton::!enabled{
+	background-color: orange;
+}
+
+QWidget#tabInfo, QWidget#tabInfoLayout, QWidget#tabGeneral, QWidget#tabGeneralLayout, QWidget#tabFileLayout, QWidget#tabBackupLayout, QWidget#tabBackup, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
+	background: white;
+}
+
+QLineEdit{
+	border: 1px solid orange;
+	min-height: 20px;
+}
+
+QPlainTextEdit{
+	border: 1px solid orange;
+	min-height: 40px;
+}
+
+QPushButton{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+	color: white;
+}
+
+QPushButton::hover{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+QPushButton::pressed{
+	background-color: darkorange;
+	border: 5px solid darkorange;
+}
+
+QPushButton::!enabled{
+	background-color: orange;
+	border: 5px solid orange;
+}
+
+/*
+	QScroll Area
+*/
+
+QScrollArea{
+	border: none;
+}
+
+QScrollArea#scrollManager{
+	border: 1px solid orange;
+	border-radius: 5px;
+}
+
+/* QScrollBar Horizontal*/
+
+QScrollBar:horizontal {
+    background: lightgray;
+    height: 10px;
+    margin: 0px 40px 0 0px;
+	border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: orange;
+	border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::add-line:horizontal {
+    background: blue;
+    width: 20px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+QScrollBar::sub-line:horizontal {
+    background: red;
+    width: 20px;
+    subcontrol-position: top right;
+    subcontrol-origin: margin;
+    position: absolute;
+    right: 20px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+QScrollBar::sub-line:horizontal:hover {
+    background: darkred;
+}
+
+QScrollBar::sub-line:horizontal:pressed {
+    background: red;
+}
+
+QScrollBar::add-line:horizontal:hover {
+    background: darkblue;
+}
+
+QScrollBar::add-line:horizontal:pressed {
+    background: blue;
+}
+
+QScrollBar:left-arrow:horizontal{
+	image: url(:/images/scrollbar/slide_left.PNG);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar::right-arrow:horizontal {
+	image: url(:/images/scrollbar/slide_right.PNG);
+    width: 10px;
+    height: 10px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/* QScrollBar Vertical*/
+
+QScrollBar:vertical {
+    background: lightgray;
+    width: 10px;
+    margin: 0px 0px 40px 0px;
+	border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: orange;
+	border-radius: 5px;
+    min-width: 20px;
+}
+
+QScrollBar::add-line:vertical {
+    background: blue;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+QScrollBar::sub-line:vertical {
+    background: red;
+    height: 20px;
+    subcontrol-position: bottom right;
+    subcontrol-origin: margin;
+    position: absolute;
+    bottom: 20px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+QScrollBar::sub-line:vertical:hover {
+    background: darkred;
+}
+
+QScrollBar::sub-line:vertical:pressed {
+    background: red;
+}
+
+QScrollBar::add-line:vertical:hover {
+    background: darkblue;
+}
+
+QScrollBar::add-line:vertical:pressed {
+    background: blue;
+}
+
+QScrollBar:up-arrow:vertical{
+	image: url(:/images/scrollbar/slide_up.PNG);
+	width: 10px;
+    height: 10px;
+}
+
+ QScrollBar::down-arrow:vertical{
+	image: url(:/images/scrollbar/slide_down.PNG);
+	width: 10px;
+    height: 10px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/*QComboBox*/
+
+QComboBox {
+    border: 1px solid orange;
+	background: white;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox:editable {
+    background: white;
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+	background: white;
+}
+
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: white;
+}
+
+QComboBox:on {
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: orange;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::drop-down:hover {
+    background: orange;
+}
+
+QComboBox::down-arrow {
+    image: url(&quot;:/images/buttons/Down_Arrow.PNG&quot;);
+	width: 10px;
+	height: 10px;
+}
+
+QComboBox::down-arrow:on {
+    top: 1px;
+    left: 1px;
+}
+
+QComboBox QAbstractItemView {
+    border: 1px solid orange;
+    selection-background-color: orange;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox QAbstractItemView:hover {
+	color: orange;
+}
+
+/*
+ * QToolButton
+ */
+
+QToolButton {
+	background: transparent;
+	border: 1px solid transparent;
+	color: black;
+}
+
+QToolButton::hover {
+	background: darkorange;
+	border: 1px solid darkorange;
+	color: white;
+}
+
+QToolButton::pressed {
+	background: orange;
+	border: 1px solid orange;
+	color: white;
+}
+
+/* QSpinBox  QDateEdit*/
+
+QSpinBox, QDoubleSpinBox, QDateEdit, QDateTimeEdit {
+	border: 1px solid orange;
+	background: white;
+    padding-right: 15px; /* make room for the arrows */
+	border-radius: 5px;
+}
+
+QSpinBox::up-button:disabled,  QSpinBox::up-button:off,
+QSpinBox::down-button:disabled,  QSpinBox::down-button:off,
+QDoubleSpinBox::up-button:disabled,  QDoubleSpinBox::up-button:off,
+QDoubleSpinBox::down-button:disabled,  QDoubleSpinBox::down-button:off,
+QDateEdit::up-button:disabled,  QDateEdit::up-button:off,
+QDateEdit::down-button:disabled,  QDateEdit::down-button:off,
+QDateTimeEdit::up-button:disabled,  QDateTimeEdit::up-button:off,
+QDateTimeEdit::down-button:disabled,  QDateTimeEdit::down-button:off{
+	background: orange;
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button, QDateEdit::up-button, QDateTimeEdit::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+
+    width: 16px;
+	border: 1px solid orange;
+	border-top-right-radius: 5px;
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover, QDateEdit::up-button:hover, QDateTimeEdit::up-button:hover {
+	background: darkorange;
+}
+
+QSpinBox::up-button:pressed, QDoubleSpinBox::up-button:pressed, QDateEdit::up-button:pressed, QDateTimeEdit::up-button:pressed {
+	background: orange;
+}
+
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow, QDateEdit::up-arrow, QDateTimeEdit::up-arrow {
+    border-image: url(:/images/buttons/Up_Arrow.PNG) 1;
+    width: 7px;
+    height: 7px;
+}
+
+QSpinBox::up-arrow:disabled,
+QSpinBox::up-arrow:off,
+QDoubleSpinBox::up-arrow:disabled,
+QDoubleSpinBox::up-arrow:off,
+QDateEdit::up-arrow:disabled,
+QDateEdit::up-arrow:off,
+QDateTimeEdit::up-arrow:disabled,
+QDateTimeEdit::up-arrow:off {
+   background: transparent;
+}
+
+QSpinBox::down-button,
+QDoubleSpinBox::down-button,
+QDateEdit::down-button,
+QDateTimeEdit::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+
+    width: 16px;
+	border: 1px solid orange;
+	border-bottom-right-radius: 5px;
+}
+
+QSpinBox::down-button:hover,
+QDoubleSpinBox::down-button:hover,
+QDateEdit::down-button:hover,
+QDateTimeEdit::down-button:hover {
+	background: darkorange;
+}
+
+QSpinBox::down-button:pressed,
+QDoubleSpinBox::down-button:pressed,
+QDateEdit::down-button:pressed,
+QDateTimeEdit::down-button:pressed {
+	background: orange;
+}
+
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow,
+QDateEdit::down-arrow,
+QDateTimeEdit::down-arrow {
+    border-image: url(:/images/buttons/Down_Arrow.PNG) 1;
+    width: 7px;
+    height: 7px;
+}
+
+QSpinBox::down-arrow:disabled,
+QSpinBox::down-arrow:off,
+QDoubleSpinBox::down-arrow:disabled,
+QDoubleSpinBox::down-arrow:off,
+QDateEdit::down-arrow:disabled,
+QDateEdit::down-arrow:off,
+QDateTimeEdit::down-arrow:disabled,
+QDateTimeEdit::down-arrow:off {
+   background: transparent;
+}
+
+/*QCheckBox*/
+
+QCheckBox {
+    spacing: 5px;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+}
+
+QCheckBox::indicator:unchecked {
+    border: 1px solid orange;
+}
+
+QCheckBox::indicator:unchecked:hover {
+    border: 2px solid darkorange;
+}
+
+QCheckBox::indicator:unchecked:pressed {
+    border: 2px solid orange;
+}
+
+QCheckBox::indicator:checked {
+    border: 1px solid orange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:checked:hover {
+    border: 2px solid darkorange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:checked:pressed {
+    border: 2px solid orange;
+	image: url(:/images/buttons/Close.PNG);
+}
+
+QCheckBox::indicator:indeterminate:hover {
+    border: 2px solid darkorange;
+}
+
+QCheckBox::indicator:indeterminate:pressed {
+    border: 2px solid orange;
+}
+
+/*
+ * QTableWidget
+ */
+
+QTableWidget{
+	border: 1px solid orange;
+}
+
+/*
+ * QGroupBox
+ */
+
+QGroupBox {
+    border: 1px solid orange;
+    border-radius: 2px;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top middle; /* position at the top center */
+    padding: 5px;
+    background-color: white;
+	border: 1px solid orange;
+	border-radius: 2px;
+}
+
+/*
+ * QListWidget
+ */
+
+QListWidget {
+    border: 1px solid orange;
+}</string>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
      <number>0</number>
@@ -587,10 +1134,10 @@ QListWidget {
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -658,7 +1205,7 @@ QListWidget {
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>454</width>
+               <width>462</width>
                <height>422</height>
               </rect>
              </property>
@@ -769,7 +1316,7 @@ I am aware that this course is going to be ministred at %6.</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>444</width>
+               <width>452</width>
                <height>546</height>
               </rect>
              </property>
@@ -1087,7 +1634,7 @@ I am aware that this course is going to be ministred at %6.</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>454</width>
+               <width>462</width>
                <height>422</height>
               </rect>
              </property>

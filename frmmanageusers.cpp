@@ -1,7 +1,7 @@
 #include "frmmanageusers.h"
 #include "ui_frmmanageusers.h"
 
-frmManageUsers::frmManageUsers(QWidget *parent, DBManager *dbManager, const QString &currentUser) :
+frmManageUsers::frmManageUsers(QWidget *parent, const QString &currentUser) :
     NMainWindow(parent),
     ui(new Ui::frmManageUsers),
     CURRENT_USER(currentUser)
@@ -14,19 +14,24 @@ frmManageUsers::frmManageUsers(QWidget *parent, DBManager *dbManager, const QStr
     NMainWindow::setMaximizeButtonEnabled(false);
     NMainWindow::setMinimizeButtonEnabled(false);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+            this->size(), qApp->desktop()->availableGeometry()));
+
     /*
      *  End of GUI implementation
      */
 
     userForm = NULL;
+    ui->lwUsers->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    this->dbManager = dbManager;
+    this->dbManager = DBManager::getInstance();
     if (dbManager){
         userDBData = dbManager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
                                             SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS));
         for (int i = 0; i < userDBData.length(); ++i){
             QListWidgetItem *newItem = new QListWidgetItem(QIcon(":/images/buttons/User.PNG"),
-                                                           userDBData.at(i).at(2).toString() + "[" + userDBData.at(i).at(1).toString() + "]");
+                                                           userDBData.at(i).at(2).toString() + " [" + userDBData.at(i).at(1).toString() + "]");
+            newItem->setToolTip(tr("Manage user %1").arg(userDBData.at(i).at(1).toString()));
             newItem->setData(Qt::UserRole, userDBData.at(i).at(0));
             ui->lwUsers->addItem(newItem);
         }
@@ -36,12 +41,25 @@ frmManageUsers::frmManageUsers(QWidget *parent, DBManager *dbManager, const QStr
     connect(ui->btManageUser, SIGNAL(clicked(bool)), this, SLOT(openUserManager()));
     connect(ui->btRemoveUser, SIGNAL(clicked(bool)), this, SLOT(removeUser()));
     connect(ui->lwUsers, SIGNAL(currentRowChanged(int)), this, SLOT(setToolsEnabled(int)));
+    connect(ui->lwUsers, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(createUsersCustomMenu(QPoint)));
 }
 
 frmManageUsers::~frmManageUsers()
 {
     ui->lwUsers->clear();
     delete ui;
+}
+
+void frmManageUsers::createUsersCustomMenu(const QPoint &pos){
+    QMenu contextMenu(tr("User Management Menu | SmartClass"), ui->lwUsers);
+
+    QAction action1(tr("Manage User"), ui->lwUsers);
+    connect(&action1, SIGNAL(triggered(bool)), this, SLOT(openUserManager()));
+    QAction action2(tr("Remove User"), ui->lwUsers);
+    connect(&action2, SIGNAL(triggered(bool)), this, SLOT(removeUser()));
+
+    contextMenu.addActions({&action1, &action2});
+    contextMenu.exec(ui->lwUsers->mapToGlobal(pos));
 }
 
 void frmManageUsers::setToolsEnabled(int row){
@@ -60,7 +78,6 @@ void frmManageUsers::removeUser(){
         return;
     }
 
-    //QString username = QString(item->text().split(" [ ").at(1)).split(" ] ").at(0);
     if (dbManager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
                              SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(0),
                              item->data(Qt::UserRole))){
@@ -78,25 +95,25 @@ void frmManageUsers::removeUser(){
 
 void frmManageUsers::openUserManager(){
     if (userForm){
-        disconnect(userForm, SIGNAL(sendNewData(QStringList)), this, SLOT(getModifiedData(QStringList)));
+        disconnect(userForm, SIGNAL(sendNewData(QVariantList)), this, SLOT(getModifiedData(QVariantList)));
         delete userForm;
     }
 
     int currentRow = ui->lwUsers->currentRow();
     currentID = ui->lwUsers->item(currentRow)->data(Qt::UserRole);
 
-    QList<QVariant> exportData;
+    QVariantList exportData;
     exportData << userDBData.at(currentRow).at(1)
                << userDBData.at(currentRow).at(2)
                << userDBData.at(currentRow).at(5)
                << userDBData.at(currentRow).at(8);
 
-    userForm = new frmManageUser(this, exportData, CURRENT_USER);
-    connect(userForm, SIGNAL(sendNewData(QStringList)), this, SLOT(getModifiedData(QStringList)));
+    userForm = new frmManageUser(NULL, exportData, CURRENT_USER);
+    connect(userForm, SIGNAL(sendNewData(QVariantList)), this, SLOT(getModifiedData(QVariantList)));
     userForm->show();
 }
 
-void frmManageUsers::getModifiedData(const QList<QVariant> newData){
+void frmManageUsers::getModifiedData(const QVariantList newData){
     int currentRow = ui->lwUsers->currentRow();
 
     QVariantList currentRData = userDBData.at(currentRow).mid(1);
@@ -133,5 +150,13 @@ void frmManageUsers::getModifiedData(const QList<QVariant> newData){
                                                 SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).mid(1),
                                                 currentRData);
         }
+    }
+    else {
+        for (int i = 0; i < currentRData.size(); ++i)
+            userDBData[currentRow][i+1] = currentRData[i];
+        QListWidgetItem *currentItem = ui->lwUsers->item(currentRow);
+        currentItem->setText(userDBData.at(currentRow).at(2).toString()
+                                                + " [" + userDBData.at(currentRow).at(1).toString() + "]");
+        currentItem->setToolTip(tr("Manage user %1").arg(userDBData.at(currentRow).at(1).toString()));
     }
 }
