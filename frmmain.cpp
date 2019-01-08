@@ -511,6 +511,11 @@ void frmMain::getStudents(){
         ui->tableStudents->setItem(i, 2, new QTableWidgetItem(srJoinRelation[i].at(2).toString()));
         ui->tableStudents->setItem(i, 3, new QTableWidgetItem(srJoinRelation[i].at(3).toString()));
 
+        ui->tableStudents->item(i, 0)->setToolTip(ui->tableStudents->item(i, 0)->text());
+        ui->tableStudents->item(i, 1)->setToolTip(ui->tableStudents->item(i, 1)->text());
+        ui->tableStudents->item(i, 2)->setToolTip(ui->tableStudents->item(i, 2)->text());
+        ui->tableStudents->item(i, 3)->setToolTip(ui->tableStudents->item(i, 3)->text());
+
         ui->tableStudents->item(i, 0)->setData(Qt::UserRole, srJoinRelation[i].at(0));
         ui->tableStudents->item(i, 1)->setData(Qt::UserRole, srJoinRelation[i].at(4));
     }
@@ -544,6 +549,12 @@ void frmMain::getCourses(){
         ui->tableCourses->setItem(i, 3, new QTableWidgetItem(courses[i].at(5).toDate().toString("dd/MM/yyyy")));
         ui->tableCourses->setItem(i, 4, new QTableWidgetItem(courses[i].at(4).toString()));
 
+        ui->tableCourses->item(i, 0)->setToolTip(ui->tableCourses->item(i, 0)->text());
+        ui->tableCourses->item(i, 1)->setToolTip(ui->tableCourses->item(i, 1)->text());
+        ui->tableCourses->item(i, 2)->setToolTip(ui->tableCourses->item(i, 2)->text());
+        ui->tableCourses->item(i, 3)->setToolTip(ui->tableCourses->item(i, 3)->text());
+        ui->tableCourses->item(i, 4)->setToolTip(ui->tableCourses->item(i, 4)->text());
+
         ui->tableCourses->item(i, 0)->setData(Qt::UserRole, courses[i].at(0));
     }
     ui->tableCourses->setSortingEnabled(true);
@@ -558,6 +569,11 @@ void frmMain::receiveNewStudentData(const QVariantList &data){
     ui->tableStudents->setItem(oldRCount, 2, new QTableWidgetItem(data.at(4).toString()));
     ui->tableStudents->setItem(oldRCount, 3, new QTableWidgetItem(data.at(5).toString()));
 
+    ui->tableStudents->item(oldRCount, 0)->setToolTip(data.at(1).toString());
+    ui->tableStudents->item(oldRCount, 1)->setToolTip(data.at(3).toString());
+    ui->tableStudents->item(oldRCount, 2)->setToolTip(data.at(4).toString());
+    ui->tableStudents->item(oldRCount, 3)->setToolTip(data.at(5).toString());
+
     ui->tableStudents->item(oldRCount, 0)->setData(Qt::UserRole, data.at(0));
     ui->tableStudents->item(oldRCount, 1)->setData(Qt::UserRole, data.at(2));
 }
@@ -570,6 +586,11 @@ void frmMain::receiveStudentUpdatedData(const QVariantList &data, const qlonglon
         ui->tableStudents->item(currentRow, 2)->setText(data.at(3).toString());
         ui->tableStudents->item(currentRow, 3)->setText(data.at(4).toString());
 
+        ui->tableStudents->item(currentRow, 0)->setToolTip(data.at(0).toString());
+        ui->tableStudents->item(currentRow, 1)->setToolTip(data.at(2).toString());
+        ui->tableStudents->item(currentRow, 2)->setToolTip(data.at(3).toString());
+        ui->tableStudents->item(currentRow, 3)->setToolTip(data.at(4).toString());
+
         ui->tableStudents->item(currentRow, 1)->setData(Qt::UserRole, data.at(1));
         return;
     }
@@ -581,6 +602,11 @@ void frmMain::receiveStudentUpdatedData(const QVariantList &data, const qlonglon
             ui->tableStudents->item(i, 1)->setText(data.at(2).toString());
             ui->tableStudents->item(i, 2)->setText(data.at(3).toString());
             ui->tableStudents->item(i, 3)->setText(data.at(4).toString());
+
+            ui->tableStudents->item(i, 0)->setToolTip(data.at(0).toString());
+            ui->tableStudents->item(i, 1)->setToolTip(data.at(2).toString());
+            ui->tableStudents->item(i, 2)->setToolTip(data.at(3).toString());
+            ui->tableStudents->item(i, 3)->setToolTip(data.at(4).toString());
 
             ui->tableStudents->item(i, 1)->setData(Qt::UserRole, data.at(1));
             return;
@@ -597,6 +623,12 @@ void frmMain::receiveNewCourseData(const QVariantList &data){
     ui->tableCourses->setItem(oldRCount, 2, new QTableWidgetItem(data.at(2).toString()));
     ui->tableCourses->setItem(oldRCount, 3, new QTableWidgetItem(data.at(3).toDate().toString("dd/MM/yyyy")));
     ui->tableCourses->setItem(oldRCount, 4, new QTableWidgetItem(data.at(4).toString()));
+
+    ui->tableCourses->item(oldRCount, 0)->setToolTip(data.at(0).toString());
+    ui->tableCourses->item(oldRCount, 1)->setToolTip(QString::number(data.at(1).toInt()));
+    ui->tableCourses->item(oldRCount, 2)->setToolTip(data.at(2).toString());
+    ui->tableCourses->item(oldRCount, 3)->setToolTip(data.at(3).toDate().toString("dd/MM/yyyy"));
+    ui->tableCourses->item(oldRCount, 4)->setToolTip(data.at(4).toString());
 
     if (oldRCount)
         ui->tableCourses->item(oldRCount, 0)->setData(Qt::UserRole, data.at(5).toLongLong() == -1 ?
@@ -615,6 +647,12 @@ void frmMain::receiveCourseUpdatedData(const QVariantList &data, const qlonglong
         ui->tableCourses->item(currentRow, 2)->setText(data.at(2).toString());
         ui->tableCourses->item(currentRow, 3)->setText(data.at(3).toDate().toString("dd/MM/yyyy"));
         ui->tableCourses->item(currentRow, 4)->setText(data.at(4).toString());
+
+        ui->tableCourses->item(currentRow, 0)->setToolTip(data.at(0).toString());
+        ui->tableCourses->item(currentRow, 1)->setToolTip(QString::number(data.at(1).toInt()));
+        ui->tableCourses->item(currentRow, 2)->setToolTip(data.at(2).toString());
+        ui->tableCourses->item(currentRow, 3)->setToolTip(data.at(3).toDate().toString("dd/MM/yyyy"));
+        ui->tableCourses->item(currentRow, 4)->setToolTip(data.at(4).toString());
         return;
     }
 
@@ -626,6 +664,12 @@ void frmMain::receiveCourseUpdatedData(const QVariantList &data, const qlonglong
             ui->tableCourses->item(i, 2)->setText(data.at(2).toString());
             ui->tableCourses->item(i, 3)->setText(data.at(3).toDate().toString("dd/MM/yyyy"));
             ui->tableCourses->item(i, 4)->setText(data.at(4).toString());
+
+            ui->tableCourses->item(i, 0)->setToolTip(data.at(0).toString());
+            ui->tableCourses->item(i, 1)->setToolTip(QString::number(data.at(1).toInt()));
+            ui->tableCourses->item(i, 2)->setToolTip(data.at(2).toString());
+            ui->tableCourses->item(i, 3)->setToolTip(data.at(3).toDate().toString("dd/MM/yyyy"));
+            ui->tableCourses->item(i, 4)->setToolTip(data.at(4).toString());
             return;
         }
     }
@@ -805,7 +849,7 @@ void frmMain::backupDataBase(){
 
     QFileDialog saveDialog;
     saveDialog.setWindowTitle(tr("Save database file | SmartClass"));
-    saveDialog.setNameFilters(QStringList() << "SQLite database file (*.db *.sqlite3)");
+    saveDialog.setNameFilters(QStringList() << tr("SQLite database file (*.db *.sqlite3)"));
     saveDialog.setDefaultSuffix("db");
     saveDialog.setAcceptMode(QFileDialog::AcceptSave);
     saveDialog.setDirectory(QDir::homePath());

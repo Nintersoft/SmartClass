@@ -60,11 +60,13 @@ frmManageStudent::frmManageStudent(QWidget *parent, Role role, const qint64 &stu
 
     this->retrieveData();
 
-    if (role == frmManageStudent::Create) ui->edtParentName->setCurrentText("");
-    if (CURRENT_ROLE != frmManageStudent::View){
-        connect(ui->edtParentName, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateParentInfo(QString)));
+    if (role == frmManageStudent::Create){
+        ui->edtParentName->setCurrentText("");
         ui->edtParentName->setCurrentIndex(-1);
     }
+
+    if (CURRENT_ROLE != frmManageStudent::View)
+        connect(ui->edtParentName, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateParentInfo(QString)));
 }
 
 frmManageStudent::~frmManageStudent()
@@ -384,7 +386,7 @@ void frmManageStudent::saveData(){
                               paymentInfo);
     }
 
-    studentInfo.insert(2, rID);
+    studentInfo.insert(1, rID);
     db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
                           SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(0),
                           STUDENT_ID,
@@ -576,7 +578,7 @@ void frmManageStudent::retrieveData(){
 
     QList< QVariantList > scRelation = db_manager->retrieveAllCond(studentCoursesRelation,
                                                                    studentCoursesRelationAliases,
-                                                                   cerName + "." + cerAliases.at(1),
+                                                                   cerAliases.at(1),
                                                                    STUDENT_ID);
 
     for (int i = 0; i < scRelation.size(); ++i){
@@ -592,7 +594,7 @@ void frmManageStudent::retrieveData(){
 
     QString perName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS, true);
     QStringList perAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS), paymentDataAliases;
-    QString paymentCoursesRelation = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS, true) + " INNER JOIN "
+    QString paymentCoursesRelation = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS) + " INNER JOIN "
                                         + crName + " ON " + perName + "." + perAliases.at(1)
                                         + " = " + crName + "." + cAliases.at(0);
 
@@ -608,7 +610,7 @@ void frmManageStudent::retrieveData(){
 
     QList< QVariantList > paymentData = db_manager->retrieveAllCond(paymentCoursesRelation,
                                                                     paymentDataAliases,
-                                                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).at(0),
+                                                                    perAliases.at(0),
                                                                     STUDENT_ID);
     int paymentDataCount = paymentData.length();
 
@@ -641,7 +643,10 @@ void frmManageStudent::addCourse(){
         }
     }
 
-    ui->listCourses->addItem(ui->cbRegistrationCourse->currentText());
+    QListWidgetItem *newCourse = new QListWidgetItem(ui->cbRegistrationCourse->currentText());
+    newCourse->setData(Qt::UserRole, ui->cbRegistrationCourse->currentData(Qt::UserRole));
+    ui->listCourses->addItem(newCourse);
+
     QListWidgetPaymentItem *item = new QListWidgetPaymentItem(ui->cbRegistrationCourse->currentText(),
                                                               courseData[ui->cbRegistrationCourse->currentIndex() - 1].at(9).toDouble());
     item->setData(Qt::UserRole, ui->cbRegistrationCourse->currentData(Qt::UserRole));
@@ -696,10 +701,10 @@ void frmManageStudent::changePaymentDetails(){
 
     QListWidgetPaymentItem* item = static_cast<QListWidgetPaymentItem*>(ui->listPaymentCourses->item(ui->listPaymentCourses->currentRow()));
     ui->edtPaymentFirstInstallment->setDate(item->date());
+    ui->sbPaymentCost->setValue(item->value());
     ui->sbDiscount->setValue(item->discount());
     ui->sbDiscountV->setValue(item->discount() * 0.01 * item->value());
     ui->sbInstallments->setValue(item->installments());
-    ui->sbPaymentCost->setValue(item->value());
     ui->lblPaymentDetails->setText(tr("You have choosen %1 installments of $ %2 . After the discount, each installment is going to cost $ %3 .")
                                     .arg(item->installments()).arg((double)(item->value()/item->installments()), 0, 'f', 2).arg((double)((item->value()/item->installments()) * (1 - (item->discount()/100.0f))), 0, 'f', 2));
     ui->lblPaymentDetails->setVisible(true);

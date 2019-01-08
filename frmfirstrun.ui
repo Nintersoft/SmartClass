@@ -2078,11 +2078,7 @@ QTableWidget, QListWidget{
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <tabstops>
-  <tabstop>edtCompanyName</tabstop>
-  <tabstop>edtCompanyLogoPath</tabstop>
-  <tabstop>btSearchCompanyLogo</tabstop>
-  <tabstop>btRemoveLogo</tabstop>
-  <tabstop>cbLanguage</tabstop>
+  <tabstop>btNextStep</tabstop>
   <tabstop>rbSQLite</tabstop>
   <tabstop>rbMySQL</tabstop>
   <tabstop>edtDatabasePrefix</tabstop>
@@ -2091,7 +2087,22 @@ QTableWidget, QListWidget{
   <tabstop>edtDatabase</tabstop>
   <tabstop>edtUsername</tabstop>
   <tabstop>edtPassword</tabstop>
+  <tabstop>edtCompanyName</tabstop>
+  <tabstop>edtCompanyLogoPath</tabstop>
+  <tabstop>btSearchCompanyLogo</tabstop>
+  <tabstop>btRemoveLogo</tabstop>
+  <tabstop>cbLanguage</tabstop>
+  <tabstop>edtDeviceName</tabstop>
+  <tabstop>edtDeviceOS</tabstop>
+  <tabstop>edtDeviceOSMV</tabstop>
+  <tabstop>edtDeviceLastAccess</tabstop>
+  <tabstop>btPrevStep</tabstop>
   <tabstop>btSaveData</tabstop>
+  <tabstop>tabManager</tabstop>
+  <tabstop>scrComplete</tabstop>
+  <tabstop>scrProgramSettings</tabstop>
+  <tabstop>scrDatabaseSettings</tabstop>
+  <tabstop>scrWelcome</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>

@@ -71,7 +71,7 @@ frmReceipt::~frmReceipt()
 void frmReceipt::switchTableVisibility(bool show){
     ui->tablePricing->setVisible(show);
     int height = 600;
-    if (!show) height = 229;
+    if (!show) height = 249;
     this->setMaximumHeight(height);
     this->setMinimumHeight(height);
     this->setGeometry(QRect(this->geometry().topLeft(), QSize(this->width(), this->height())));
@@ -116,6 +116,12 @@ void frmReceipt::generateTable(){
 
         ui->tablePricing->setItem(currentRow, 3, new QTableWidgetItem(QString("%1").arg((double)((price / installments) * (1 - (discount/100.0f))), 0, 'f', 2)));
         ui->tablePricing->setItem(currentRow, 4, new QTableWidgetItem(QString("%1").arg((price / installments), 0, 'f', 2)));
+
+        ui->tablePricing->item(currentRow, 0)->setToolTip(ui->tablePricing->item(currentRow, 0)->text());
+        ui->tablePricing->item(currentRow, 1)->setToolTip(ui->tablePricing->item(currentRow, 1)->text());
+        ui->tablePricing->item(currentRow, 2)->setToolTip(ui->tablePricing->item(currentRow, 2)->text());
+        ui->tablePricing->item(currentRow, 3)->setToolTip(ui->tablePricing->item(currentRow, 3)->text());
+        ui->tablePricing->item(currentRow, 4)->setToolTip(ui->tablePricing->item(currentRow, 4)->text());
     }
 
     ui->lblReceiptWithDiscount->setText(QString("%1").arg(totalWDiscount, 0, 'f', 2));
@@ -127,7 +133,8 @@ void frmReceipt::exportCSV(){
     saveDialog.setDirectory(QDir::homePath());
     saveDialog.setWindowTitle(tr("Export receipt to CSV | SmartClass"));
     saveDialog.setConfirmOverwrite(true);
-    saveDialog.selectFile(tr("SmartClass - receipt_") + QDate::currentDate().toString("dd_MM_yyyy"));
+    saveDialog.selectFile(tr("SmartClass - receipt_%1 - generated_on_%2").arg(ui->cbCustomMonthNYear->currentText().replace("/", "_"))
+                                                                         .arg(QDate::currentDate().toString("dd_MM_yyyy")));
     saveDialog.setDefaultSuffix("csv");
     saveDialog.setNameFilter(tr("Comma Separated Values files (*.csv)"));
     saveDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -145,8 +152,7 @@ void frmReceipt::exportCSV(){
         for (int i = 0; i < ui->tablePricing->rowCount(); ++i){
             data += (ui->tablePricing->item(i, 0)->text() + ";"
                      + ui->tablePricing->item(i, 1)->text() + ";"
-                     + ui->tablePricing->item(i, 2)->text() + ";"
-                     //+ ui->tablePricing->item(i, 2)->text().replace("/", "|") + ";"
+                     + ui->tablePricing->item(i, 2)->text().replace("/", tr(" of ")) + ";"
                      + ui->tablePricing->item(i, 3)->text() + ";"
                      + ui->tablePricing->item(i, 4)->text() + "\n");
         }

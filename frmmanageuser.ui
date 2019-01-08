@@ -1274,13 +1274,14 @@ QListWidget {
  <tabstops>
   <tabstop>edtUsername</tabstop>
   <tabstop>edtName</tabstop>
+  <tabstop>btPassHelp</tabstop>
   <tabstop>edtPassword</tabstop>
   <tabstop>edtQuestion</tabstop>
+  <tabstop>btAnswerHelp</tabstop>
   <tabstop>edtAnswer</tabstop>
+  <tabstop>cbRole</tabstop>
   <tabstop>btSave</tabstop>
   <tabstop>btCancel</tabstop>
-  <tabstop>btPassHelp</tabstop>
-  <tabstop>btAnswerHelp</tabstop>
  </tabstops>
  <resources/>
  <connections/>

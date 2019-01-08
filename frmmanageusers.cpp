@@ -53,9 +53,9 @@ frmManageUsers::~frmManageUsers()
 void frmManageUsers::createUsersCustomMenu(const QPoint &pos){
     QMenu contextMenu(tr("User Management Menu | SmartClass"), ui->lwUsers);
 
-    QAction action1(tr("Manage User"), ui->lwUsers);
+    QAction action1(QIcon(":/images/buttons/ManageUser.png"), tr("Manage User"), ui->lwUsers);
     connect(&action1, SIGNAL(triggered(bool)), this, SLOT(openUserManager()));
-    QAction action2(tr("Remove User"), ui->lwUsers);
+    QAction action2(QIcon(":/images/buttons/RemoveStudent.PNG"), tr("Remove User"), ui->lwUsers);
     connect(&action2, SIGNAL(triggered(bool)), this, SLOT(removeUser()));
 
     contextMenu.addActions({&action1, &action2});

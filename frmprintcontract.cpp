@@ -156,7 +156,8 @@ void frmPrintContract::generateContractForm(){
                                  "\n"
                                  "\nI am aware that this course is going to be ministred at %6.");
 
-    QList< QList<QVariant> > settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
+    QList< QVariantList > settings = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                                             SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS));
     if (settings.size())
         if (settings[0].size())
             if (!settings[0][1].isNull() && settings[0][1].isValid())
@@ -171,11 +172,11 @@ void frmPrintContract::generateContractForm(){
 
     bool hasImage = ui->cbIncludeCompanyLogo->isChecked() && settings.size();
     if (hasImage) hasImage &= (bool)settings[0].size();
-    if (hasImage) hasImage &= (settings[0][2].isNull() && settings[0][2].isValid());
+    if (hasImage) hasImage &= (!settings[0][2].isNull() && settings[0][2].isValid());
     if (hasImage) frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
                                                                             << ui->lblParentName->text()
                                                                             << ui->edtCompanyName->text(),
-                                                        db_manager->variantToPixmap(settings[0][2]));
+                                                        DBManager::variantToPixmap(settings[0][2]));
     else frmPrintPrev = new PrintPreviewForm(NULL, QStringList() << defaultTemplate
                                                     << ui->lblParentName->text()
                                                     << ui->edtCompanyName->text());

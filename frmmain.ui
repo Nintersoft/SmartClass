@@ -1246,7 +1246,7 @@ QTableWidget, QListWidget{
               <item row="0" column="5">
                <widget class="QToolButton" name="btBackUpDB">
                 <property name="toolTip">
-                 <string>Export Database</string>
+                 <string>Back up Database</string>
                 </property>
                 <property name="text">
                  <string/>
@@ -1346,7 +1346,7 @@ QTableWidget, QListWidget{
               <item row="0" column="4">
                <widget class="QToolButton" name="btRestoreDB">
                 <property name="toolTip">
-                 <string>Import Database</string>
+                 <string>Restore Database</string>
                 </property>
                 <property name="text">
                  <string/>
@@ -1807,25 +1807,31 @@ QTableWidget, QListWidget{
   <tabstop>scrollTabManagement</tabstop>
   <tabstop>btAddStudent</tabstop>
   <tabstop>btUpdateStudent</tabstop>
-  <tabstop>btAddCourse</tabstop>
-  <tabstop>btGetReceipt</tabstop>
-  <tabstop>btPrintStudentForms</tabstop>
   <tabstop>btRemoveStudent</tabstop>
-  <tabstop>btRemoveCourse</tabstop>
+  <tabstop>btAddCourse</tabstop>
   <tabstop>btUpdateCourse</tabstop>
+  <tabstop>btRemoveCourse</tabstop>
   <tabstop>btAlternateTable</tabstop>
+  <tabstop>rbStudentsTable</tabstop>
+  <tabstop>rbCoursesTable</tabstop>
+  <tabstop>btPrintStudentForms</tabstop>
+  <tabstop>btGetReceipt</tabstop>
   <tabstop>scrollTabTools</tabstop>
-  <tabstop>btBackUpDB</tabstop>
+  <tabstop>btLogOff</tabstop>
+  <tabstop>btSettings</tabstop>
+  <tabstop>btManageUsers</tabstop>
   <tabstop>btRestoreDB</tabstop>
-  <tabstop>btExportDB</tabstop>
-  <tabstop>btImportDB</tabstop>
+  <tabstop>btBackUpDB</tabstop>
   <tabstop>btResetDB</tabstop>
+  <tabstop>btImportDB</tabstop>
+  <tabstop>btExportDB</tabstop>
+  <tabstop>btUninstall</tabstop>
   <tabstop>scrollTabHelp</tabstop>
   <tabstop>btOpenNSWebsite</tabstop>
-  <tabstop>btSupportEmail</tabstop>
-  <tabstop>btAbout</tabstop>
   <tabstop>btOpenNSDocwiki</tabstop>
+  <tabstop>btSupportEmail</tabstop>
   <tabstop>btOpenOnlineSupport</tabstop>
+  <tabstop>btAbout</tabstop>
   <tabstop>btInfo</tabstop>
   <tabstop>tabWidget</tabstop>
  </tabstops>

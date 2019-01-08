@@ -1891,11 +1891,13 @@ QListWidget {
   <tabstop>listCourses</tabstop>
   <tabstop>listPaymentCourses</tabstop>
   <tabstop>sbPaymentCost</tabstop>
+  <tabstop>sbDiscount</tabstop>
+  <tabstop>sbDiscountV</tabstop>
   <tabstop>edtPaymentFirstInstallment</tabstop>
   <tabstop>sbInstallments</tabstop>
   <tabstop>btSave</tabstop>
-  <tabstop>btReset</tabstop>
   <tabstop>btCancel</tabstop>
+  <tabstop>btReset</tabstop>
   <tabstop>scrollManager</tabstop>
  </tabstops>
  <resources>
