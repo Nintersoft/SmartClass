@@ -18,7 +18,7 @@ class frmManageUser : public NMainWindow
     Q_OBJECT
 
 public:
-    explicit frmManageUser(QWidget *parent = 0, const QList<QVariant> &data = QList<QVariant>(),
+    explicit frmManageUser(QWidget *parent = 0, const QVariantList &data = QVariantList(),
                            const QString &currentUser = QString());
     ~frmManageUser();
 

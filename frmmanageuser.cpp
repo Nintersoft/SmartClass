@@ -1,7 +1,7 @@
 #include "frmmanageuser.h"
 #include "ui_frmmanageuser.h"
 
-frmManageUser::frmManageUser(QWidget *parent, const QList<QVariant> &data,
+frmManageUser::frmManageUser(QWidget *parent, const QVariantList &data,
                              const QString &currentUser) :
     NMainWindow(parent),
     ui(new Ui::frmManageUser),
@@ -26,8 +26,6 @@ frmManageUser::frmManageUser(QWidget *parent, const QList<QVariant> &data,
     ui->edtName->setText(data.at(1).toString());
     ui->edtQuestion->setText(data.at(2).toString());
     ui->cbRole->setCurrentIndex(data.at(3).toInt());
-
-    ui->cbRole->setEnabled(!ui->cbRole->currentIndex());
 
     connect(ui->btSave, SIGNAL(clicked(bool)), this, SLOT(saveData()));
     connect(ui->btPassHelp, SIGNAL(clicked(bool)), this, SLOT(showCHelp()));
@@ -58,7 +56,7 @@ void frmManageUser::saveData(){
         return;
     }
 
-    QList<QVariant> newData;
+    QVariantList newData;
     newData << ui->edtUsername->text()
             << ui->edtName->text()
             << ui->edtPassword->text()

@@ -20,9 +20,10 @@ frmMain::frmMain(QWidget *parent) :
 
     upgradeAvailable = false;
 
-    myDB = NULL;
     firstRunScr = NULL;
     loginScr = NULL;
+    frmAbt = NULL;
+    myDB = NULL;
 
     currentLanguage = "en";
     langPath = QApplication::applicationDirPath().append("/lang/");
@@ -32,6 +33,7 @@ frmMain::frmMain(QWidget *parent) :
     ui->cbCourseFilter->setVisible(false);
 
     connect(ui->btAlternateTable, SIGNAL(clicked(bool)), this, SLOT(alternateTable()));
+    connect(ui->btAbout, SIGNAL(clicked(bool)), this, SLOT(openAboutForm()));
 
     connect(ui->btSearchPrevious, SIGNAL(clicked(bool)), this, SLOT(searchPrevious()));
     connect(ui->btSearchNext, SIGNAL(clicked(bool)), this, SLOT(searchNext()));
@@ -59,10 +61,6 @@ frmMain::frmMain(QWidget *parent) :
             loginScr->show();
 
             createTables();
-
-            frmAbt = new frmAbout();
-            connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbt, SLOT(show()));
-            connect(frmAbt, SIGNAL(upgradeAvailable()), this, SLOT(setUpgradeAvailable()));
         }
     }
     else {
@@ -140,6 +138,7 @@ frmMain::~frmMain()
     if (frmPayment) delete frmPayment;
     if (frmConfig) delete frmConfig;
     if (settings) delete settings;
+    if (frmAbt) delete frmAbt;
 
     delete ui;
 }
@@ -214,9 +213,6 @@ void frmMain::createTables(){
                       SmartClassGlobal::getTableConstraints(SmartClassGlobal::RESPONSIBLEIMAGES));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
                       SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEDETAILS));
-    myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                      QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::COURSEENROLLMENTS) <<
-                      SmartClassGlobal::getTableConstraints(SmartClassGlobal::COURSEENROLLMENTS));
     myDB->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
                       QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::PAYMENTDETAILS) <<
                       SmartClassGlobal::getTableConstraints(SmartClassGlobal::PAYMENTDETAILS));
@@ -264,9 +260,6 @@ void frmMain::getFirstSettings(const DBManager::DBData &sqlData, const QString &
     connect(loginScr, SIGNAL(dataReady(QVariantList)), this, SLOT(setSessionRole(QVariantList)));
     loginScr->show();
 
-    frmAbt = new frmAbout();
-    connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbt, SLOT(show()));
-    connect(frmAbt, SIGNAL(upgradeAvailable()), this, SLOT(setUpgradeAvailable()));
     this->hide();
 
     firstRunScr->close();
@@ -417,8 +410,8 @@ void frmMain::openSettingsForm(){
         frmConfig = NULL;
     }
 
-    if (sender()->objectName() == "btInfo") frmConfig = new frmSettings(NULL, frmSettings::Info);
-    else frmConfig = new frmSettings(NULL);
+    if (sender()->objectName() == "btInfo") frmConfig = new frmSettings(NULL, sessionRole,frmSettings::Info);
+    else frmConfig = new frmSettings(NULL, sessionRole);
     frmConfig->show();
 }
 
@@ -445,12 +438,24 @@ void frmMain::openImportExportTool(){
     frmImportExport->show();
 }
 
+void frmMain::openAboutForm(){
+    if (frmAbt){
+        disconnect(frmAbt, SIGNAL(upgradeAvailable()), this, SLOT(setUpgradeAvailable()));
+
+        delete frmAbt;
+        frmAbt = NULL;
+    }
+
+    frmAbt = new frmAbout();
+    connect(frmAbt, SIGNAL(upgradeAvailable()), this, SLOT(setUpgradeAvailable()));
+    frmAbt->show();
+}
+
 void frmMain::setUIToRole(){
     bool enable = false;
     if (sessionRole == SmartClassGlobal::ADMIN) enable = true;
 
     ui->btManageUsers->setEnabled(enable);
-    ui->btSettings->setEnabled(enable);
     ui->btGetReceipt->setEnabled(enable);
 
     ui->btImportDB->setEnabled(enable);
@@ -592,6 +597,7 @@ void frmMain::receiveStudentUpdatedData(const QVariantList &data, const qlonglon
         ui->tableStudents->item(currentRow, 3)->setToolTip(data.at(4).toString());
 
         ui->tableStudents->item(currentRow, 1)->setData(Qt::UserRole, data.at(1));
+        if (data.at(5).toBool()) updateResponsibleName(data.at(1).toLongLong(), data.at(2).toString());
         return;
     }
 
@@ -609,7 +615,18 @@ void frmMain::receiveStudentUpdatedData(const QVariantList &data, const qlonglon
             ui->tableStudents->item(i, 3)->setToolTip(data.at(4).toString());
 
             ui->tableStudents->item(i, 1)->setData(Qt::UserRole, data.at(1));
+            if (data.at(5).toBool()) updateResponsibleName(data.at(1).toLongLong(), data.at(2).toString());
             return;
+        }
+    }
+}
+
+void frmMain::updateResponsibleName(qlonglong pID, const QString &newName){
+    int rowCount = ui->tableStudents->rowCount();
+    for (int i = 0; i < rowCount; ++i){
+        if (ui->tableStudents->item(i, 1)->data(Qt::UserRole).toLongLong() == pID){
+            ui->tableStudents->item(i, 1)->setText(newName);
+            ui->tableStudents->item(i, 1)->setToolTip(newName);
         }
     }
 }
@@ -640,7 +657,7 @@ void frmMain::receiveNewCourseData(const QVariantList &data){
 }
 
 void frmMain::receiveCourseUpdatedData(const QVariantList &data, const qlonglong &oldCourse){
-    int currentRow = ui->tableStudents->currentRow();
+    int currentRow = ui->tableCourses->currentRow();
     if (ui->tableCourses->item(currentRow, 0)->data(Qt::UserRole).toLongLong() == oldCourse){
         ui->tableCourses->item(currentRow, 0)->setText(data.at(0).toString());
         ui->tableCourses->item(currentRow, 1)->setText(QString::number(data.at(1).toInt()));
@@ -719,16 +736,11 @@ void frmMain::removeStudent(){
                 rTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE),
                 pTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
                 siTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES),
-                riTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES),
-                ceTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS);
+                riTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES);
 
     myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
                     siTableSchema.at(0), STUDENT_ID);
 
-    while (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                           ceTableSchema.at(1), STUDENT_ID))
-        myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                        ceTableSchema.at(1), STUDENT_ID);
     while (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
                            pTableSchema.at(0), STUDENT_ID))
         myDB->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
@@ -760,13 +772,8 @@ void frmMain::removeCourse(){
 
     qlonglong COURSE_ID = ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->data(Qt::UserRole).toLongLong();
 
-    QString pTableName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-            ceTableName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS);
-    QStringList pTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
-                ceTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS);
-
-    while (myDB->rowExists(ceTableName, ceTableSchema.at(0), COURSE_ID))
-        myDB->removeRow(ceTableName, ceTableSchema.at(0), COURSE_ID);
+    QString pTableName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS);
+    QStringList pTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS);
 
     while (myDB->rowExists(pTableName, pTableSchema.at(1), COURSE_ID))
         myDB->removeRow(pTableName, pTableSchema.at(1), COURSE_ID);
@@ -890,8 +897,9 @@ void frmMain::removeDataBase(){
         }
         else confirmation.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
         confirmation.setButtonText(QMessageBox::Yes, tr("Delete tables"));
+        int result = confirmation.exec();
 
-        if (confirmation.exec() == QMessageBox::Yes){
+        if (result == QMessageBox::Yes){
             if (loginScr){
                 delete loginScr;
                 loginScr = NULL;
@@ -905,7 +913,6 @@ void frmMain::removeDataBase(){
                 manageClass = NULL;
             }
 
-            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS));
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS));
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES));
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES));
@@ -922,7 +929,7 @@ void frmMain::removeDataBase(){
             QDesktopServices::openUrl(QUrl(QCoreApplication::applicationFilePath()));
             qApp->quit();
         }
-        else if (confirmation.exec() == QMessageBox::YesToAll){
+        else if (result == QMessageBox::YesToAll){
             if (loginScr){
                 delete loginScr;
                 loginScr = NULL;
@@ -952,11 +959,11 @@ void frmMain::removeAppSettings(){
     uninstall.setWindowTitle(tr("Maintenance Tool | SmartClass"));
     uninstall.setIcon(QMessageBox::Warning);
     uninstall.setText(tr("Are you facing any trouble with SmartClass? This tool may be helpful for you. We have three options currently available:\n"
-                         "Clean Settings : Clear the initialization/standard settings and restart the application as a clean installation (Note that this option has no effect over the database).\n"
+                         "Clear Settings : Clear the initialization/standard settings and restart the application as a clean installation (Note that this option has no effect over the database).\n"
                          "Uninstall : Performs a clean uninstall by removing any settings and files which may rest after the uninstallation process (If you are using SQLite the database may be removed during the process of uninstallation. Do not forget to make a backup before uninstalling!).\n"
                          "Cancel : Cancel the current operation."));
     uninstall.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::Cancel);
-    uninstall.setButtonText(QMessageBox::Yes, tr("Clean Settings"));
+    uninstall.setButtonText(QMessageBox::Yes, tr("Clear Settings"));
     uninstall.setButtonText(QMessageBox::YesToAll, tr("Uninstall"));
 
     int choice = uninstall.exec();
@@ -1055,9 +1062,9 @@ void frmMain::openClassTableContextMenu(const QPoint &pos){
     QMenu contextMenu(tr("Courses table menu | SmartClass"), ui->tableCourses);
 
     QAction action1(QIcon(":/images/buttons/UpdateClasses.PNG"), tr("View/Update course data"), ui->tableCourses);
-    connect(&action1, SIGNAL(triggered(bool)), this, SLOT(openStudentManager()));
+    connect(&action1, SIGNAL(triggered(bool)), this, SLOT(openClassesManager()));
     QAction action2(QIcon(":/images/buttons/RemoveClasses.PNG"), tr("Remove course"), ui->tableCourses);
-    connect(&action2, SIGNAL(triggered(bool)), this, SLOT(removeStudent()));
+    connect(&action2, SIGNAL(triggered(bool)), this, SLOT(removeCourse()));
 
     switch (sessionRole) {
         case SmartClassGlobal::ADMIN:
@@ -1122,9 +1129,16 @@ void frmMain::setBackupSettings(){
         }
         programSettings.endGroup();
     }
+    else {
+        backupTimer.setInterval(900000);
+        connect(&backupTimer, SIGNAL(timeout()), this, SLOT(scheduledBackup()));
+        backupTimer.start();
+    }
 }
 
 void frmMain::scheduledBackup(){
+    if (!myDB) return;
+
     if (loginScr){
         delete loginScr;
         loginScr = NULL;

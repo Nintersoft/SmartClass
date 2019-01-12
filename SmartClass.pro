@@ -72,7 +72,7 @@ SOURCES += \
     frmprintcontract.cpp \
     frmimportexportdb.cpp \
     frmmanageusers.cpp \
-    frmmanageuser.cpp \
+    frmmanageuser.cpp
 
 HEADERS += \
     nmainwindow/nmainwindow.h \

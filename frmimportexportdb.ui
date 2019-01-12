@@ -1173,7 +1173,17 @@ QListWidget {
          <property name="verticalSpacing">
           <number>10</number>
          </property>
-         <item row="13" column="0" colspan="3">
+         <item row="5" column="0" colspan="3">
+          <widget class="QCheckBox" name="cbExportParentsTable">
+           <property name="text">
+            <string>Responsibles</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0" colspan="3">
           <widget class="QGroupBox" name="grpExportImages">
            <property name="title">
             <string>Export image options</string>
@@ -1222,77 +1232,33 @@ QListWidget {
            </layout>
           </widget>
          </item>
-         <item row="11" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbExportActiveConnectionsTable">
-           <property name="text">
-            <string>Active connections</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbExportCourseEntrollmentsTable">
-           <property name="text">
-            <string>Course enrollments</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbExportImages">
-           <property name="text">
-            <string>Export images</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item row="8" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbExportPricingTable">
+          <widget class="QCheckBox" name="cbExportSettings">
            <property name="text">
-            <string>Payment information</string>
+            <string>Application settings (Global)</string>
            </property>
            <property name="checked">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="14" column="1">
+         <item row="13" column="1">
           <widget class="QLineEdit" name="edtExportDirectory"/>
-         </item>
-         <item row="14" column="2">
-          <widget class="QPushButton" name="btSearchDirectory">
-           <property name="text">
-            <string>Search directory</string>
-           </property>
-          </widget>
-         </item>
-         <item row="14" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Directory:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbExportParentsTable">
-           <property name="text">
-            <string>Responsibles</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
          </item>
          <item row="4" column="0" colspan="3">
           <widget class="QCheckBox" name="cbExportStudentsTable">
            <property name="text">
             <string>Students</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0" colspan="3">
+          <widget class="QCheckBox" name="cbExportImages">
+           <property name="text">
+            <string>Export images</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -1309,6 +1275,23 @@ QListWidget {
            </property>
           </widget>
          </item>
+         <item row="10" column="0" colspan="3">
+          <widget class="QCheckBox" name="cbExportActiveConnectionsTable">
+           <property name="text">
+            <string>Active connections</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Directory:</string>
+           </property>
+          </widget>
+         </item>
          <item row="6" column="0" colspan="3">
           <widget class="QCheckBox" name="cbExportCoursesTable">
            <property name="text">
@@ -1319,13 +1302,20 @@ QListWidget {
            </property>
           </widget>
          </item>
-         <item row="9" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbExportSettings">
+         <item row="7" column="0" colspan="3">
+          <widget class="QCheckBox" name="cbExportPricingTable">
            <property name="text">
-            <string>Application settings (Global)</string>
+            <string>Payment information</string>
            </property>
            <property name="checked">
             <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="2">
+          <widget class="QPushButton" name="btSearchDirectory">
+           <property name="text">
+            <string>Search directory</string>
            </property>
           </widget>
          </item>
@@ -1349,62 +1339,9 @@ QListWidget {
         </property>
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="3" column="0">
-          <widget class="QLabel" name="lblCourseEnrollmentsPath">
+          <widget class="QLabel" name="lblPricingFilePath">
            <property name="text">
-            <string>Course enrollments:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="lblCompanyLogoPath">
-           <property name="text">
-            <string>Company logo path:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="2">
-          <widget class="QPushButton" name="btSearchCompanyLogo">
-           <property name="text">
-            <string>Search File</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QLineEdit" name="edtCompanyLogoPath"/>
-         </item>
-         <item row="13" column="0" colspan="4">
-          <widget class="QLabel" name="lblCheckInfo">
-           <property name="text">
-            <string>(this option will force the program to check for possible errors while importing the database data. This prevents a possible database corruption, but will make the process a little bit longer.)</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="0" colspan="4">
-          <widget class="QCheckBox" name="cbCheckForErrors">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Check for errors while importing.</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="edtCourseEnrollmentsFilePath"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="lblSettingsFilePath">
-           <property name="text">
-            <string>Settings file:</string>
+            <string>Payment file:</string>
            </property>
           </widget>
          </item>
@@ -1415,38 +1352,38 @@ QListWidget {
            </property>
           </widget>
          </item>
-         <item row="6" column="2">
-          <widget class="QPushButton" name="btSearchSettings">
-           <property name="text">
-            <string>Search file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="lblStudentFilePath">
-           <property name="text">
-            <string>Students file:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="3">
-          <widget class="QPushButton" name="btClearSettingsPath">
-           <property name="text">
-            <string>X</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="lblUsersFilePath">
            <property name="text">
             <string>Users file:</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="lblPricingFilePath">
+         <item row="6" column="2">
+          <widget class="QPushButton" name="btSearchActiveConnectionsFile">
            <property name="text">
-            <string>Payment file:</string>
+            <string>Search file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="btSearchPaymentFile">
+           <property name="text">
+            <string>Search file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QPushButton" name="btClearStudentsPath">
+           <property name="text">
+            <string> X </string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="3">
+          <widget class="QPushButton" name="btClearUsersPath">
+           <property name="text">
+            <string> X </string>
            </property>
           </widget>
          </item>
@@ -1457,49 +1394,59 @@ QListWidget {
            </property>
           </widget>
          </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="lblStudentImagesDirPath">
+         <item row="0" column="2">
+          <widget class="QPushButton" name="btSearchStudentFile">
            <property name="text">
-            <string>Student images directory:</string>
+            <string>Search file</string>
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
+         <item row="6" column="3">
+          <widget class="QPushButton" name="btClearActiveConnectionsPath">
+           <property name="text">
+            <string>X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="1">
+          <widget class="QLineEdit" name="edtCompanyLogoPath"/>
+         </item>
+         <item row="5" column="2">
+          <widget class="QPushButton" name="btSearchSettings">
+           <property name="text">
+            <string>Search file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0">
+          <widget class="QLabel" name="lblCompanyLogoPath">
+           <property name="text">
+            <string>Company logo path:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="3">
+          <widget class="QPushButton" name="btClearCompanyLogoPath">
+           <property name="text">
+            <string>X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
           <widget class="QLabel" name="lblParentImagesDirPath">
            <property name="text">
             <string>Responsible images directory:</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="btSearchParentFile">
-           <property name="text">
-            <string>Search file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lblParentFilePath">
-           <property name="text">
-            <string>Responsible file:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="edtUsersFilePath">
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="edtStudentFilePath">
            <property name="readOnly">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QPushButton" name="btSearchCoursesFile">
-           <property name="text">
-            <string>Search file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="2">
+         <item row="8" column="2">
           <widget class="QPushButton" name="btSearchStudentImagesDir">
            <property name="contextMenuPolicy">
             <enum>Qt::NoContextMenu</enum>
@@ -1509,60 +1456,43 @@ QListWidget {
            </property>
           </widget>
          </item>
-         <item row="8" column="1">
+         <item row="1" column="3">
+          <widget class="QPushButton" name="btClearParentsPath">
+           <property name="text">
+            <string> X </string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
           <widget class="QLineEdit" name="edtParentImagesDirPath">
            <property name="readOnly">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="11" column="3">
-          <widget class="QPushButton" name="btClearCompanyLogoPath">
+         <item row="5" column="0">
+          <widget class="QLabel" name="lblSettingsFilePath">
            <property name="text">
-            <string>X</string>
+            <string>Settings file:</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
-          <widget class="QPushButton" name="btSearchCourseEnrollmentsFile">
-           <property name="text">
-            <string>Search file</string>
+         <item row="8" column="1">
+          <widget class="QLineEdit" name="edtStudentImagesDirPath">
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QLineEdit" name="edtSettingsFilePath"/>
+         <item row="8" column="0">
+          <widget class="QLabel" name="lblStudentImagesDirPath">
+           <property name="text">
+            <string>Student images directory:</string>
+           </property>
+          </widget>
          </item>
          <item row="3" column="3">
-          <widget class="QPushButton" name="btClearCourseEnrollmentsPath">
-           <property name="text">
-            <string>X</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="3">
           <widget class="QPushButton" name="btClearPricingPath">
-           <property name="text">
-            <string> X </string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="3">
-          <widget class="QPushButton" name="btClearSImagesPath">
-           <property name="text">
-            <string> X </string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="3">
-          <widget class="QPushButton" name="btClearPImagesPath">
-           <property name="text">
-            <string> X </string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="3">
-          <widget class="QPushButton" name="btClearUsersPath">
            <property name="text">
             <string> X </string>
            </property>
@@ -1575,55 +1505,10 @@ QListWidget {
            </property>
           </widget>
          </item>
-         <item row="8" column="2">
-          <widget class="QPushButton" name="btSearchParentImagesDir">
-           <property name="contextMenuPolicy">
-            <enum>Qt::NoContextMenu</enum>
-           </property>
+         <item row="6" column="0">
+          <widget class="QLabel" name="lblActiveConnections">
            <property name="text">
-            <string>Search directory</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="btSearchStudentFile">
-           <property name="text">
-            <string>Search file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="edtStudentFilePath">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="edtPaymentFilePath">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QLineEdit" name="edtStudentImagesDirPath">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2">
-          <widget class="QPushButton" name="btSearchUsersFile">
-           <property name="text">
-            <string>Search file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QPushButton" name="btSearchPaymentFile">
-           <property name="text">
-            <string>Search file</string>
+            <string>Active connections file:</string>
            </property>
           </widget>
          </item>
@@ -1634,42 +1519,123 @@ QListWidget {
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <widget class="QPushButton" name="btClearParentsPath">
-           <property name="text">
-            <string> X </string>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="edtPaymentFilePath">
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="3">
-          <widget class="QPushButton" name="btClearStudentsPath">
+         <item row="1" column="0">
+          <widget class="QLabel" name="lblParentFilePath">
            <property name="text">
-            <string> X </string>
+            <string>Responsible file:</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="2">
-          <widget class="QPushButton" name="btSearchActiveConnectionsFile">
-           <property name="text">
-            <string>Search file</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="3">
-          <widget class="QPushButton" name="btClearActiveConnectionsPath">
+         <item row="5" column="3">
+          <widget class="QPushButton" name="btClearSettingsPath">
            <property name="text">
             <string>X</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="lblActiveConnections">
+         <item row="12" column="0" colspan="4">
+          <widget class="QLabel" name="lblCheckInfo">
            <property name="text">
-            <string>Active connections file:</string>
+            <string>(this option will force the program to check for possible errors while importing the database data. This prevents a possible database corruption, but will make the process a little bit longer.)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
+         <item row="7" column="3">
+          <widget class="QPushButton" name="btClearPImagesPath">
+           <property name="text">
+            <string> X </string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0" colspan="4">
+          <widget class="QCheckBox" name="cbCheckForErrors">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Check for errors while importing.</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="2">
+          <widget class="QPushButton" name="btSearchParentImagesDir">
+           <property name="contextMenuPolicy">
+            <enum>Qt::NoContextMenu</enum>
+           </property>
+           <property name="text">
+            <string>Search directory</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="btSearchUsersFile">
+           <property name="text">
+            <string>Search file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="btSearchParentFile">
+           <property name="text">
+            <string>Search file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="edtSettingsFilePath"/>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="edtUsersFilePath">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblStudentFilePath">
+           <property name="text">
+            <string>Students file:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="2">
+          <widget class="QPushButton" name="btSearchCompanyLogo">
+           <property name="text">
+            <string>Search File</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="btSearchCoursesFile">
+           <property name="text">
+            <string>Search file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="3">
+          <widget class="QPushButton" name="btClearSImagesPath">
+           <property name="text">
+            <string> X </string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
           <widget class="QLineEdit" name="edtActiveConnectionsFilePath"/>
          </item>
         </layout>
@@ -1691,9 +1657,6 @@ QListWidget {
   <tabstop>edtCoursesFilePath</tabstop>
   <tabstop>btSearchCoursesFile</tabstop>
   <tabstop>btClearCoursesPath</tabstop>
-  <tabstop>edtCourseEnrollmentsFilePath</tabstop>
-  <tabstop>btSearchCourseEnrollmentsFile</tabstop>
-  <tabstop>btClearCourseEnrollmentsPath</tabstop>
   <tabstop>edtPaymentFilePath</tabstop>
   <tabstop>btSearchPaymentFile</tabstop>
   <tabstop>btClearPricingPath</tabstop>
@@ -1721,7 +1684,6 @@ QListWidget {
   <tabstop>cbExportStudentsTable</tabstop>
   <tabstop>cbExportParentsTable</tabstop>
   <tabstop>cbExportCoursesTable</tabstop>
-  <tabstop>cbExportCourseEntrollmentsTable</tabstop>
   <tabstop>cbExportPricingTable</tabstop>
   <tabstop>cbExportSettings</tabstop>
   <tabstop>cbExportActiveConnectionsTable</tabstop>

@@ -39,7 +39,6 @@ public:
         STUDENTIMAGES,
         RESPONSIBLEIMAGES,
         COURSEDETAILS,
-        COURSEENROLLMENTS,
         PAYMENTDETAILS,
         SETTINGS,
         ACTIVECONNECTIONS
@@ -65,9 +64,6 @@ public:
                 break;
             case COURSEDETAILS:
                 tableName += "smartclass_courses";
-                break;
-            case COURSEENROLLMENTS:
-                tableName += "smartclass_enrollments";
                 break;
             case PAYMENTDETAILS:
                 tableName += "smartclass_payment";
@@ -98,7 +94,7 @@ public:
         QStringList tableStructure;
         switch (table) {
             case USERS:
-                tableStructure << id << "username TEXT NOT NULL" << "name TEXT NOT NULL"
+                tableStructure << id << "username TEXT NOT NULL UNIQUE" << "name TEXT NOT NULL"
                                 << "salt TEXT NOT NULL" << "hash TEXT NOT NULL" << "question TEXT"
                                 << "answerSalt TEXT NOT NULL" << "answerHash TEXT NOT NULL" << "role INTEGER";
                 break;
@@ -126,10 +122,6 @@ public:
                                 << "shortDescription TEXT NOT NULL" << "longDescription TEXT NOT NULL" << "class INTEGER"
                                 << "dayNTime TEXT NOT NULL" << "beginningDate DATE" << "endDate DATE"
                                 << "price DOUBLE";
-                break;
-            case COURSEENROLLMENTS:
-                tableStructure << (isSQLite ? "cid INTEGER" : "cid INTEGER(64)")
-                                << (isSQLite ? "sid INTEGER" : "sid INTEGER(64)");
                 break;
             case PAYMENTDETAILS:
                 tableStructure << (isSQLite ? "sid INTEGER" : "sid INTEGER(64)") << (isSQLite ? "cid INTEGER" : "cid INTEGER(64)")
@@ -177,9 +169,6 @@ public:
                                 << "shortDescription" << "longDescription" << "class"
                                 << "dayNTime" << "beginningDate" << "endDate" << "price";
                 break;
-            case COURSEENROLLMENTS:
-                tableStructure << "cid" << "sid";
-                break;
             case PAYMENTDETAILS:
                 tableStructure << "sid" << "cid" << "discount" << "beginningDate"
                                << "installments";
@@ -209,13 +198,6 @@ public:
         case RESPONSIBLEIMAGES:
             tableConstraints << "CONSTRAINT FK_Rid FOREIGN KEY (id) REFERENCES " +
                                 tablePrefix() + getTableName(RESPONSIBLE) + "(id)";
-            break;
-        case COURSEENROLLMENTS:
-            tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (sid) REFERENCES " +
-                                tablePrefix() + getTableName(STUDENT) + "(id)";
-            tableConstraints << "CONSTRAINT FK_Cid FOREIGN KEY (cid) REFERENCES " +
-                                tablePrefix() + getTableName(COURSEDETAILS) + "(id)";
-            tableConstraints << "CONSTRAINT PK_Enrollment PRIMARY KEY (sid, cid)";
             break;
         case PAYMENTDETAILS:
             tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (sid) REFERENCES " +

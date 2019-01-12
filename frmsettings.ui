@@ -1322,7 +1322,7 @@ I am aware that this course is going to be ministred at %6.</string>
              </property>
              <layout class="QGridLayout" name="tabBackupLayout_2">
               <item row="0" column="0">
-               <widget class="QGroupBox" name="grbBackupSettings">
+               <widget class="QGroupBox" name="grpBackupSettings">
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
@@ -1517,7 +1517,7 @@ I am aware that this course is going to be ministred at %6.</string>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QGroupBox" name="groupBox">
+               <widget class="QGroupBox" name="grpThirdParty">
                 <property name="title">
                  <string>Third party program settings</string>
                 </property>

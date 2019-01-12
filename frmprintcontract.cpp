@@ -59,24 +59,20 @@ frmPrintContract::frmPrintContract(QWidget *parent, qlonglong studentID) :
     ui->lblCurrentDate->setText(QDate::currentDate().toString(tr("dd/MM/yyyy")));
     ui->edtCompanyName->setText(companyName);
 
-    QList<QVariantList> courseAssociation = db_manager->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                                                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS),
-                                                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                                                                        STUDENT_ID);
+    pData = db_manager->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
+                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
+                                        SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).at(0),
+                                        STUDENT_ID);
 
-    for (int i = 0; i < courseAssociation.length(); ++i){
+    for (int i = 0; i < pData.length(); ++i){
         QVariantList courseData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
                                                           SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).at(0),
-                                                          courseAssociation.at(i).at(0));
-        QVariantList paymentData = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
-                                                           SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).mid(0, 2),
-                                                           QVariantList() << STUDENT_ID << courseData.at(0));
+                                                          pData.at(i).at(1));
 
         QString courseSyntesis = courseData.at(1).toString() + tr(" ( class #") + courseData.at(5).toString() + tr(" ) - ") + courseData.at(6).toString()
                         + tr(" * starts on: ") + courseData.at(7).toString();
         ui->cbStudentCourse->addItem(courseSyntesis, courseData.at(0));
         cData << courseData;
-        pData << paymentData;
     }
 
     connect(ui->btOpenExternal, SIGNAL(clicked(bool)), this, SLOT(openExternalTool()));

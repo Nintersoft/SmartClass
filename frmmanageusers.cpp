@@ -78,6 +78,12 @@ void frmManageUsers::removeUser(){
         return;
     }
 
+    if (QMessageBox::warning(this, tr("Confirmation | SmartClass"),
+                             tr("You are about to remove the user %1 and all of its data. This action cannot be undone. Proceed?").arg(item->text().split("[").at(1).split("]").at(0)),
+                             QMessageBox::Yes, QMessageBox::No) != QMessageBox::Yes){
+        return;
+    }
+
     if (dbManager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
                              SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(0),
                              item->data(Qt::UserRole))){

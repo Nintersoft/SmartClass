@@ -22,10 +22,9 @@ frmImportExportDB::frmImportExportDB(QWidget *parent, ImportMode mode) :
     if (CURRENT_MODE == frmImportExportDB::Export){
         ui->grpImportOptions->setVisible(false);
         ui->btImport->setVisible(false);
-        this->setMaximumHeight(650);
-        this->setMinimumHeight(650);
+        this->setMaximumHeight(640);
+        this->setMinimumHeight(640);
         this->setGeometry(QRect(this->geometry().topLeft(), QSize(this->width(), 650)));
-
 
         connect(ui->cbExportImages, SIGNAL(toggled(bool)), ui->cbStudentImages, SLOT(setEnabled(bool)));
         connect(ui->cbExportImages, SIGNAL(toggled(bool)), ui->cbParentImages, SLOT(setEnabled(bool)));
@@ -47,7 +46,6 @@ frmImportExportDB::frmImportExportDB(QWidget *parent, ImportMode mode) :
         connect(ui->btSearchCoursesFile, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
         connect(ui->btSearchPaymentFile, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
         connect(ui->btSearchUsersFile, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
-        connect(ui->btSearchCourseEnrollmentsFile, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
         connect(ui->btSearchSettings, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
         connect(ui->btSearchActiveConnectionsFile, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
         connect(ui->btSearchCompanyLogo, SIGNAL(clicked(bool)), this, SLOT(getImportFilePath()));
@@ -58,7 +56,6 @@ frmImportExportDB::frmImportExportDB(QWidget *parent, ImportMode mode) :
         connect(ui->btClearStudentsPath, SIGNAL(clicked(bool)), ui->edtStudentFilePath, SLOT(clear()));
         connect(ui->btClearParentsPath, SIGNAL(clicked(bool)), ui->edtParentFilePath, SLOT(clear()));
         connect(ui->btClearCoursesPath, SIGNAL(clicked(bool)), ui->edtCoursesFilePath, SLOT(clear()));
-        connect(ui->btClearCourseEnrollmentsPath, SIGNAL(clicked(bool)), ui->edtCourseEnrollmentsFilePath, SLOT(clear()));
         connect(ui->btClearPricingPath, SIGNAL(clicked(bool)), ui->edtPaymentFilePath, SLOT(clear()));
         connect(ui->btClearUsersPath, SIGNAL(clicked(bool)), ui->edtUsersFilePath, SLOT(clear()));
         connect(ui->btClearSettingsPath, SIGNAL(clicked(bool)), ui->edtSettingsFilePath, SLOT(clear()));
@@ -132,10 +129,6 @@ QVariantList frmImportExportDB::stringToVariant(const QStringList &sList, SmartC
                       << QDate::fromString(sList[8], "dd/MM/yyyy")
                       << sList[9].toDouble();
             break;
-        case SmartClassGlobal::COURSEENROLLMENTS:
-            converted << sList[0].toLongLong()
-                      << sList[1].toLongLong();
-            break;
         case SmartClassGlobal::SETTINGS:
             converted << sList[0]
                       << sList[1]
@@ -186,7 +179,6 @@ void frmImportExportDB::importCheckingErrors(){
     paths << ui->edtParentFilePath->text()
           << ui->edtStudentFilePath->text()
           << ui->edtCoursesFilePath->text()
-          << ui->edtCourseEnrollmentsFilePath->text()
           << ui->edtPaymentFilePath->text()
           << ui->edtUsersFilePath->text()
           << ui->edtActiveConnectionsFilePath->text()
@@ -198,7 +190,6 @@ void frmImportExportDB::importCheckingErrors(){
     tables << SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE)
            << SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT)
            << SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS)
-           << SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS)
            << SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS)
            << SmartClassGlobal::getTableName(SmartClassGlobal::USERS)
            << SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS)
@@ -206,7 +197,7 @@ void frmImportExportDB::importCheckingErrors(){
            << SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES)
            << SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES);
 
-    QFile files[7];
+    QFile files[6];
     for (int i = 0; i < tables.size() - 3; ++i){
         QString importErrors = "";
         bool abort = false;
@@ -265,12 +256,9 @@ void frmImportExportDB::importCheckingErrors(){
                 currentTable = SmartClassGlobal::COURSEDETAILS;
                 break;
             case 3:
-                currentTable = SmartClassGlobal::COURSEENROLLMENTS;
-                break;
-            case 4:
                 currentTable = SmartClassGlobal::PAYMENTDETAILS;
                 break;
-            case 5:
+            case 4:
                 currentTable = SmartClassGlobal::USERS;
                 break;
             default:
@@ -299,7 +287,7 @@ void frmImportExportDB::importCheckingErrors(){
                     importErrors += tr("[SKIPPED] The following line already exists or conflicts with an existing one: %1 . Line skipped.\n").arg(lines.at(k));
                     operation = NoOperation;
                 }
-                else if (i > 2 && i < 5){
+                else if (i == 3){
                     operation = Insert;
                 }
                 else if (db_manager->rowExists(tables.at(i), tableSchema.at(0), newData.at(0))){
@@ -308,7 +296,7 @@ void frmImportExportDB::importCheckingErrors(){
                                                                                                                                                                                                 .arg(tables.at(i));
                     operation = Update;
                 }
-                else if (i < 3 || i == 5){
+                else if (i <= 4){
                     if (db_manager->rowExists(tables.at(i), tableSchema.at(1), newData.at(1))){
                         importErrors += tr("[UPDATED / WARNING] The following property (%1) already exists with different values (%2) in %3. It has been updated to the content of the CSV file.\n").arg(tableSchema.at(0))
                                                                                                                                                                                                     .arg(lines.at(k))
@@ -341,18 +329,18 @@ void frmImportExportDB::importCheckingErrors(){
         }
     }
 
-    if (!paths.at(7).isEmpty()){
+    if (!paths.at(6).isEmpty()){
         QString importErrors = "";
 
-        if (!QFile::exists(paths.at(7))){
-            QString argument = QString(tables.at(7)).split("_").at(1);
+        if (!QFile::exists(paths.at(6))){
+            QString argument = QString(tables.at(6)).split("_").at(1);
             QMessageBox::critical(this, tr("Error | SmartClass"),
                                                   tr("The path to the file %1 does not exists. This file has been skipped during the process of importation.").arg(argument),
                                                   QMessageBox::Ok, QMessageBox::NoButton);
             importErrors += tr("The path to the file %1 does not exists. This file has been skipped during the process of importation.").arg(argument);
         }
         else {
-            QFile file(paths.at(7));
+            QFile file(paths.at(6));
             if (file.open(QIODevice::ReadOnly)){
                 QString content = QString::fromLocal8Bit(file.readAll());
                 file.close();
@@ -366,31 +354,31 @@ void frmImportExportDB::importCheckingErrors(){
 
                     QVariantList newData = stringToVariant(lineContent, SmartClassGlobal::SETTINGS);
                     QStringList tableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS);
-                    if (db_manager->rowExists(tables.at(7), tableSchema, newData))
+                    if (db_manager->rowExists(tables.at(6), tableSchema, newData))
                         importErrors += tr("[SKIPPED] The following line already exists or conflicts with an existing one: %1 . Line skipped.\n").arg(lines.at(k));
                     else {
-                        db_manager->clearTable(tables.at(7));
-                        if (!paths.at(10).isEmpty()){
-                            if (!QFile::exists(paths.at(10))){
+                        db_manager->clearTable(tables.at(6));
+                        if (!paths.at(9).isEmpty()){
+                            if (!QFile::exists(paths.at(9))){
                                 importErrors += tr("The path to the logo file does not exists. This file has been skipped during the process of importation.");
 
-                                if (!db_manager->insertRow(tables.at(7), tableSchema.mid(0, 2), newData))
+                                if (!db_manager->insertRow(tables.at(6), tableSchema.mid(0, 2), newData))
                                     importErrors += tr("[ERROR] The following line could not be added to the database: %1 . Details: %2 .\n").arg(lines.at(k)).arg(db_manager->lastError().text());
                             }
                             else {
-                                newData << DBManager::pixmapToVariant(QPixmap(paths.at(10)));
-                                if (!db_manager->insertRow(tables.at(7), tableSchema, newData))
+                                newData << DBManager::pixmapToVariant(QPixmap(paths.at(9)));
+                                if (!db_manager->insertRow(tables.at(6), tableSchema, newData))
                                     importErrors += tr("[ERROR] The following line could not be added to the database: %1 . Details: %2 .\n").arg(lines.at(k)).arg(db_manager->lastError().text());
                             }
                         }
-                        else if (!db_manager->insertRow(tables.at(7), tableSchema.mid(0, 2), newData))
+                        else if (!db_manager->insertRow(tables.at(6), tableSchema.mid(0, 2), newData))
                                 importErrors += tr("[ERROR] The following line could not be added to the database: %1 . Details: %2 .\n").arg(lines.at(k)).arg(db_manager->lastError().text());
                     }
                 }
-                if (linesCount < 5) importErrors += tr("The quantity of lines does not match with the minimal requirements to import into %1 table. This file has been skipped.").arg(tables.at(7));
+                if (linesCount < 5) importErrors += tr("The quantity of lines does not match with the minimal requirements to import into %1 table. This file has been skipped.").arg(tables.at(6));
             }
             else {
-                QString argument = QString(tables.at(7)).split("_").at(1);
+                QString argument = QString(tables.at(6)).split("_").at(1);
                 QMessageBox::information(this, tr("Error | SmartClass"),
                                          tr("The file \"%1\" could not be opened."
                                             " This file has been skipped during the process of importation.").arg(argument),
@@ -400,7 +388,7 @@ void frmImportExportDB::importCheckingErrors(){
         }
 
         if (!importErrors.isEmpty()){
-            QFileInfo fInfo(paths.at(7));
+            QFileInfo fInfo(paths.at(6));
             QString parentPath = fInfo.filePath();
             parentPath += "log.txt";
 
@@ -411,10 +399,10 @@ void frmImportExportDB::importCheckingErrors(){
         }
     }
 
-    if (!paths.at(8).isEmpty()){
+    if (!paths.at(7).isEmpty()){
         QString importErrors = "";
 
-        QDir imagesPath(paths.at(8));
+        QDir imagesPath(paths.at(7));
         if (imagesPath.exists()){
             QStringList directories = imagesPath.entryList(QDir::Dirs, QDir::Name),
                         tableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES);
@@ -428,7 +416,7 @@ void frmImportExportDB::importCheckingErrors(){
                 if (sIExists)
                     importErrors += tr("[OVERWRITTEN] The the following student \"%1\" already exists in the database. Every image in the register have been overwritten by the existent images in the import directory.\n").arg(directories.at(0));
 
-                QString parentPath = paths.at(8) + QDir::separator() + directories.at(i) + QDir::separator();
+                QString parentPath = paths.at(7) + QDir::separator() + directories.at(i) + QDir::separator();
                 QVariantList newData;
                 newData << sID;
 
@@ -454,7 +442,7 @@ void frmImportExportDB::importCheckingErrors(){
         else importErrors += tr("[UNAVAILABLE] The selected directory does not exists.\n");
 
         if (!importErrors.isEmpty()){
-            QString parentPath = (paths.at(8) + QString(QDir::separator()) + "log.txt");
+            QString parentPath = (paths.at(7) + QString(QDir::separator()) + "log.txt");
 
             QFile logFile(parentPath);
             logFile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -463,10 +451,10 @@ void frmImportExportDB::importCheckingErrors(){
         }
     }
 
-    if (!paths.at(9).isEmpty()){
+    if (!paths.at(8).isEmpty()){
         QString importErrors = "";
 
-        QDir imagesPath(paths.at(9));
+        QDir imagesPath(paths.at(8));
         if (imagesPath.exists()){
             QStringList directories = imagesPath.entryList(QDir::Dirs, QDir::Name),
                         tableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES);
@@ -481,7 +469,7 @@ void frmImportExportDB::importCheckingErrors(){
                 if (sIExists)
                     importErrors += tr("[OVERWRITTEN] The the following responsible \"%1\" already exists in the database. Every image in the register have been overwritten by the existent images in the import directory.\n").arg(directories.at(0));
 
-                QString parentPath = paths.at(9) + QDir::separator() + directories.at(i) + QDir::separator();
+                QString parentPath = paths.at(8) + QDir::separator() + directories.at(i) + QDir::separator();
                 QVariantList newData;
                 newData << rID;
 
@@ -507,7 +495,7 @@ void frmImportExportDB::importCheckingErrors(){
         else importErrors += tr("[UNAVAILABLE] The selected directory does not exists.\n");
 
         if (!importErrors.isEmpty()){
-            QString parentPath = (paths.at(9) + QString(QDir::separator()) + "log.txt");
+            QString parentPath = (paths.at(8) + QString(QDir::separator()) + "log.txt");
 
             QFile logFile(parentPath);
             logFile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -527,7 +515,6 @@ void frmImportExportDB::importWithoutCheckErrors(){
     paths << ui->edtParentFilePath->text()
           << ui->edtStudentFilePath->text()
           << ui->edtCoursesFilePath->text()
-          << ui->edtCourseEnrollmentsFilePath->text()
           << ui->edtPaymentFilePath->text()
           << ui->edtUsersFilePath->text()
           << ui->edtActiveConnectionsFilePath->text()
@@ -539,7 +526,6 @@ void frmImportExportDB::importWithoutCheckErrors(){
     tables << SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE)
            << SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT)
            << SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS)
-           << SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS)
            << SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS)
            << SmartClassGlobal::getTableName(SmartClassGlobal::USERS)
            << SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS)
@@ -547,7 +533,7 @@ void frmImportExportDB::importWithoutCheckErrors(){
            << SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES)
            << SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES);
 
-    QFile files[7];
+    QFile files[6];
     for (int i = 0; i < tables.size() - 3; ++i){
         if (!paths.at(i).isEmpty()){
             if (QFile::exists(paths.at(i))){
@@ -570,12 +556,9 @@ void frmImportExportDB::importWithoutCheckErrors(){
                 currentTable = SmartClassGlobal::COURSEDETAILS;
                 break;
             case 3:
-                currentTable = SmartClassGlobal::COURSEENROLLMENTS;
-                break;
-            case 4:
                 currentTable = SmartClassGlobal::PAYMENTDETAILS;
                 break;
-            case 5:
+            case 4:
                 currentTable = SmartClassGlobal::USERS;
                 break;
             default:
@@ -599,9 +582,9 @@ void frmImportExportDB::importWithoutCheckErrors(){
                 ImportOperation operation = Insert;
 
                 if (db_manager->rowExists(tables.at(i), tableSchema, newData)) operation = NoOperation;
-                else if (i > 2 && i < 5) operation = Insert;
+                else if (i == 3) operation = Insert;
                 else if (db_manager->rowExists(tables.at(i), tableSchema.at(0), newData.at(0))) operation = Update;
-                else if (i < 3 || i == 5)
+                else if (i <= 4)
                     if (db_manager->rowExists(tables.at(i), tableSchema.at(1), newData.at(1))) operation = Update;
 
                 if (operation == Update) db_manager->updateRow(tables.at(i), tableSchema.at(0), newData.at(0), tableSchema, newData);
@@ -610,8 +593,8 @@ void frmImportExportDB::importWithoutCheckErrors(){
         }
     }
 
-    if (!paths.at(7).isEmpty()){
-        QFile file(paths.at(7));
+    if (!paths.at(6).isEmpty()){
+        QFile file(paths.at(6));
         if (file.open(QIODevice::ReadOnly)){
             QString content = QString::fromLocal8Bit(file.readAll());
             file.close();
@@ -625,25 +608,24 @@ void frmImportExportDB::importWithoutCheckErrors(){
 
                 QVariantList newData = stringToVariant(lineContent, SmartClassGlobal::SETTINGS);
                 QStringList tableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS);
-                if (!db_manager->rowExists(tables.at(7), tableSchema, newData)){
-                    db_manager->clearTable(tables.at(7));
-                    if (!paths.at(10).isEmpty()){
-                        if (!QFile::exists(paths.at(10)))
-                            db_manager->insertRow(tables.at(7), tableSchema.mid(0, 2), newData);
+                if (!db_manager->rowExists(tables.at(6), tableSchema, newData)){
+                    db_manager->clearTable(tables.at(6));
+                    if (!paths.at(9).isEmpty()){
+                        if (!QFile::exists(paths.at(9)))
+                            db_manager->insertRow(tables.at(6), tableSchema.mid(0, 2), newData);
                         else {
-                            newData << DBManager::pixmapToVariant(QPixmap(paths.at(10)));
-                            db_manager->insertRow(tables.at(7), tableSchema, newData);
+                            newData << DBManager::pixmapToVariant(QPixmap(paths.at(9)));
+                            db_manager->insertRow(tables.at(6), tableSchema, newData);
                         }
                     }
-                    else db_manager->insertRow(tables.at(7), tableSchema.mid(0, 2), newData);
+                    else db_manager->insertRow(tables.at(6), tableSchema.mid(0, 2), newData);
                 }
             }
         }
     }
 
-    if (!paths.at(8).isEmpty()){
-
-        QDir imagesPath(paths.at(8));
+    if (!paths.at(7).isEmpty()){
+        QDir imagesPath(paths.at(7));
         if (imagesPath.exists()){
             QStringList directories = imagesPath.entryList(QDir::Dirs, QDir::Name),
                         tableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENTIMAGES);
@@ -653,7 +635,7 @@ void frmImportExportDB::importWithoutCheckErrors(){
             for (int i = 0; i < directories.length(); ++i){
                 qlonglong sID = directories.at(i).toLongLong();
 
-                QString parentPath = paths.at(8) + QDir::separator() + directories.at(i) + QDir::separator();
+                QString parentPath = paths.at(7) + QDir::separator() + directories.at(i) + QDir::separator();
                 QVariantList newData;
                 newData << sID;
 
@@ -676,8 +658,8 @@ void frmImportExportDB::importWithoutCheckErrors(){
         }
     }
 
-    if (!paths.at(9).isEmpty()){
-        QDir imagesPath(paths.at(9));
+    if (!paths.at(8).isEmpty()){
+        QDir imagesPath(paths.at(8));
         if (imagesPath.exists()){
             QStringList directories = imagesPath.entryList(QDir::Dirs, QDir::Name),
                         tableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES);
@@ -687,7 +669,7 @@ void frmImportExportDB::importWithoutCheckErrors(){
             for (int i = 0; i < directories.length(); ++i){
                 qlonglong rID = directories.at(i).toLongLong();
 
-                QString parentPath = paths.at(9) + QDir::separator() + directories.at(i) + QDir::separator();
+                QString parentPath = paths.at(8) + QDir::separator() + directories.at(i) + QDir::separator();
                 QVariantList newData;
                 newData << rID;
 
@@ -709,7 +691,6 @@ void frmImportExportDB::importWithoutCheckErrors(){
             }
         }
     }
-
     QMessageBox::information(this, tr("Errors | SmartClass"),
                              tr("The process of importation has finished successfully."),
                              QMessageBox::Ok, QMessageBox::NoButton);
@@ -749,8 +730,6 @@ void frmImportExportDB::getImportFilePath(){
             ui->edtCoursesFilePath->setText(selectFile.selectedFiles().at(0));
         else if (senderName == "btSearchPaymentFile")
             ui->edtPaymentFilePath->setText(selectFile.selectedFiles().at(0));
-        else if (senderName == "btSearchCourseEnrollmentsFile")
-            ui->edtCourseEnrollmentsFilePath->setText(selectFile.selectedFiles().at(0));
         else if (senderName == "btSearchSettings")
             ui->edtSettingsFilePath->setText(selectFile.selectedFiles().at(0));
         else if (senderName == "btSearchActiveConnectionsFile")
@@ -934,27 +913,6 @@ void frmImportExportDB::exportDB(){
         outFile.close();
     }
 
-    if (ui->cbExportCourseEntrollmentsTable->isChecked()){
-        QFile outFile(QString(saveDir.path() + QDir::separator() + tr("course_enrollments.csv")));
-        outFile.open(QIODevice::WriteOnly | QIODevice::Text);
-
-        QString courseEnrollmentsTableOutput = tr("Autogenarated file | SmartClass ~ Course Enrollments Table\n\n");
-
-        courseEnrollmentsTableOutput += tr("Course ID;Student ID\n\n");
-
-        QList< QVariantList > courseEnrollmentsTable = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS));
-
-        for (int i = 0; i < courseEnrollmentsTable.size(); ++i){
-            courseEnrollmentsTableOutput += QString::number(courseEnrollmentsTable[i].at(0).toLongLong()) + ";";
-            courseEnrollmentsTableOutput += QString::number(courseEnrollmentsTable[i].at(1).toLongLong()) + "\n";
-
-            outFile.write(courseEnrollmentsTableOutput.toLocal8Bit());
-            courseEnrollmentsTableOutput = "";
-        }
-
-        outFile.close();
-    }
-
     if (ui->cbExportActiveConnectionsTable->isChecked()){
         QFile outFile(QString(saveDir.path() + QDir::separator() + tr("active_connections.csv")));
         outFile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -1017,12 +975,12 @@ void frmImportExportDB::exportDB(){
                     QString newPath = pImagesDirPath + QDir::separator() + pIDs;
 
                     QVariantList pImagesTable = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                                                                  pImagesTableAliases.at(0),
-                                                                  parentsTable[i].at(0));
+                                                                        pImagesTableAliases.at(0),
+                                                                        parentsTable[i].at(0));
 
                     for (int j = 1; j < pImagesTable.length(); ++j){
                         if (!pImagesTable.at(j).isNull()){
-                            QFile imageOut(newPath + QDir::separator() + pImagesTableAliases.at(j));
+                            QFile imageOut(newPath + QDir::separator() + pImagesTableAliases.at(j) + ".png");
                             imageOut.open(QIODevice::WriteOnly);
                             DBManager::variantToPixmap(pImagesTable.at(j)).save(&imageOut, "PNG");
                             imageOut.close();
@@ -1055,7 +1013,7 @@ void frmImportExportDB::exportDB(){
 
                     for (int j = 1; j < sImagesTable.length(); ++j){
                         if (!sImagesTable.at(j).isNull()){
-                            QFile imageOut(newPath + QDir::separator() + sImagesTableAliases.at(j));
+                            QFile imageOut(newPath + QDir::separator() + sImagesTableAliases.at(j) + ".png");
                             imageOut.open(QIODevice::WriteOnly);
                             DBManager::variantToPixmap(sImagesTable.at(j)).save(&imageOut, "PNG");
                             imageOut.close();

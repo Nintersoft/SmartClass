@@ -34,7 +34,7 @@ public:
         Info
     };
 
-    explicit frmSettings(QWidget *parent = 0, OpenMode mode = frmSettings::Normal);
+    explicit frmSettings(QWidget *parent = 0, SmartClassGlobal::UserRoles role = SmartClassGlobal::VIEWER, OpenMode mode = frmSettings::Normal);
     ~frmSettings();
 
 private:
@@ -47,6 +47,9 @@ private:
     DBManager *db_manager;
 
     int langSettings;
+    QPixmap defLogo;
+
+    SmartClassGlobal::UserRoles CURRENT_ROLE;   
 
 protected slots:
     void saveOptions();

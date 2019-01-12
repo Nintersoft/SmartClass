@@ -1,10 +1,11 @@
 #include "frmsettings.h"
 #include "ui_frmsettings.h"
 
-frmSettings::frmSettings(QWidget *parent, OpenMode mode) :
+frmSettings::frmSettings(QWidget *parent, SmartClassGlobal::UserRoles role, OpenMode mode) :
     NMainWindow(parent),
     ui(new Ui::frmSettings),
-    programSettings("Nintersoft", "SmartClass")
+    programSettings("Nintersoft", "SmartClass"),
+    CURRENT_ROLE(role)
 {
     ui->setupUi(this);
 
@@ -27,6 +28,13 @@ frmSettings::frmSettings(QWidget *parent, OpenMode mode) :
     if (mode == frmSettings::Info) ui->tabWidget->setCurrentIndex(2);
     this->setMaximumSize(this->size());
     this->setMinimumSize(this->size());
+
+    if (CURRENT_ROLE != SmartClassGlobal::ADMIN){
+        ui->grpContract->setEnabled(false);
+        ui->grpBranding->setEnabled(false);
+        ui->grpThirdParty->setEnabled(false);
+        ui->grpBackupSettings->setEnabled(false);
+    }
 
     ui->lblScheduleTime->setVisible(false);
     ui->edtSchedule->setVisible(false);
@@ -106,8 +114,10 @@ void frmSettings::retrieveSettings(){
                                                       "\n"
                                                       "\nI am aware that this course is going to be ministred at %6."));
 
-            if (gSettings[0][2].isValid() && !gSettings[0][2].isNull())
-                ui->lblLogoImage->setPixmap(DBManager::variantToPixmap(gSettings[0][2]));
+            if (gSettings[0][2].isValid() && !gSettings[0][2].isNull()){
+                defLogo = DBManager::variantToPixmap(gSettings[0][2]);
+                ui->lblLogoImage->setPixmap(defLogo);
+            }
         }
     }
 
@@ -171,6 +181,8 @@ void frmSettings::saveOptions(){
 
     if (!ui->edtCompanyLogo->text().isEmpty() && QFile::exists(ui->edtCompanyLogo->text()))
         globalSettings << DBManager::pixmapToVariant(QPixmap(ui->edtCompanyLogo->text()));
+    else if (!defLogo.isNull())
+        globalSettings << DBManager::pixmapToVariant(defLogo);
     else globalSettings << QVariant();
 
     if (gSettings.size() && gSettings[0].size())

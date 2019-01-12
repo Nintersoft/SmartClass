@@ -106,7 +106,13 @@ void frmReceipt::generateTable(){
         QString courseSyntesis = pData[i].at(1).toString() + tr(" ( class #") + pData[i].at(2).toString() + tr(" ) - ") + pData[i].at(3).toString()
                         + tr(" * starts on: ") + pData[i].at(4).toString();
         ui->tablePricing->setItem(currentRow, 1, new QTableWidgetItem(courseSyntesis));
-        ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(choosenDate.month() - initialDate.month() + 1).arg(installments)));
+        if (choosenDate.year() == initialDate.year())
+            ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(choosenDate.month() - initialDate.month() + 1).arg(installments)));
+        else {
+            int months = (choosenDate.year() - initialDate.year()) * 12;
+            months += choosenDate.month() - initialDate.month() + 1;
+            ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(months).arg(installments)));
+        }
 
         double price = pData[i].at(5).toDouble();
         double discount = pData[i].at(6).toDouble();

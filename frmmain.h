@@ -66,6 +66,7 @@ private slots:
     void openSettingsForm();
     void openReceiptForm();
     void openImportExportTool();
+    void openAboutForm();
 
     void removeStudent();
     void removeCourse();
@@ -91,6 +92,7 @@ private slots:
 protected slots:
     void receiveNewStudentData(const QVariantList &data);
     void receiveStudentUpdatedData(const QVariantList &data, const qlonglong &oldStudent);
+    void updateResponsibleName(qlonglong pID, const QString &newName);
 
     void receiveNewCourseData(const QVariantList &data);
     void receiveCourseUpdatedData(const QVariantList &data, const qlonglong &oldCourse);

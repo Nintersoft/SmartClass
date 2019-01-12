@@ -194,14 +194,6 @@ void frmManageStudent::saveData(){
                                       SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(1),
                                       studentInfo.at(0)).at(0).toLongLong();
 
-        for (int i = 0; i < ui->listCourses->count(); ++i){
-            QVariantList csRow;
-            csRow << ui->listCourses->item(i)->data(Qt::UserRole) << sID;
-            db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                                  SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS),
-                                  csRow);
-        }
-
         for (int i = 0; i < ui->listPaymentCourses->count(); ++i){
             QListWidgetPaymentItem* item =  static_cast<QListWidgetPaymentItem*>(ui->listPaymentCourses->item(i));
 
@@ -245,6 +237,7 @@ void frmManageStudent::saveData(){
     }
 
     qlonglong rID;
+    bool updateAll = false;
 
     QList< QVariantList > siblingsData = db_manager->retrieveAllCond(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
                                                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(2),
@@ -276,10 +269,10 @@ void frmManageStudent::saveData(){
     else if (responsibleInfo.at(0) == responsibleData.at(1) || siblings == 1){
         rID = responsibleData.at(0).toLongLong();
         db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                        SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
-                        responsibleData.at(0),
-                        SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
-                        responsibleInfo);
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                              responsibleData.at(0),
+                              SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
+                              responsibleInfo);
     }
     else {
         QMessageBox parentWarning;
@@ -289,7 +282,7 @@ void frmManageStudent::saveData(){
                                  "-> Update : If you choose this option, the responsible data will be changed for every student attached to him/her.\n"
                                  "-> Ignore : If you choose this option, the responsible name will remain the same.\n"
                                  "-> Change : If you choose this option, the responsible data will be updated just for this student. Other students related to this parent will remain intact."));
-        parentWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        parentWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::Ignore | QMessageBox::Cancel);
         parentWarning.setButtonText(QMessageBox::Yes,tr("Update"));
         parentWarning.setButtonText(QMessageBox::Ignore,tr("Ignore"));
         parentWarning.setButtonText(QMessageBox::Cancel,tr("Change"));
@@ -305,17 +298,6 @@ void frmManageStudent::saveData(){
                                       SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
                                       responsibleInfo);
 
-                if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
-                                          responsibleData.at(0)))
-                    db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
-                                          SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
-                                          responsibleData.at(0));
-
-                db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
-                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
-                                      responsibleData.at(0));
-
                 for (int i = 0; i < siblings; ++i)
                     if (siblingsData[i][0].toLongLong() != STUDENT_ID)
                         db_manager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
@@ -323,6 +305,13 @@ void frmManageStudent::saveData(){
                                               siblingsData[i][0].toLongLong(),
                                               QStringList() << SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(2),
                                               QVariantList() << rID);
+
+                db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLEIMAGES).at(0),
+                                      responsibleData.at(0));
+                db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE),
+                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).at(0),
+                                      responsibleData.at(0));
             }
             else {
                 rID = responsibleData.at(0).toLongLong();
@@ -332,6 +321,7 @@ void frmManageStudent::saveData(){
                                       SmartClassGlobal::getTableAliases(SmartClassGlobal::RESPONSIBLE).mid(1),
                                       responsibleInfo);
             }
+            updateAll = true;
         }
         else if (choice == QMessageBox::Ignore){
             rID = responsibleData.at(0).toLongLong();
@@ -351,18 +341,6 @@ void frmManageStudent::saveData(){
                                           responsibleInfo.at(0)).at(0).toLongLong();
         }
     }
-
-    while (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                                 SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                                 STUDENT_ID))
-        db_manager->removeRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                              SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS).at(1),
-                              STUDENT_ID);
-
-    for (int i = 0; i < ui->listCourses->count(); ++i)
-        db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS),
-                              SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS),
-                              QVariantList() << ui->listCourses->item(i)->data(Qt::UserRole) << STUDENT_ID);
 
     while(db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS),
                                 SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS).at(0),
@@ -431,7 +409,8 @@ void frmManageStudent::saveData(){
                                     << rID
                                     << responsibleInfo.at(0)
                                     << studentInfo.at(4)
-                                    << studentInfo.at(5),
+                                    << studentInfo.at(5)
+                                    << updateAll,
                      STUDENT_ID);
     this->close();
 }
@@ -562,38 +541,10 @@ void frmManageStudent::retrieveData(){
     ui->cbParentIndication->setCurrentText(responsibleData.at(8).toString());
     ui->edtRegistrationAddress->setText(responsibleData.at(9).toString());
 
-    QString crName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS, true), cerName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS, true);
-    QStringList studentCoursesRelationAliases, cAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS),
-            cerAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEENROLLMENTS);
-
-    QString studentCoursesRelation = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEENROLLMENTS) + " INNER JOIN "
-                                        + crName + " ON " + cerName + "." + cerAliases.at(0)
-                                        + " = " + crName + "." + cAliases.at(0);
-
-    studentCoursesRelationAliases << crName + "." + cAliases.at(0)
-                                  << crName + "." + cAliases.at(1)
-                                  << crName + "." + cAliases.at(5)
-                                  << crName + "." + cAliases.at(6)
-                                  << crName + "." + cAliases.at(7);
-
-    QList< QVariantList > scRelation = db_manager->retrieveAllCond(studentCoursesRelation,
-                                                                   studentCoursesRelationAliases,
-                                                                   cerAliases.at(1),
-                                                                   STUDENT_ID);
-
-    for (int i = 0; i < scRelation.size(); ++i){
-        QString courseSyntesis = scRelation[i][1].toString() + tr(" ( class #")
-                                    + QString::number(scRelation[i][2].toInt())
-                                    + tr(" ) - ") + scRelation[i][3].toString()+ tr(" * starts on: ")
-                                    + scRelation[i][4].toDate().toString(tr("dd/MM/yyyy"));
-        QListWidgetItem *newItem = new QListWidgetItem(courseSyntesis);
-        newItem->setData(Qt::UserRole, scRelation[i].at(0));
-        ui->listCourses->addItem(newItem);
-    }
-    ui->listCourses->setCurrentRow(ui->listCourses->count() - 1);
-
-    QString perName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS, true);
-    QStringList perAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS), paymentDataAliases;
+    QString crName = SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS, true),
+            perName = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS, true);
+    QStringList perAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::PAYMENTDETAILS),
+                cAliases = SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS), paymentDataAliases;
     QString paymentCoursesRelation = SmartClassGlobal::getTableName(SmartClassGlobal::PAYMENTDETAILS) + " INNER JOIN "
                                         + crName + " ON " + perName + "." + perAliases.at(1)
                                         + " = " + crName + "." + cAliases.at(0);
@@ -620,8 +571,15 @@ void frmManageStudent::retrieveData(){
                                     + tr(" ) - ") + paymentData[i][3].toString()+ tr(" * starts on: ")
                                     + paymentData[i][4].toDate().toString(tr("dd/MM/yyyy"));
 
+        QListWidgetItem *newItem = new QListWidgetItem(courseSyntesis);
+        newItem->setData(Qt::UserRole, paymentData[i][0]);
+        newItem->setToolTip(courseSyntesis);
+
+        ui->listCourses->addItem(newItem);
+
         QListWidgetPaymentItem *item = new QListWidgetPaymentItem(courseSyntesis, paymentData[i][5].toDouble());
         item->setData(Qt::UserRole, paymentData[i][0]);
+        item->setToolTip(courseSyntesis);
         item->setDiscount(paymentData[i][6].toDouble());
         item->setDate(paymentData[i][7].toDate());
         item->setInstallments(paymentData[i][8].toInt());
@@ -629,6 +587,7 @@ void frmManageStudent::retrieveData(){
         ui->listPaymentCourses->addItem(static_cast<QListWidgetItem*>(item));
     }
     ui->listPaymentCourses->setCurrentRow(ui->listPaymentCourses->count() - 1);
+    ui->listCourses->setCurrentRow(ui->listCourses->count() - 1);
 
     this->courseQuantityChanged();
 }
