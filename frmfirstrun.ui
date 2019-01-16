@@ -2048,7 +2048,7 @@ QTableWidget, QListWidget{
                </font>
               </property>
               <property name="text">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Congratulations!&lt;br/&gt;&lt;br/&gt;You have just finished SmartClass's setup. Everything you have to do now is to press the button &amp;lt; LAUNCH SMARTCLASS &amp;gt; so as to enjoy this awesome program.&lt;br/&gt;&lt;br/&gt;If you close this window, you will be taken directly to the login screen in the next time you start SmartClass.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Congratulations!&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;You have just finished SmartClass's setup. Everything you have to do now is to press the button&lt;br/&gt;&amp;lt; LAUNCH SMARTCLASS &amp;gt;&lt;br/&gt;so as to enjoy this awesome program.&lt;br/&gt;&lt;br/&gt;If you close this window, you will be taken directly to the login screen in the next time you start SmartClass.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>

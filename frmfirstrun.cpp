@@ -77,6 +77,7 @@ void frmFirstRun::nextStep(){
 
     if (currentTab == 1){
         if (db_manager){
+            if (db_manager->isOpen()) db_manager->close();
             db_manager->removeInstance();
             db_manager = NULL;
         }
@@ -120,13 +121,14 @@ void frmFirstRun::nextStep(){
         }
         db_export_data = db_data;
 
-        QSqlQuery checkSettings = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
-        if (checkSettings.exec()){
-            QList< QVariantList > settingsb = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
+        QStringList existingTables = db_manager->tables();
+        if (existingTables.contains(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS, true))){
+            QList< QVariantList > settingsb = db_manager->retrieveAll(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS),
+                                                                      SmartClassGlobal::getTableAliases(SmartClassGlobal::SETTINGS));
 
             settingsExists = (bool)settingsb.size();
             if (settingsExists){
-                QVariantList settings = settingsb.at(0);
+                QVariantList settings(settingsb.at(0));
                 ui->edtCompanyName->setText(settings.at(0).toString());
                 cLogo = DBManager::variantToPixmap(settings.at(2));
                 ui->lblCompanyLogoImg->setPixmap(cLogo.scaled(ui->lblCompanyLogoImg->size(), Qt::KeepAspectRatio));
@@ -136,19 +138,19 @@ void frmFirstRun::nextStep(){
         }
         else settingsExists = false;
 
+        ui->grpCompanySettings->setDisabled(settingsExists);
+
         ui->edtDeviceName->setText(QHostInfo::localHostName());
         ui->edtDeviceOS->setText(QSysInfo::productType());
         ui->edtDeviceOSMV->setText(QSysInfo::productVersion());
         ui->edtDeviceLastAccess->setText(QDateTime::currentDateTime().toString("dd/MM/yyyy - HH:mm:ss"));
 
-        QSqlQuery checkUsers = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::USERS) + " LIMIT 1");
-        if (!checkUsers.exec()){
+        if (!existingTables.contains(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS, true))){
             db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
                                     SmartClassGlobal::getTableStructure(SmartClassGlobal::USERS));
         }
 
-        QSqlQuery checkActiveC = db_manager->createCustomQuery("SELECT 1 FROM " + SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS) + " LIMIT 1");
-        if (checkActiveC.exec()){
+        if (existingTables.contains(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS, true))){
             QVariantList connection = db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
                                                               SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).mid(1, 3),
                                                               QVariantList() << ui->edtDeviceName->text() << ui->edtDeviceOS->text() << ui->edtDeviceOSMV->text(),

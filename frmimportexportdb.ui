@@ -1563,7 +1563,7 @@ QListWidget {
          <item row="11" column="0" colspan="4">
           <widget class="QCheckBox" name="cbCheckForErrors">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Check for errors while importing.</string>
