@@ -7,12 +7,16 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QStringList>
+#include <QMessageBox>
+#include <QFileInfo>
 #include <QPixmap>
 #include <QImage>
 #include <QFile>
 
+#include "smartclassglobal.h"
 #include "printpreviewform.h"
 #include "nmainwindow.h"
+#include "dbmanager.h"
 
 namespace Ui {
 class frmImageViewer;

@@ -1197,21 +1197,21 @@ QListWidget {
       <item row="3" column="0">
        <widget class="QLabel" name="lblParentCPGDesc">
         <property name="text">
-         <string>Parent CPG:</string>
+         <string>Responsible CPG:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="lblParentNameDesc">
         <property name="text">
-         <string>Parent name:</string>
+         <string>Responsible name:</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="lblParentIDDesc">
         <property name="text">
-         <string>Parent ID:</string>
+         <string>Responsible ID:</string>
         </property>
        </widget>
       </item>
@@ -1226,6 +1226,9 @@ QListWidget {
        <widget class="QPushButton" name="btOpenExternal">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Exports the student data to external tool/application (as defined in the application settings)</string>
         </property>
         <property name="text">
          <string>Open external tool</string>

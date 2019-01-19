@@ -74,11 +74,11 @@ void frmManageUsers::removeUser(){
     QListWidgetItem* item = ui->lwUsers->item(currentRow);
 
     if (item->text().contains(CURRENT_USER)){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to remove yourself. If you really need to remove your account, please, ask to another administrator do it."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to remove yourself. If you really need to remove your account, please, ask to another administrator do it."), QMessageBox::Ok);
         return;
     }
 
-    if (QMessageBox::warning(this, tr("Confirmation | SmartClass"),
+    if (QMessageBox::warning(NULL, tr("Confirmation | SmartClass"),
                              tr("You are about to remove the user %1 and all of its data. This action cannot be undone. Proceed?").arg(item->text().split("[").at(1).split("]").at(0)),
                              QMessageBox::Yes, QMessageBox::No) != QMessageBox::Yes){
         return;
@@ -91,12 +91,12 @@ void frmManageUsers::removeUser(){
                              SmartClassGlobal::getTableAliases(SmartClassGlobal::ACTIVECONNECTIONS).at(0),
                              item->data(Qt::UserRole));
         userDBData.removeAt(currentRow);
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("The user %1 has been removed successfully.").arg(item->text().split("[").at(1).split("]").at(0)), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Information | SmartClass"), tr("The user %1 has been removed successfully.").arg(item->text().split("[").at(1).split("]").at(0)), QMessageBox::Ok);
         delete item;
         item = NULL;
         ui->lwUsers->setCurrentRow(currentRow - 1);
     }
-    else QMessageBox::information(this, tr("Information | SmartClass"), tr("An error has ocurred during the attempt of user removal operation. Try again later (after restarting SmartClass)."), QMessageBox::Ok);
+    else QMessageBox::information(NULL, tr("Information | SmartClass"), tr("An error has ocurred during the attempt of user removal operation. Try again later (after restarting SmartClass)."), QMessageBox::Ok);
 }
 
 void frmManageUsers::openUserManager(){
@@ -144,11 +144,11 @@ void frmManageUsers::getModifiedData(const QVariantList newData){
                                          currentRData);
 
     if (!opResult){
-        while (QMessageBox::warning(this, tr("Error | SmartClass"),
-                                            tr("An error has ocurred while we tried to update the user data.\n"
-                                                "Error details: %1\n"
-                                                "Would you like to try again?").arg(dbManager->lastError().text()),
-                                        QMessageBox::Retry, QMessageBox::Abort) != QMessageBox::Abort
+        while (QMessageBox::warning(NULL, tr("Error | SmartClass"),
+                                    tr("An error has ocurred while we tried to update the user data.\n"
+                                       "Error details: %1\n"
+                                       "Would you like to try again?").arg(dbManager->lastError().text()),
+                                    QMessageBox::Retry, QMessageBox::Abort) != QMessageBox::Abort
                && !opResult){
             opResult = dbManager->updateRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
                                                 SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).at(0),

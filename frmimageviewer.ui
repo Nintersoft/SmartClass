@@ -1187,7 +1187,7 @@ QListWidget {
          </size>
         </property>
         <property name="text">
-         <string>There is no picture to display here!</string>
+         <string>There is no image to display here!</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

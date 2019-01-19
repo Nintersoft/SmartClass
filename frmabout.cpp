@@ -35,8 +35,8 @@ frmAbout::frmAbout(QWidget *parent) :
             ui->lblCompanyLogo->setPixmap(logo.scaled(100, 100, Qt::KeepAspectRatio));
 
         ui->lblLicencedTo->setText(settingsRow.at(0).at(0).isNull() ?
-                                     tr("Nintersoft Team") :
-                                     settingsRow.at(0).at(0).toString());
+                                   tr("Nintersoft Team") :
+                                   settingsRow.at(0).at(0).toString());
     }
 
 
@@ -77,7 +77,7 @@ void frmAbout::showLicences(){
         int execValue = chooseLicence.exec();
         if (execValue == QMessageBox::Ok) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Licença de Código Aberto Nintersoft rev1.pdf")));
         else if (execValue == QMessageBox::Yes) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Licença de Comercial Nintersoft rev1.pdf")));
-        else if (execValue == QMessageBox::Open) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Política de privacidade SmartClass.pdf")));
+        else if (execValue == QMessageBox::Open) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Política de Privacidade SmartClass.pdf")));
     }
     else QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Licença de Código Aberto Nintersoft rev1.pdf")));
 }
@@ -113,7 +113,7 @@ void frmAbout::downloadFinished(){
 
     if (reply->error()){
         error = true;
-        QMessageBox::information(this, tr("Upgrade failed | SmartClass"), tr("Failed to download file: %1").arg(reply->errorString()));
+        QMessageBox::information(NULL, tr("Upgrade failed | SmartClass"), tr("Failed to download file: %1").arg(reply->errorString()));
     }
 
     reply->deleteLater();
@@ -128,7 +128,7 @@ void frmAbout::downloadFinished(){
         QStringList versions;
 
         if (!updateInformation.open(QIODevice::ReadOnly)){
-            QMessageBox::information(this, tr("Upgrade failed | SmartClass"), tr("Error while opening the file which contains the repository information.").arg(reply->errorString()));
+            QMessageBox::information(NULL, tr("Upgrade failed | SmartClass"), tr("Error while opening the file which contains the repository information.").arg(reply->errorString()));
             setDefaultStatus();
         }
         else{
@@ -143,14 +143,14 @@ void frmAbout::downloadFinished(){
 
             if (upData.last().toInt() > upgradeVersion) downloadArchive(downloadLink, tempDir, "SmartClass.exe");
             else{
-                QMessageBox::information(this, tr("Already updated | SmartClass"), tr("Congratulations, you already have the latest version of SmartClass installed in your machine!"));
+                QMessageBox::information(NULL, tr("Already updated | SmartClass"), tr("Congratulations, you already have the latest version of SmartClass installed in your machine!"));
                 setDefaultStatus();
             }
         }
     }
     else{
         setDefaultStatus();
-        QMessageBox::information(this, tr("Upgrade info | SmartClass"), tr("The upgrade process is going to start as soon as you quit the program."
+        QMessageBox::information(NULL, tr("Upgrade info | SmartClass"), tr("The upgrade process is going to start as soon as you quit the program."
                                                                            "\nYou can continue working, since the installer will be launched right after you close SmartClass."), QMessageBox::Ok);
         ui->btUpgrade->setEnabled(false);
         emit upgradeAvailable();

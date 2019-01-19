@@ -107,11 +107,11 @@ void frmReceipt::generateTable(){
                         + tr(" * starts on: ") + pData[i].at(4).toString();
         ui->tablePricing->setItem(currentRow, 1, new QTableWidgetItem(courseSyntesis));
         if (choosenDate.year() == initialDate.year())
-            ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(choosenDate.month() - initialDate.month() + 1).arg(installments)));
+            ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(tr("%1 of %2").arg(choosenDate.month() - initialDate.month() + 1).arg(installments)));
         else {
             int months = (choosenDate.year() - initialDate.year()) * 12;
             months += choosenDate.month() - initialDate.month() + 1;
-            ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(QString("%1/%2").arg(months).arg(installments)));
+            ui->tablePricing->setItem(currentRow, 2, new QTableWidgetItem(tr("%1 of %2").arg(months).arg(installments)));
         }
 
         double price = pData[i].at(5).toDouble();
@@ -158,7 +158,7 @@ void frmReceipt::exportCSV(){
         for (int i = 0; i < ui->tablePricing->rowCount(); ++i){
             data += (ui->tablePricing->item(i, 0)->text() + ";"
                      + ui->tablePricing->item(i, 1)->text() + ";"
-                     + ui->tablePricing->item(i, 2)->text().replace("/", tr(" of ")) + ";"
+                     + ui->tablePricing->item(i, 2)->text() + ";"
                      + ui->tablePricing->item(i, 3)->text() + ";"
                      + ui->tablePricing->item(i, 4)->text() + "\n");
         }

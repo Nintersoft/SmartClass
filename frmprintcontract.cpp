@@ -31,7 +31,7 @@ frmPrintContract::frmPrintContract(QWidget *parent, qlonglong studentID) :
                                        !programPath.isEmpty());
         if (ui->btOpenExternal->isEnabled()){
             externalCommand = mySettings.value("command",
-                                                tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments")).toString();
+                                                tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_address $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_cost $p_discount $p_installments")).toString();
         }
 
         mySettings.endGroup();
@@ -86,7 +86,7 @@ frmPrintContract::~frmPrintContract()
 
 void frmPrintContract::openExternalTool(){
     if (ui->cbStudentCourse->currentIndex() == 0){
-        QMessageBox::warning(this, tr("Warning | SmartClass"),
+        QMessageBox::warning(NULL, tr("Warning | SmartClass"),
                              tr("You have to select a course in order to continue the operation. Otherwise it will not be possible to continue."),
                              QMessageBox::Ok);
         return;
@@ -141,12 +141,12 @@ void frmPrintContract::generateContractForm(){
     }
 
     if (error){
-        QMessageBox::warning(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
         return;
     }
 
     QString defaultTemplate = tr("I, %1, owner of the ID %2 and CPG %3,"
-                                 " hereby confirm that I am enrolling my son/daugther %4 on the following course:"
+                                 " hereby confirm that I am enrolling %4, who is under my tutelage, on the following course:"
                                  "\n"
                                  "\n - %5."
                                  "\n"

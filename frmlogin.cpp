@@ -61,7 +61,7 @@ void frmLogin::login(){
     QStringList uTableSchema = SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS);
 
     if (username.isEmpty() || !db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), uTableSchema.at(1), username) || password.isEmpty()){
-        QMessageBox::information(this, tr("Error | SmartClass"), tr("Seems that either the username or the password or both are incorrect. Please, check your data and try again."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Error | SmartClass"), tr("Seems that either the username or the password or both are incorrect. Please, check your data and try again."), QMessageBox::Ok);
         return;
     }
 
@@ -107,7 +107,7 @@ void frmLogin::login(){
         }
         emit dataReady(userInfo);
     }
-    else QMessageBox::information(this, tr("Error | SmartClass"), tr("Seems that either the username or the password or both are incorrect. Please, check your data and try again."), QMessageBox::Ok);
+    else QMessageBox::information(NULL, tr("Error | SmartClass"), tr("Seems that either the username or the password or both are incorrect. Please, check your data and try again."), QMessageBox::Ok);
 }
 
 void frmLogin::registerUser(){
@@ -118,23 +118,23 @@ void frmLogin::registerUser(){
 
     for (int i = 0; i < userInfo.length(); ++i)
         if (userInfo.at(i).toString().isEmpty()){
-            QMessageBox::warning(this, tr("Error | SmartClass"), tr("None of the fields should be empty. Please, check if there is any empty field and try again."), QMessageBox::Ok);
+            QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("None of the fields should be empty. Please, check if there is any empty field and try again."), QMessageBox::Ok);
             return;
         }
 
     if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::USERS), "username", userInfo.at(0))){
-        QMessageBox::warning(this, tr("Error | SmartClass"), tr("Sorry, but unfortunately this user is already being used. Please, type a different username."), QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("Sorry, but unfortunately this user is already being used. Please, type a different username."), QMessageBox::Ok);
         return;
     }
 
     int trash = 0;
     if (!isSafePassword(userInfo.at(2).toString(), trash)){
-        QMessageBox::warning(this, tr("Error | SmartClass"), tr("Your password seems to be too weak. It must contain at least one special character, one number, one uppercase letter and a lowercase letter."), QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("Your password seems to be too weak. It must contain at least one special character, one number, one uppercase letter and a lowercase letter."), QMessageBox::Ok);
         return;
     }
 
     if (userInfo.at(2) != userInfo.at(3).toString()){
-        QMessageBox::warning(this, tr("Error | SmartClass"), tr("The password confirmation do not match to the previously typed one."), QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("The password confirmation does not match to the previously typed one."), QMessageBox::Ok);
         return;
     }
 
@@ -154,7 +154,7 @@ void frmLogin::registerUser(){
     if (!db_manager->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
                          SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).mid(1),
                          completeUserData)){
-        QMessageBox::critical(this, tr("Database connection error | SmartClass"), tr("Unfortunately it was not possible to register this user in the database. Contact the application developer for further assistance."), QMessageBox::Ok);
+        QMessageBox::critical(NULL, tr("Error | SmartClass"), tr("Unfortunately it was not possible to register this user in the database. Details: %1.").arg(db_manager->lastError().text()), QMessageBox::Ok);
         return;
     }
 
@@ -170,7 +170,7 @@ void frmLogin::registerUser(){
     ui->edtPasswordFLogin->setFocus();
     ui->tabManager->setCurrentIndex(0);
 
-    QMessageBox::information(this, tr("Success | SmartClass"), tr("Your account has been created successfully. Remember: We do not store your passwords, so everytime you forget it, you will have to redefine it."), QMessageBox::Ok);
+    QMessageBox::information(NULL, tr("Success | SmartClass"), tr("Your account has been created successfully. Remember: We do not store your password, so everytime you forget it, you will have to redefine it."), QMessageBox::Ok);
 }
 
 void frmLogin::askQuestion(){
@@ -187,7 +187,7 @@ void frmLogin::askQuestion(){
 
     if (!userExists){
         ui->lblQuestionFRecover->setText(tr("There is no question for this user..."));
-        QMessageBox::warning(this, tr("Warning | SmartClass"), tr("This user does not exists."), QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Warning | SmartClass"), tr("This user does not exists."), QMessageBox::Ok);
     }
 
     ui->lblQuestionFRecover->setText(db_manager->retrieveRow(SmartClassGlobal::getTableName(SmartClassGlobal::USERS),
@@ -203,7 +203,7 @@ void frmLogin::changePassword(){
                                                     username);
     if (!userInfo.size()){
         ui->lblQuestionFRecover->setText(tr("There is no question for this user..."));
-        QMessageBox::warning(this, tr("Warning | SmartClass"), tr("This user does not exists."), QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Warning | SmartClass"), tr("This user does not exists."), QMessageBox::Ok);
         return;
     }
 
@@ -211,12 +211,12 @@ void frmLogin::changePassword(){
     if (generatedHashAnswer == userInfo.at(7).toString()){
         QString newPassword = ui->edtNewPasswordFRecover->text();
         if (newPassword.isEmpty() || newPassword.isNull()){
-            QMessageBox::warning(this, tr("Error | SmartClass"), tr("The new password cannot be empty."), QMessageBox::Ok);
+            QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("The new password cannot be empty."), QMessageBox::Ok);
             return;
         }
         int trash = 0;
         if (!isSafePassword(newPassword, trash)){
-            QMessageBox::warning(this, tr("Error | SmartClass"), tr("Your password seems to be too weak. It must contain at least one special character, one number, one uppercase letter and a lowercase letter."), QMessageBox::Ok);
+            QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("Your password seems to be too weak. It must contain at least one special character, one number, one uppercase letter and a lowercase letter."), QMessageBox::Ok);
             return;
         }
         QString newPasswordSalt = randomSalt(25);
@@ -228,7 +228,7 @@ void frmLogin::changePassword(){
                                    username,
                                    SmartClassGlobal::getTableAliases(SmartClassGlobal::USERS).mid(1),
                                    userInfo.mid(1))){
-            QMessageBox::critical(this, tr("Database connection error | SmartClass"), tr("Unfortunately it was not possible to update the information about this user in the database. Contact the application developer for further assistance."), QMessageBox::Ok);
+            QMessageBox::critical(NULL, tr("Error | SmartClass"), tr("Unfortunately it was not possible to update the information about this user in the database. Details: %1.").arg(db_manager->lastError().text()), QMessageBox::Ok);
             return;
         }
         ui->edtAnswerFRecover->clear();
@@ -248,9 +248,9 @@ void frmLogin::changePassword(){
         ui->edtPasswordFLogin->setFocus();
         ui->tabManager->setCurrentIndex(0);
 
-        QMessageBox::information(this, tr("Success | SmartClass"), tr("Your password has been redefined successfully. Remember: We do not store your passwords, so everytime you forget it, you will have to redefine it."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Success | SmartClass"), tr("Your password has been redefined successfully. Remember: We do not store your passwords, so everytime you forget it, you will have to redefine it."), QMessageBox::Ok);
     }
-    else QMessageBox::warning(this, tr("Error | SmartClass"), tr("Incorrect anwer."), QMessageBox::Ok);
+    else QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("Incorrect answer."), QMessageBox::Ok);
 }
 
 void frmLogin::changeTab(){

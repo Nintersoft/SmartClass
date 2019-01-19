@@ -63,8 +63,8 @@ void frmFirstRun::closeEvent(QCloseEvent *event){
     }
 
     QMessageBox confirmation;
-    confirmation.setWindowTitle(tr("SmartClass | Critical warning!"));
-    confirmation.setText(tr("You are going to quit without save the database settings. This may corrupt the setup data.\nDo you want to proceed?"));
+    confirmation.setWindowTitle(tr("Critical warning! | SmartClass"));
+    confirmation.setText(tr("You are going to quit without saving the database settings. This may corrupt the setup data.\nDo you want to proceed?"));
     confirmation.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     confirmation.setIcon(QMessageBox::Critical);
 
@@ -112,9 +112,9 @@ void frmFirstRun::nextStep(){
         }
 
         if (!db_manager->open()){
-            QMessageBox::critical(this, tr("Error | SmartClass"),
-                                    tr("An error has occurred while we tried to connect to the database. Please, check the input and try again.\nDetails: %1.").arg(db_manager->lastError().text()),
-                                    QMessageBox::Ok, QMessageBox::NoButton);
+            QMessageBox::critical(NULL, tr("Error | SmartClass"),
+                                  tr("An error has occurred while we tried to connect to the database. Please, check the input and try again.\nDetails: %1.").arg(db_manager->lastError().text()),
+                                  QMessageBox::Ok, QMessageBox::NoButton);
             db_manager->removeInstance();
             db_manager = NULL;
             return;
@@ -161,7 +161,7 @@ void frmFirstRun::nextStep(){
         else if(!db_manager->createTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS),
                                          QStringList() << SmartClassGlobal::getTableStructure(SmartClassGlobal::ACTIVECONNECTIONS) <<
                                          SmartClassGlobal::getTableConstraints(SmartClassGlobal::ACTIVECONNECTIONS))){
-            QMessageBox::critical(this, tr("Error | SmartClass"),
+            QMessageBox::critical(NULL, tr("Error | SmartClass"),
                                   tr("It was not possible to create the table of device access control. Please, try again later. Details: %1 .").arg(db_manager->lastError().text()),
                                   QMessageBox::Ok, QMessageBox::NoButton);
             return;
@@ -231,11 +231,11 @@ void frmFirstRun::nextStep(){
 
             if (!check){
                 QString errors = "";
-                if (!complete[0]) errors += "- It was not possible to create or write in the settings table.\n";
-                if (!complete[1]) errors += "- It was not possible to update an existing ID with your device data.\n";
-                if (!complete[2]) errors += "- It was not possible to create a new ID to your device.\n";
-                if (!complete[3]) errors += "- It was not possible to retrieve the new ID of your device.\n";
-                tryAgain  = QMessageBox::critical(this, tr("Error | SmartClass"),
+                if (!complete[0]) errors += tr("- It was not possible to create or write in the settings table.\n");
+                if (!complete[1]) errors += tr("- It was not possible to update an existing ID with your device data.\n");
+                if (!complete[2]) errors += tr("- It was not possible to create a new ID to your device.\n");
+                if (!complete[3]) errors += tr("- It was not possible to retrieve the new ID of your device.\n");
+                tryAgain  = QMessageBox::critical(NULL, tr("Error | SmartClass"),
                                                   tr("Some errors have occurred while we tried to store your settings into the database.\n"
                                                      "Here are the details:\n"
                                                      "\n"

@@ -39,20 +39,20 @@ frmManageUser::~frmManageUser()
 }
 
 void frmManageUser::showCHelp(){
-    QString arg1 = sender()->objectName() == "btPassHelp" ? "password" : "answer";
-    QMessageBox::information(this, tr("Information | SmartClass"), tr("In order to keep the current %1 you just have to leave this field empty.").arg(arg1), QMessageBox::Ok);
+    QString arg1 = sender()->objectName() == "btPassHelp" ? tr("password") : tr("answer");
+    QMessageBox::information(NULL, tr("Information | SmartClass"), tr("In order to keep the current %1 you just have to leave this field empty.").arg(arg1), QMessageBox::Ok);
 }
 
 void frmManageUser::saveData(){
     int trash = 0;
     if (!ui->edtPassword->text().isEmpty() &&
             !frmLogin::isSafePassword(ui->edtPassword->text(), trash)){
-        QMessageBox::warning(this, tr("Error | SmartClass"), tr("The new password seems to be too weak. It must contain at least one special character, one number, one uppercase letter and a lowercase letter."), QMessageBox::Ok);
+        QMessageBox::warning(NULL, tr("Error | SmartClass"), tr("The new password seems to be too weak. It must contain at least one special character, one number, one uppercase letter and a lowercase letter."), QMessageBox::Ok);
         return;
     }
 
     if (IS_CURRENT_USER && ui->cbRole->currentIndex()){
-        QMessageBox::information(this, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to downgrade your own permissions. If you really need to change your permissions, please, ask to another administrator do it."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Information | SmartClass"), tr("Due to safety purposes, you are not able to downgrade your own permissions. If you really need to change your permissions, please, ask to another administrator do it."), QMessageBox::Ok);
         return;
     }
 

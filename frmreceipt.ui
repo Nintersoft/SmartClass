@@ -510,6 +510,9 @@ QTableWidget, QListWidget{
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>117</number>
+        </attribute>
         <column>
          <property name="text">
           <string>Student</string>

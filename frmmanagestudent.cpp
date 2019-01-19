@@ -113,7 +113,7 @@ void frmManageStudent::enableRegistrationDetails(int index){
 }
 
 void frmManageStudent::saveData(){
-    QString baseMessage = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
+    QString baseMessage = tr("Unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
                              " Please, fix the folowing issues before trying to save again:\n"),
             errorMessage = "";
 
@@ -123,20 +123,20 @@ void frmManageStudent::saveData(){
         if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT),
                                   SmartClassGlobal::getTableAliases(SmartClassGlobal::STUDENT).at(1),
                                   ui->edtStudentName->text()))
-            errorMessage += tr("\n->A student with the same same name already exists in your database. If you want to update him/her, please, use the update button available in the main screen;");
+            errorMessage += tr("\n->A student with the same same name already exists in the database. If you want to update him/her, please, use the update button available in the main window;");
 
     if (!ui->edtStudentBirthday->date().isValid())
         errorMessage += tr("\n->The birthday of the student is invalid;");
 
     if (ui->edtParentName->currentText().isEmpty())
-        errorMessage += tr("\n->The name of the parent cannot be empty;");
+        errorMessage += tr("\n->The name of the responsible cannot be empty;");
 
     if  (ui->edtParentPhone->text().isEmpty() && ui->edtParentEmail->text().isEmpty() && ui->edtParentMobile->text().isEmpty())
-        errorMessage += tr("\n->It must have either the parent's email or telephone. Currently, both of them are empty;");
+        errorMessage += tr("\n->It must have either the responsible's email or telephone. Currently, both of them are empty;");
 
     if (!errorMessage.isEmpty()){
         baseMessage += errorMessage;
-        QMessageBox::information(this, tr("Warning | SmartClass"), baseMessage, QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), baseMessage, QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
@@ -277,11 +277,11 @@ void frmManageStudent::saveData(){
     else {
         QMessageBox parentWarning;
         parentWarning.setIcon(QMessageBox::Information);
-        parentWarning.setWindowTitle(tr("Parent data changed | SmartClass"));
+        parentWarning.setWindowTitle(tr("Responsible's data changed | SmartClass"));
         parentWarning.setText(tr("Looks like the name of the responsible has changed. You have three options from now on.\n\n"
                                  "-> Update : If you choose this option, the responsible data will be changed for every student attached to him/her.\n"
                                  "-> Ignore : If you choose this option, the responsible name will remain the same.\n"
-                                 "-> Change : If you choose this option, the responsible data will be updated just for this student. Other students related to this parent will remain intact."));
+                                 "-> Change : If you choose this option, the responsible data will be updated just for this student. Other students related to him/her will remain intact."));
         parentWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::Ignore | QMessageBox::Cancel);
         parentWarning.setButtonText(QMessageBox::Yes,tr("Update"));
         parentWarning.setButtonText(QMessageBox::Ignore,tr("Ignore"));
@@ -416,7 +416,7 @@ void frmManageStudent::saveData(){
 }
 
 void frmManageStudent::resetData(){
-    if (QMessageBox::question(this, tr("Reset confirmation | SmartClass"),
+    if (QMessageBox::question(NULL, tr("Reset confirmation | SmartClass"),
                               tr("You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you still want to proceed?"),
                               QMessageBox::Yes, QMessageBox::No) != QMessageBox::Yes) return;
 
@@ -597,7 +597,7 @@ void frmManageStudent::addCourse(){
 
     for (int i = 0; i < ui->listCourses->count(); ++i){
         if (ui->listCourses->item(i)->data(Qt::UserRole) == ui->cbRegistrationCourse->currentData(Qt::UserRole)){
-            QMessageBox::information(this, tr("Warning | SmartClass"), tr("This student is already registered on this course!"), QMessageBox::Ok, QMessageBox::Ok);
+            QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("This student is already registered in this course!"), QMessageBox::Ok, QMessageBox::Ok);
             return;
         }
     }
@@ -623,7 +623,7 @@ void frmManageStudent::removeCourse(){
     QString itemText = item->text();
     QVariant itemID = item->data(Qt::UserRole);
 
-    if (QMessageBox::question(this, tr("SmartClass | Confirmation"), tr("You are going to remove the student from the %1 course. Are you sure?").arg(itemText), QMessageBox::Yes, QMessageBox::No)
+    if (QMessageBox::question(NULL, tr("Confirmation | SmartClass"), tr("You are going to remove the student from the %1 course. Are you sure?").arg(itemText), QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::No) return;
 
     for (int i = 0; i < ui->listPaymentCourses->count(); ++i){
@@ -713,8 +713,8 @@ void frmManageStudent::updateParentInfo(const QString &pName){
                                                           pName);
 
     if (!tempParentData.size()){
-        if (QMessageBox::question(this, tr("Inexistent parental data | SmartClass"),
-                                        tr("We could not find any parent with this name in our database. Would you like to erase all the existent data related to the parent on this form?"),
+        if (QMessageBox::question(NULL, tr("Inexistent responsible data | SmartClass"),
+                                        tr("We could not find any responsible with this name in our database. Would you like to erase all the existent data related to the parent in this form?"),
                                         QMessageBox::Yes | QMessageBox::No) == QMessageBox::No){
                       return;
         }

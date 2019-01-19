@@ -55,7 +55,7 @@ frmManageClass::~frmManageClass()
 void frmManageClass::resetNewClass(){
     QMessageBox confirmation;
     confirmation.setWindowTitle(tr("Reset confirmation | SmartClass"));
-    confirmation.setText(tr("You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you steel want to proceed?"));
+    confirmation.setText(tr("You are going to erase all the data that you have already inserted/modified. This action cannot be undone. Do you still want to proceed?"));
     confirmation.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     if (confirmation.exec() == QMessageBox::Yes){
         if (CURRENT_ROLE == Create){
@@ -77,7 +77,7 @@ void frmManageClass::resetNewClass(){
 }
 
 void frmManageClass::saveNewClass(){
-    QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data is either inconsistent or inexistent."
+    QString errorMsg = tr("Unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
                           " Please, fix the folowing issues before trying to save again:\n");
     bool error = false, warning = false;
 
@@ -111,7 +111,7 @@ void frmManageClass::saveNewClass(){
     }
 
     if (error){
-        QMessageBox::critical(this, tr("Critical | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::critical(NULL, tr("Critical | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
@@ -124,7 +124,7 @@ void frmManageClass::saveNewClass(){
         warning = true;
     }
 
-    if (warning) QMessageBox::warning(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
+    if (warning) QMessageBox::warning(NULL, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
 
     QStringList dayNTime;
     for (int i = 0; i < ui->listDaysAndTime->count(); ++i) dayNTime << ui->listDaysAndTime->item(i)->text();
@@ -149,7 +149,7 @@ void frmManageClass::saveNewClass(){
     if (CURRENT_ROLE != frmManageClass::Edit)
         if (myDB->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
                             columsN, dataN)){
-            QMessageBox::information(this, tr("Warning | SmartClass"), tr("There is another course with the same name, class, days, time and beginning date registered. Please, check it before continuing."), QMessageBox::Ok, QMessageBox::Ok);
+            QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("There is another course with the same name, class, days, time and beginning date registered. Please, check it before continuing."), QMessageBox::Ok, QMessageBox::NoButton);
             return;
         }
 
@@ -159,7 +159,7 @@ void frmManageClass::saveNewClass(){
                              COURSE_ID,
                              SmartClassGlobal::getTableAliases(SmartClassGlobal::COURSEDETAILS).mid(1),
                              newCData))
-            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to update the course details."
+            QMessageBox::critical(NULL, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to update the course details."
                                                                         "\nHere are the technical details of what happened: %1."
                                                                         "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close this form)!").arg(myDB->lastError().text()),
                                     QMessageBox::Ok, QMessageBox::NoButton);
@@ -171,7 +171,7 @@ void frmManageClass::saveNewClass(){
     else {
         if (!myDB->insertRow(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS),
                              coursesTable.mid(1), newCData)){
-            QMessageBox::critical(this, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to register the course details."
+            QMessageBox::critical(NULL, tr("Critical | SmartClass"), tr("Unfortunately an error has occured while we tried to register the course details."
                                                                         "\nHere are the technical details of what happened: %1."
                                                                         "\nWe suggest you to try again after the problem has been resolved (You will not lose any data until you close this form)!").arg(myDB->lastError().text()),
                                     QMessageBox::Ok, QMessageBox::NoButton);
@@ -183,8 +183,8 @@ void frmManageClass::saveNewClass(){
                                                     columsN, dataN);
         if (newCourseD.size())
             newIndex = newCourseD.at(0).toLongLong();
-        else QMessageBox::warning(this, tr("Warning | SmartClass"), tr("A new course has been created successfuly. However, we could not retrieve its new ID."
-                                                                        "\nAlthough the application continues working, we strongly recommend you to restart it, since the new index may not correspond to the recently created course."
+        else QMessageBox::warning(NULL, tr("Warning | SmartClass"), tr("A new course has been created successfuly. However, we could not retrieve its new ID."
+                                                                        "\nAlthough the application may continue working, we strongly recommend you to restart it, since the new index may not correspond to the recently created course."
                                                                         "\nHere are the technical details of what happened: %1.").arg(myDB->lastError().text()),
                                      QMessageBox::Ok, QMessageBox::NoButton);
 
@@ -211,7 +211,7 @@ void frmManageClass::applyCourseData(){
 
 void frmManageClass::addDayNTime(){
     bool error = false;
-    QString errorMsg = tr("Well, unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
+    QString errorMsg = tr("Unfortunately we cannot proceed. Some data are either inconsistent or inexistent."
                           " Please, fix the folowing issues before trying to add the day and the time:\n");
 
     if (ui->edtBegin->time().toString("HH:mm:ss") == ui->edtEnd->time().toString("HH:mm:ss")){
@@ -232,7 +232,7 @@ void frmManageClass::addDayNTime(){
             }
 
     if (error){
-        QMessageBox::information(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
         return;
     }
 

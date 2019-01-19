@@ -108,7 +108,7 @@ void frmSettings::retrieveSettings(){
             if (gSettings[0][1].isValid() && !gSettings[0][1].isNull())
                 ui->edtContractText->setPlainText(gSettings[0][1].toString());
             else ui->edtContractText->setPlainText(tr("I, %1, owner of the ID %2 and CPG %3,"
-                                                      " hereby confirm that I am enrolling my son/daugther %4 on the following course:"
+                                                      " hereby confirm that I am enrolling %4, who is under my tutelage, on the following course:"
                                                       "\n"
                                                       "\n - %5."
                                                       "\n"
@@ -147,7 +147,7 @@ void frmSettings::retrieveSettings(){
         programSettings.beginGroup("external tools");
         ui->cbUseExternalProgram->setChecked(programSettings.value("use external tool", false).toBool());
         ui->edtExternalProgramPath->setText(programSettings.value("program path", "").toString());
-        ui->edtClArgs->setPlainText(programSettings.value("command", tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course  $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_address $p_cost $p_discount $p_installments")).toString());
+        ui->edtClArgs->setPlainText(programSettings.value("command", tr("$prog_path $s_name $s_birthday $s_id $s_school $s_experimental_course $s_experimental_date $s_parent $p_telephone $p_mobile $p_email $p_id $p_cpg $s_course $p_address $p_cost $p_discount $p_installments")).toString());
         programSettings.endGroup();
     }
     if (programSettings.childGroups().contains("dbinfo")){
@@ -167,7 +167,7 @@ void frmSettings::retrieveSettings(){
 }
 
 void frmSettings::resetSettings(){
-    if (QMessageBox::question(this, tr("Confirmation | SmartClass"), tr("You are going to reset the settings to the previously saved"
+    if (QMessageBox::question(NULL, tr("Confirmation | SmartClass"), tr("You are going to reset the settings to the previously saved"
                                                                         " state.\nAre you sure?"), QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::Yes){
         retrieveSettings();
@@ -219,7 +219,7 @@ void frmSettings::saveOptions(){
     programSettings.endGroup();
 
     if (langSettings != ui->cbLanguageSelector->currentIndex())
-        QMessageBox::information(this,
+        QMessageBox::information(NULL,
                                  tr("Info | SmartClass"),
                                  tr("You have to restart SmartClass in order to the language change take effect!"),
                                  QMessageBox::Ok, QMessageBox::NoButton);
@@ -263,7 +263,7 @@ void frmSettings::addSchedule(){
     QString time = ui->edtSchedule->time().toString("HH:mm");
     for (int i = 0; i < ui->listSchedules->count(); ++i)
         if (ui->listSchedules->item(i)->text() == time){
-            QMessageBox::warning(this, tr("Warning | SmartClass"), tr("Sorry, but you cannot schedule two backups to the same period."), QMessageBox::Ok);
+            QMessageBox::warning(NULL, tr("Warning | SmartClass"), tr("Sorry, but you cannot schedule two backups to the same period."), QMessageBox::Ok);
             return;
         }
     ui->listSchedules->addItem(time);
@@ -291,8 +291,8 @@ void frmSettings::removeSchedule(){
 }
 
 void frmSettings::openExternalProgramHelper(){
-    QMessageBox::information(this, tr("External contract program helper | SmartClass"),
-                             tr("The following box is the field containing the command line command which will be executed (it supports prefix and sulfix words).\n"
+    QMessageBox::information(NULL, tr("External contract program helper | SmartClass"),
+                             tr("The following box is the field containing the command line command which will be executed (it supports prefix and suffix words).\n"
                                 "This is a list of the special supported arguments:\n\n\n"
                                 "$prog_path: Path to the external program/tool.\n"
                                 "$s_name: Name of the student.\n"
@@ -312,6 +312,6 @@ void frmSettings::openExternalProgramHelper(){
                                 "$p_cost: Cost of the selected course.\n"
                                 "$p_discount: Discount of the selected course (percentage).\n"
                                 "$p_installments: Installments of the selected course (number).\n\n"
-                                "Be careful when running scripts. The program/command is always the first one in the command line."),
+                                "WARNING: Be careful when running scripts. The program/command is always the first one in the command line."),
                              QMessageBox::Ok, QMessageBox::NoButton);
 }

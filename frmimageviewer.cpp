@@ -52,6 +52,15 @@ void frmImageViewer::openImage(){
     dialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).first());
 
     if (dialog.exec()){
+        if (SmartClassGlobal::databaseType() == DBManager::MYSQL ||
+                QFileInfo(dialog.selectedFiles().at(0)).size() > 16777215){
+            QMessageBox::warning(NULL, tr("Warning | SmartClass"),
+                                 tr("Unfortunately it is not possible to open the selected image, since"
+                                    "the current database system does not support its size."),
+                                 QMessageBox::Ok, QMessageBox::NoButton);
+            return;
+        }
+
         QFile imageFile(dialog.selectedFiles().at(0));
         if (imageFile.open(QIODevice::ReadOnly)){
             QPixmap image = QPixmap::fromImage(QImage::fromData(imageFile.readAll()));
@@ -61,7 +70,7 @@ void frmImageViewer::openImage(){
                 currentImage = image;
             }
             else {
-                ui->lblPicture->setText(tr("There is no picture to display here!"));
+                ui->lblPicture->setText(tr("There is no image to display here!"));
                 ui->lblPicture->setPixmap(QPixmap());
                 currentImage = QPixmap();
             }
@@ -73,7 +82,7 @@ void frmImageViewer::openImage(){
 void frmImageViewer::removeImage(){
     ui->lblPicture->clear();
     ui->lblPicture->setPixmap(QPixmap());
-    ui->lblPicture->setText(tr("There is no picture to display here!"));
+    ui->lblPicture->setText(tr("There is no image to display here!"));
     ui->lblPicture->update();
 
     currentImage = QPixmap();

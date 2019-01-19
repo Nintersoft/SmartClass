@@ -97,11 +97,11 @@ PrintPreviewForm::PrintPreviewForm(QWidget *parent, const QString &text, const Q
 
     parentName = new QLabel(this);
     parentName->setText("\n"
-                      "\n"
-                      "\n"
-                      "\n"
-                      "______________________________________________________\n"
-                      + dateStr);
+                        "\n"
+                        "\n"
+                        "\n"
+                        "______________________________________________________\n"
+                        + dateStr);
     parentName->setFont(defaultFont);
     parentName->setWordWrap(true);
 
@@ -170,12 +170,12 @@ PrintPreviewForm::PrintPreviewForm(QWidget *parent, const QStringList &content, 
 
         parentName = new QLabel(this);
         parentName->setText("\n"
-                          "\n"
-                          "\n"
-                          "\n"
-                          "______________________________________________________\n"
-                          + dateStr
-                          + content[1] + "\n");
+                            "\n"
+                            "\n"
+                            "\n"
+                            "______________________________________________________\n"
+                            + dateStr
+                            + content[1] + "\n");
         parentName->setFont(defaultFont);
         parentName->setWordWrap(true);
 

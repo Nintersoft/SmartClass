@@ -145,7 +145,7 @@ frmMain::~frmMain()
 
 void frmMain::closeEvent(QCloseEvent *event){
     if (upgradeAvailable){
-        QMessageBox::information(this, tr("Upgrade | SmartClass"), tr("The upgrade process is going to start as soon as you dismiss this message."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Upgrade | SmartClass"), tr("The upgrade process is going to start as soon as you dismiss this message."), QMessageBox::Ok);
         QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::homePath() + "/AppData/Roaming/Nintersoft/SmartClass/Downloads/SmartClass.exe"));
     }
     qApp->exit();
@@ -285,7 +285,7 @@ void frmMain::setSessionRole(const QVariantList &userInfo){
 
 void frmMain::logOut(){
     QMessageBox confirmation;
-    confirmation.setText(tr("You are going to disconnect from this session. Are you sure?"));
+    confirmation.setText(tr("You are going to be disconnected from this session. Are you sure?"));
     confirmation.setWindowTitle(tr("Confirmation | SmartClass"));
     confirmation.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     if (confirmation.exec() == QMessageBox::Yes){
@@ -325,11 +325,11 @@ void frmMain::openStudentManager(){
     QString senderName = sender()->objectName();
     if (senderName == "btAddStudent") manageStudent = new frmManageStudent(NULL, frmManageStudent::Create, -1);
     else if (ui->tableStudents->currentRow() < 0){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
         return;
     }
     else if (ui->tableStudents->isHidden()){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of students must be selected in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but the table of students must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
     else if (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR)
@@ -357,11 +357,11 @@ void frmMain::openClassesManager(){
     QString senderName = sender()->objectName();
     if (senderName == "btAddCourse") manageClass = new frmManageClass(NULL, frmManageClass::Create, -1);
     else if (ui->tableCourses->currentRow() < 0){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the courses table in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the courses table in order to execute this command."), QMessageBox::Ok);
         return;
     }
     else if (ui->tableCourses->isHidden()){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of courses must be selected in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but the table of courses must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
     else if (sessionRole == SmartClassGlobal::ADMIN || sessionRole == SmartClassGlobal::EDITOR)
@@ -387,11 +387,11 @@ void frmMain::openUserManager(){
 
 void frmMain::openContractForm(){
     if (ui->tableStudents->currentRow() < 0){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
         return;
     }
     else if (ui->tableStudents->isHidden()){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but the table of students must be selected in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but the table of students must be selected in order to execute this command."), QMessageBox::Ok);
         return;
     }
 
@@ -478,7 +478,7 @@ void frmMain::setUIToRole(){
 
     if (enable) return;
 
-    QMessageBox::information(this, tr("Information | SmartClass"), tr("Seems that you do not have enough privileges to acess any data yet. Plase, contact an administrator in order to upgrade your permissions."), QMessageBox::Ok);
+    QMessageBox::information(NULL, tr("Information | SmartClass"), tr("Seems that you do not have enough privilege to acess any data yet. Plase, contact an administrator in order to upgrade your permissions."), QMessageBox::Ok);
 }
 
 void frmMain::getStudents(){
@@ -702,7 +702,7 @@ void frmMain::searchPrevious(){
             return;
         }
     }
-    QMessageBox::information(this, tr("Search results | SmartClass"), tr("The search has reached the top of the table without any match.\nPlease, try again with different terms or different filters."), QMessageBox::Ok);
+    QMessageBox::information(NULL, tr("Search results | SmartClass"), tr("The search has reached the top of the table without any match.\nPlease, try again with different terms or different filters."), QMessageBox::Ok);
 }
 
 void frmMain::searchNext(){
@@ -716,15 +716,15 @@ void frmMain::searchNext(){
             return;
         }
     }
-    QMessageBox::information(this, tr("Search results | SmartClass"), tr("The search has reached the bottom of the table without any match.\nPlease, try again with different terms or different filters."), QMessageBox::Ok);
+    QMessageBox::information(NULL, tr("Search results | SmartClass"), tr("The search has reached the bottom of the table without any match.\nPlease, try again with different terms or different filters."), QMessageBox::Ok);
 }
 
 void frmMain::removeStudent(){
     if (ui->tableStudents->currentRow() < 0 || ui->tableStudents->rowCount() < 1 || ui->tableStudents->isHidden()){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
         return;
     }
-    if (QMessageBox::question(this, tr("Confirmation | SmartClass"),
+    if (QMessageBox::question(NULL, tr("Confirmation | SmartClass"),
                               tr("You are going to erase %1 from the database.\nThis action cannot be undone. Continue?").arg(ui->tableStudents->item(ui->tableStudents->currentRow(), 0)->text()),
                               QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::No) return;
@@ -762,10 +762,10 @@ void frmMain::removeStudent(){
 
 void frmMain::removeCourse(){
     if (ui->tableCourses->currentRow() < 0 || ui->tableCourses->rowCount() < 1 || ui->tableCourses->isHidden()){
-        QMessageBox::information(this, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the students table in order to execute this command."), QMessageBox::Ok);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), tr("Sorry, but you have to select a row in the courses table in order to execute this command."), QMessageBox::Ok);
         return;
     }
-    if (QMessageBox::question(this, tr("Confirmation | SmartClass"),
+    if (QMessageBox::question(NULL, tr("Confirmation | SmartClass"),
                               tr("You are going to erase %1 from the database.\nThis action cannot be undone. Continue?").arg(ui->tableCourses->item(ui->tableCourses->currentRow(), 0)->text()),
                               QMessageBox::Yes, QMessageBox::No)
             == QMessageBox::No) return;
@@ -787,7 +787,7 @@ void frmMain::removeCourse(){
 
 void frmMain::restoreDataBase(){
     if (SmartClassGlobal::databaseType() != DBManager::SQLITE){
-        QMessageBox::information(this, tr("Info | SmartClass"),
+        QMessageBox::information(NULL, tr("Info | SmartClass"),
                                  tr("Unfortunately you cannot restore the database from a file, since you are not using an SQLITE database."
                                     "\nPlease, use either the import tool or restore the dumped file in your host in order to restore your DB."),
                                  QMessageBox::Ok);
@@ -796,11 +796,11 @@ void frmMain::restoreDataBase(){
 
     QFileDialog restoreDlg;
     restoreDlg.setWindowTitle(tr("Select database file | SmartClass"));
-    restoreDlg.setNameFilters(QStringList() << "SQLite database file (*.db *.sqlite3)");
+    restoreDlg.setNameFilters(QStringList() << tr("SQLite database file (*.db *.sqlite3)"));
     restoreDlg.setAcceptMode(QFileDialog::AcceptOpen);
     restoreDlg.setDirectory(QDir::homePath());
     if (restoreDlg.exec()){
-        if (QMessageBox::question(this, tr("Confirmation | SmartClass"), tr("You are going to replace the current database by a new one. This may corrupt your database system."
+        if (QMessageBox::question(NULL, tr("Confirmation | SmartClass"), tr("You are going to replace the current database by a new one. This may corrupt your database system."
                                                                             "\nThis action cannot be undone. This application is going to restart after the procedure is complete."
                                                                             "\nDo you still want to proceed?"),
                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes){
@@ -822,7 +822,7 @@ void frmMain::restoreDataBase(){
             QFile::remove(SmartClassGlobal::getDBPath());
             QFile::copy(restoreDlg.selectedFiles().at(0), SmartClassGlobal::getDBPath());
 
-            QMessageBox::information(this, tr("Information | SmartClass"), tr("This application is about to restart!"),
+            QMessageBox::information(NULL, tr("Information | SmartClass"), tr("This application is about to restart!"),
                                      QMessageBox::Ok);
             QDesktopServices::openUrl(QUrl(QCoreApplication::applicationFilePath()));
             qApp->quit();
@@ -832,9 +832,9 @@ void frmMain::restoreDataBase(){
 
 void frmMain::backupDataBase(){
     if (SmartClassGlobal::databaseType() != DBManager::SQLITE){
-        QMessageBox::information(this, tr("Info | SmartClass"),
+        QMessageBox::information(NULL, tr("Info | SmartClass"),
                                  tr("Unfortunately you cannot backup the database to a file, since you are not using an SQLITE database."
-                                    "\nPlease, use either the import tool or dump the database in the host in order to restore your DB."),
+                                    "\nPlease, use either the export tool or dump the database in the host in order to back up your DB."),
                                  QMessageBox::Ok);
         return;
     }
@@ -867,13 +867,14 @@ void frmMain::backupDataBase(){
     if (!myDB->open())
         QMessageBox::critical(NULL, tr("Critical error | SmartClass"),
                               tr("The connection with the database could not be restored."
-                                 "\nPlease, restart the program in order to have access its functionalities."),
+                                 "\nPlease, restart the program in order to have access its functionalities."
+                                 "\nDetails %1.").arg(myDB->lastError().text()),
                               QMessageBox::Ok, QMessageBox::NoButton);
 }
 
 void frmMain::removeDataBase(){
     if  (deleteDBStatus == 0){
-        if (QMessageBox::question(this, tr("Delete database confirmation | SmartClass"),
+        if (QMessageBox::question(NULL, tr("Delete database confirmation | SmartClass"),
                                   tr("Would you like to reset the database?"
                                      "\nThis is going to erase all the contents in your database (even your login information)."
                                      "\nIf you accept, you are going to be logged out and you will have to choose this option again."),
@@ -919,9 +920,9 @@ void frmMain::removeDataBase(){
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENT));
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLE));
             myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::COURSEDETAILS));
-            myDB->clearTable(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
-            myDB->clearTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS));
-            myDB->clearTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::SETTINGS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::USERS));
+            myDB->dropTable(SmartClassGlobal::getTableName(SmartClassGlobal::ACTIVECONNECTIONS));
             myDB->close();
 
             settings->clear();
@@ -960,7 +961,7 @@ void frmMain::removeAppSettings(){
     uninstall.setIcon(QMessageBox::Warning);
     uninstall.setText(tr("Are you facing any trouble with SmartClass? This tool may be helpful for you. We have three options currently available:\n"
                          "Clear Settings : Clear the initialization/standard settings and restart the application as a clean installation (Note that this option has no effect over the database).\n"
-                         "Uninstall : Performs a clean uninstall by removing any settings and files which may rest after the uninstallation process (If you are using SQLite the database may be removed during the process of uninstallation. Do not forget to make a backup before uninstalling!).\n"
+                         "Uninstall : Performs a clean uninstall by removing any settings and files which may rest after the uninstallation process (If you are using SQLite, the database may be removed during the process of uninstallation. Do not forget to make a backup before uninstalling!).\n"
                          "Cancel : Cancel the current operation."));
     uninstall.setStandardButtons(QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::Cancel);
     uninstall.setButtonText(QMessageBox::Yes, tr("Clear Settings"));
@@ -987,7 +988,7 @@ void frmMain::removeAppSettings(){
         QApplication::exit(EXIT_SUCCESS);
     }
 
-    QMessageBox::information(this, tr("Process complete | SmartClass"),
+    QMessageBox::information(NULL, tr("Process complete | SmartClass"),
                              tr("The process of uninstallation is going to continue right after you dismiss this message!"), QMessageBox::Ok);
     QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/unins000.exe"));
     QApplication::exit(EXIT_SUCCESS);

@@ -156,7 +156,7 @@ QVariantList frmImportExportDB::stringToVariant(const QStringList &sList, SmartC
 }
 
 void frmImportExportDB::importDB(){
-    if (QMessageBox::question(this, tr("Confirmation | SmartClass"),
+    if (QMessageBox::question(NULL, tr("Confirmation | SmartClass"),
                               tr("You are about to import the data contained on the specified files to the database.\n"
                                  "This action cannot be undone. So, DO NOT PROCEED WITHOUT AN UPDATED BACKUP!\n"
                                  "It is also important to state that you should not abort this operation, under any circumstances (DO NOT close the application or shut down the computer).\n"
@@ -166,7 +166,7 @@ void frmImportExportDB::importDB(){
     }
 
     if (ui->cbCheckForErrors->isChecked()) importCheckingErrors();
-    else if (QMessageBox::warning(this, tr("Warning | SmartClass"),
+    else if (QMessageBox::warning(NULL, tr("Warning | SmartClass"),
                                   tr("You have choosen to import the data without cheking for possible errors."
                                      "\nAlthough it becomes the operation a bit faster, it also makes harder to discover where there is an error, if any."),
                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes){
@@ -205,7 +205,7 @@ void frmImportExportDB::importCheckingErrors(){
         if (!paths.at(i).isEmpty()){
             if (!QFile::exists(paths.at(i))){
                 QString argument = QString(tables.at(i)).split("_").at(1);
-                abort = QMessageBox::critical(this, tr("Error | SmartClass"),
+                abort = QMessageBox::critical(NULL, tr("Error | SmartClass"),
                                               tr("The path to the %1 file does not exists. This file will be skipped during the process of importation."
                                               "\nContinue?").arg(argument),
                                               QMessageBox::Yes, QMessageBox::Abort) == QMessageBox::Abort;
@@ -215,7 +215,7 @@ void frmImportExportDB::importCheckingErrors(){
                 files[i].setFileName(paths.at(i));
                 if (!files[i].open(QIODevice::ReadOnly)){
                     QString argument = QString(tables.at(i)).split("_").at(1);
-                    abort = QMessageBox::critical(this, tr("Error | SmartClass"),
+                    abort = QMessageBox::critical(NULL, tr("Error | SmartClass"),
                                                   tr("The file \"%1\" could not be opened."
                                                   "\nContinue?").arg(argument),
                                                   QMessageBox::Yes, QMessageBox::Abort) == QMessageBox::Abort;
@@ -236,7 +236,7 @@ void frmImportExportDB::importCheckingErrors(){
         }
 
         if (abort){
-            QMessageBox::information(this, tr("Info | SmartClass"),
+            QMessageBox::information(NULL, tr("Info | SmartClass"),
                                      tr("The operation has been aborted successfully!"),
                                      QMessageBox::Ok);
             return;
@@ -334,9 +334,9 @@ void frmImportExportDB::importCheckingErrors(){
 
         if (!QFile::exists(paths.at(6))){
             QString argument = QString(tables.at(6)).split("_").at(1);
-            QMessageBox::critical(this, tr("Error | SmartClass"),
-                                                  tr("The path to the file %1 does not exists. This file has been skipped during the process of importation.").arg(argument),
-                                                  QMessageBox::Ok, QMessageBox::NoButton);
+            QMessageBox::critical(NULL, tr("Error | SmartClass"),
+                                  tr("The path to the file %1 does not exists. This file has been skipped during the process of importation.").arg(argument),
+                                  QMessageBox::Ok, QMessageBox::NoButton);
             importErrors += tr("The path to the file %1 does not exists. This file has been skipped during the process of importation.").arg(argument);
         }
         else {
@@ -380,7 +380,7 @@ void frmImportExportDB::importCheckingErrors(){
             }
             else {
                 QString argument = QString(tables.at(6)).split("_").at(1);
-                QMessageBox::information(this, tr("Error | SmartClass"),
+                QMessageBox::information(NULL, tr("Error | SmartClass"),
                                          tr("The file \"%1\" could not be opened."
                                             " This file has been skipped during the process of importation.").arg(argument),
                                          QMessageBox::Ok, QMessageBox::NoButton);
@@ -505,7 +505,7 @@ void frmImportExportDB::importCheckingErrors(){
         }
     }
 
-    QMessageBox::information(this, tr("Errors | SmartClass"),
+    QMessageBox::information(NULL, tr("Errors | SmartClass"),
                              tr("The process of importation has finished successfully. Please, refer to the log files in order to check if there is any important occurrence.\n"
                                 "This application is about to restart!"),
                              QMessageBox::Ok, QMessageBox::NoButton);
@@ -694,7 +694,7 @@ void frmImportExportDB::importWithoutCheckErrors(){
             }
         }
     }
-    QMessageBox::information(this, tr("Errors | SmartClass"),
+    QMessageBox::information(NULL, tr("Errors | SmartClass"),
                              tr("The process of importation has finished successfully.\n"
                                 "This application is about to restart!"),
                              QMessageBox::Ok, QMessageBox::NoButton);
@@ -766,13 +766,13 @@ void frmImportExportDB::exportDB(){
     }
 
     if (error){
-        QMessageBox::information(this, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
+        QMessageBox::information(NULL, tr("Warning | SmartClass"), errorMsg, QMessageBox::Ok, QMessageBox::NoButton);
         return;
     }
 
     QDir saveDir(exportDir);
     if (!saveDir.mkpath(exportDir)){
-        QMessageBox::critical(this, tr("Error | SmartClass"), tr("It was not possible to create the backup directory. Does this path requires special permissions?"), QMessageBox::Ok, QMessageBox::Ok);
+        QMessageBox::critical(NULL, tr("Error | SmartClass"), tr("It was not possible to create the backup directory. Does this path requires special permissions?"), QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
@@ -998,8 +998,8 @@ void frmImportExportDB::exportDB(){
                     }
                 }
             }
-            else QMessageBox::warning(this, tr("Error | SmartClass"),
-                                      tr("It was not possible to create the folder which will contain the images related to the parents"),
+            else QMessageBox::warning(NULL, tr("Error | SmartClass"),
+                                      tr("It was not possible to create the folder which will contain the images related to the responsibles"),
                                       QMessageBox::Ok, QMessageBox::NoButton);
         }
 
@@ -1031,7 +1031,7 @@ void frmImportExportDB::exportDB(){
                     }
                 }
             }
-            else QMessageBox::warning(this, tr("Error | SmartClass"),
+            else QMessageBox::warning(NULL, tr("Error | SmartClass"),
                                       tr("It was not possible to create the folder which will contain the images related to the students"),
                                       QMessageBox::Ok, QMessageBox::NoButton);
         }
@@ -1052,7 +1052,7 @@ void frmImportExportDB::exportDB(){
                     }
                 }
             }
-            else QMessageBox::warning(this, tr("Error | SmartClass"),
+            else QMessageBox::warning(NULL, tr("Error | SmartClass"),
                                       tr("It was not possible to create the folder which will contain the company logo"),
                                       QMessageBox::Ok, QMessageBox::NoButton);
         }
