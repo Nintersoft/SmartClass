@@ -52,7 +52,7 @@ void frmImageViewer::openImage(){
     dialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).first());
 
     if (dialog.exec()){
-        if (SmartClassGlobal::databaseType() == DBManager::MYSQL ||
+        if (SmartClassGlobal::databaseType() == DBManager::MYSQL &&
                 QFileInfo(dialog.selectedFiles().at(0)).size() > 16777215){
             QMessageBox::warning(NULL, tr("Warning | SmartClass"),
                                  tr("Unfortunately it is not possible to open the selected image, since"

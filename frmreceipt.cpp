@@ -120,8 +120,8 @@ void frmReceipt::generateTable(){
         totalIntegral += (price / installments);
         totalWDiscount += ((price / installments) * (1 - (discount/100.0f)));
 
-        ui->tablePricing->setItem(currentRow, 3, new QTableWidgetItem(QString("%1").arg((double)((price / installments) * (1 - (discount/100.0f))), 0, 'f', 2)));
-        ui->tablePricing->setItem(currentRow, 4, new QTableWidgetItem(QString("%1").arg((price / installments), 0, 'f', 2)));
+        ui->tablePricing->setItem(currentRow, 3, new QTableWidgetItem(QString("%L1").arg((double)((price / installments) * (1 - (discount/100.0f))), 0, 'f', 2)));
+        ui->tablePricing->setItem(currentRow, 4, new QTableWidgetItem(QString("%L1").arg((price / installments), 0, 'f', 2)));
 
         ui->tablePricing->item(currentRow, 0)->setToolTip(ui->tablePricing->item(currentRow, 0)->text());
         ui->tablePricing->item(currentRow, 1)->setToolTip(ui->tablePricing->item(currentRow, 1)->text());

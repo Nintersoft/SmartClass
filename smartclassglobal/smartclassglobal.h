@@ -94,12 +94,12 @@ public:
         QStringList tableStructure;
         switch (table) {
             case USERS:
-                tableStructure << id << "username TEXT NOT NULL UNIQUE" << "name TEXT NOT NULL"
+                tableStructure << id << "username VARCHAR(255) NOT NULL UNIQUE" << "name TEXT NOT NULL"
                                 << "salt TEXT NOT NULL" << "hash TEXT NOT NULL" << "question TEXT"
                                 << "answerSalt TEXT NOT NULL" << "answerHash TEXT NOT NULL" << "role INTEGER";
                 break;
             case STUDENT:
-                tableStructure << id << "name TEXT NOT NULL" << (isSQLite ? "rID INTEGER" : "rID INTEGER(64)")
+                tableStructure << id << "name TEXT NOT NULL" << (isSQLite ? "rID INTEGER" : "rID INTEGER(64) UNSIGNED")
                                 << "birthday DATE" << "studentID TEXT" << "school TEXT" << "observations TEXT"
                                 << "experimentalClass TEXT" << "experimentalClassDate DATETIME"
                                 << "experimentalClassObservations TEXT";
@@ -110,11 +110,11 @@ public:
                                 << "meeting TEXT" << "address TEXT";
                 break;
             case STUDENTIMAGES:
-                tableStructure << (isSQLite ? "id INTEGER" : "id INTEGER(64)") << ("picture " + blobType)
+                tableStructure << (isSQLite ? "id INTEGER" : "id INTEGER(64) UNSIGNED") << ("picture " + blobType)
                                 << ("studentID " + blobType);
                 break;
             case RESPONSIBLEIMAGES:
-                tableStructure << (isSQLite ? "id INTEGER" : "id INTEGER(64)") << ("responsibleID " + blobType)
+                tableStructure << (isSQLite ? "id INTEGER" : "id INTEGER(64) UNSIGNED") << ("responsibleID " + blobType)
                                 << ("responsibleCPG " + blobType) << ("addressComprobation " + blobType);
                 break;
             case COURSEDETAILS:
@@ -124,7 +124,8 @@ public:
                                 << "price DOUBLE";
                 break;
             case PAYMENTDETAILS:
-                tableStructure << (isSQLite ? "sid INTEGER" : "sid INTEGER(64)") << (isSQLite ? "cid INTEGER" : "cid INTEGER(64)")
+                tableStructure << (isSQLite ? "sid INTEGER" : "sid INTEGER(64) UNSIGNED")
+                                << (isSQLite ? "cid INTEGER" : "cid INTEGER(64) UNSIGNED")
                                 << "discount DOUBLE" << "beginningDate DATE" << "installments INTEGER";
                 break;
             case SETTINGS:
@@ -192,17 +193,17 @@ public:
                                 tablePrefix() + getTableName(RESPONSIBLE) + "(id)";
             break;
         case STUDENTIMAGES:
-            tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (id) REFERENCES " +
+            tableConstraints << "CONSTRAINT FK_SIid FOREIGN KEY (id) REFERENCES " +
                                 tablePrefix() + getTableName(STUDENT) + "(id)";
             break;
         case RESPONSIBLEIMAGES:
-            tableConstraints << "CONSTRAINT FK_Rid FOREIGN KEY (id) REFERENCES " +
+            tableConstraints << "CONSTRAINT FK_RIid FOREIGN KEY (id) REFERENCES " +
                                 tablePrefix() + getTableName(RESPONSIBLE) + "(id)";
             break;
         case PAYMENTDETAILS:
-            tableConstraints << "CONSTRAINT FK_Sid FOREIGN KEY (sid) REFERENCES " +
+            tableConstraints << "CONSTRAINT FK_SPid FOREIGN KEY (sid) REFERENCES " +
                                 tablePrefix() + getTableName(STUDENT) + "(id)";
-            tableConstraints << "CONSTRAINT FK_Cid FOREIGN KEY (cid) REFERENCES " +
+            tableConstraints << "CONSTRAINT FK_CPid FOREIGN KEY (cid) REFERENCES " +
                                 tablePrefix() + getTableName(COURSEDETAILS) + "(id)";
             tableConstraints << "CONSTRAINT PK_Payment PRIMARY KEY (sid, cid)";
             break;

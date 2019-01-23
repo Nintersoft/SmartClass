@@ -1099,6 +1099,8 @@ void frmMain::changeEvent(QEvent *event){
 }
 
 void frmMain::setBackupSettings(){
+    if (SmartClassGlobal::databaseType() == DBManager::MYSQL) return;
+
     QSettings programSettings("Nintersoft", "SmartClass");
     if (programSettings.childGroups().contains("backup settings")){
         programSettings.beginGroup("backup settings");

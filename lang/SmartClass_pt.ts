@@ -36,7 +36,7 @@
         <location filename="../printpreviewform.cpp" line="168"/>
         <source>dddd, dd of MMMM of yyyy
 </source>
-        <translation>dddd, dd de MMMM de yyyy
+        <translation>dddd, dd &apos;de&apos; MMMM &apos;de&apos; yyyy
 </translation>
     </message>
     <message>
@@ -1425,7 +1425,7 @@ Esta aplicação está prestes a ser reiniciada!</translation>
     <message>
         <location filename="../frmlogin.cpp" line="253"/>
         <source>Incorrect answer.</source>
-        <translation>Senha incorreta.</translation>
+        <translation>Resposta incorreta.</translation>
     </message>
 </context>
 <context>

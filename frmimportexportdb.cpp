@@ -424,7 +424,7 @@ void frmImportExportDB::importCheckingErrors(){
                 if (QDir(parentPath).exists()){
                     for (int k = 1; k < tableSchema.length(); ++k){
                         QString imagePath = parentPath + tableSchema.at(k) + ".png";
-                        newData << (QFile::exists(imagePath) ? QPixmap(imagePath) : QVariant());
+                        newData << (QFile::exists(imagePath) ? DBManager::pixmapToVariant(QPixmap(imagePath)) : QVariant());
                     }
 
                     if (sIExists){
@@ -477,7 +477,7 @@ void frmImportExportDB::importCheckingErrors(){
                 if (QDir(parentPath).exists()){
                     for (int k = 1; k < tableSchema.length(); ++k){
                         QString imagePath = parentPath + tableSchema.at(k) + ".png";
-                        newData << (QFile::exists(imagePath) ? QPixmap(imagePath) : QVariant());
+                        newData << (QFile::exists(imagePath) ? DBManager::pixmapToVariant(QPixmap(imagePath)) : QVariant());
                     }
 
                     if (sIExists){
@@ -645,7 +645,7 @@ void frmImportExportDB::importWithoutCheckErrors(){
                 if (QDir(parentPath).exists()){
                     for (int k = 1; k < tableSchema.length(); ++k){
                         QString imagePath = parentPath + tableSchema.at(k) + ".png";
-                        newData << (QFile::exists(imagePath) ? QPixmap(imagePath) : QVariant());
+                        newData << (QFile::exists(imagePath) ? DBManager::pixmapToVariant(QPixmap(imagePath)) : QVariant());
                     }
 
                     if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::STUDENTIMAGES),
@@ -679,7 +679,7 @@ void frmImportExportDB::importWithoutCheckErrors(){
                 if (QDir(parentPath).exists()){
                     for (int k = 1; k < tableSchema.length(); ++k){
                         QString imagePath = parentPath + tableSchema.at(k) + ".png";
-                        newData << (QFile::exists(imagePath) ? QPixmap(imagePath) : QVariant());
+                        newData << (QFile::exists(imagePath) ? DBManager::pixmapToVariant(QPixmap(imagePath)) : QVariant());
                     }
 
                     if (db_manager->rowExists(SmartClassGlobal::getTableName(SmartClassGlobal::RESPONSIBLEIMAGES),

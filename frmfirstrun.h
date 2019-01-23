@@ -9,6 +9,7 @@
 #include <QTranslator>
 #include <QFileDialog>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QDateTime>
 #include <QHostInfo>
 #include <QSettings>
