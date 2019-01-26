@@ -70,13 +70,11 @@ void frmAbout::showLicences(){
         QMessageBox chooseLicence;
         chooseLicence.setWindowTitle("Choose licence | SmartClass");
         chooseLicence.setText("Please, choose the licence to be displayed (You must have a PDF reader in order to open the licence file).");
-        chooseLicence.setStandardButtons(QMessageBox::Ok | QMessageBox::Yes | QMessageBox::Open | QMessageBox::Cancel);
+        chooseLicence.setStandardButtons(QMessageBox::Ok | QMessageBox::Open | QMessageBox::Cancel);
         chooseLicence.setButtonText(QMessageBox::Ok, tr("Nintersoft OSL"));
-        chooseLicence.setButtonText(QMessageBox::Yes, tr("Commercial"));
         chooseLicence.setButtonText(QMessageBox::Open, tr("Privacy Policy"));
         int execValue = chooseLicence.exec();
         if (execValue == QMessageBox::Ok) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Licença de Código Aberto Nintersoft rev1.pdf")));
-        else if (execValue == QMessageBox::Yes) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Licença de Comercial Nintersoft rev1.pdf")));
         else if (execValue == QMessageBox::Open) QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Política de Privacidade SmartClass.pdf")));
     }
     else QDesktopServices::openUrl(QUrl::fromLocalFile((QCoreApplication::applicationDirPath() + "/Licença de Código Aberto Nintersoft rev1.pdf")));

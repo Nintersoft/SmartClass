@@ -154,13 +154,39 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Thanks to:&lt;/p&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:8pt;&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Mauro Mascarenhas (program developer and designer) - mauro.mascarenhas@nintersoft.com&lt;/li&gt;&lt;/ul&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This program is under Nintersoft Open Souce Code Licence. It also uses third party libraries which may be under GNU LGPL or GPLv3 licence.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Be careful when distributing the open source code and the third party resources of this program, there may be clauses which forbids the redistribution or impose some limitations on the process.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright notice: All the text and images displayed in this program are under Creative Commons Atribution-Share Alike Licence 4.0 (CC-BY-SA), unless otherwise specified.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright © Nintersoft - 2018 | All rights reserved&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Thanks to:&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:8pt;&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Mauro Mascarenhas (program developer and designer) - mauro.mascarenhas@nintersoft.com&lt;/li&gt;&lt;/ul&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This program is under Nintersoft Open Souce Code Licence. It also uses third party libraries which may be under GNU LGPL or GPLv3 licence.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Be careful when distributing the open source code and the third party resources of this program, there may be clauses which forbids the redistribution or impose some limitations on the process.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright notice: All the text and images displayed in this program are under Creative Commons Atribution-Share Alike Licence 4.0 (CC-BY-SA), unless otherwise specified.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright © Nintersoft - 2018 | All rights reserved&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Thanks to:&lt;/p&gt;
+&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; font-size:8pt;&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Mauro Mascarenhas (program developer and designer) - mauro.mascarenhas@nintersoft.com&lt;/li&gt;&lt;/ul&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This program is partialy licenced under Nintersoft Open Souce Code Licence and Nintersoft Commercial Licence (contact the developer for details). It also uses third party libraries which may be under GNU LGPL or GPLv3 licence.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Do not distribute the commercial party without authorization of the developers and be careful when distributing the open source code and the third party resources of this program, there may be clauses which forbids the redistribution or impose some limitations on the process.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright notice: All the text and images displayed in this program are under Creative Commons Atribution-Share Alike Licence 4.0 (CC-BY-SA), unless otherwise specified.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Copyright © Nintersoft - 2018 | All rights reserved&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="vanished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -204,70 +230,69 @@ p, li { white-space: pre-wrap; }
         <translation>Nintersoft OSL</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="75"/>
         <source>Commercial</source>
-        <translation>Commercial</translation>
+        <translation type="vanished">Commercial</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="76"/>
+        <location filename="../frmabout.cpp" line="75"/>
         <source>Privacy Policy</source>
         <translation>Privacy Policy</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="87"/>
+        <location filename="../frmabout.cpp" line="85"/>
         <source>Beginning upgrade process...</source>
         <translation>Beginning upgrade process...</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="116"/>
-        <location filename="../frmabout.cpp" line="131"/>
+        <location filename="../frmabout.cpp" line="114"/>
+        <location filename="../frmabout.cpp" line="129"/>
         <source>Upgrade failed | SmartClass</source>
         <translation>Upgrade failed | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="116"/>
+        <location filename="../frmabout.cpp" line="114"/>
         <source>Failed to download file: %1</source>
         <translation>Failed to download file: %1</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="131"/>
+        <location filename="../frmabout.cpp" line="129"/>
         <source>Error while opening the file which contains the repository information.</source>
         <translation>Error while opening the file which contains the repository information.</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="146"/>
+        <location filename="../frmabout.cpp" line="144"/>
         <source>Already updated | SmartClass</source>
         <translation>Already updated | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="146"/>
+        <location filename="../frmabout.cpp" line="144"/>
         <source>Congratulations, you already have the latest version of SmartClass installed in your machine!</source>
         <translation>Congratulations, you already have the latest version of SmartClass installed in your machine!</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="153"/>
+        <location filename="../frmabout.cpp" line="151"/>
         <source>Upgrade info | SmartClass</source>
         <translation>Upgrade info | SmartClass</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="153"/>
+        <location filename="../frmabout.cpp" line="151"/>
         <source>The upgrade process is going to start as soon as you quit the program.
 You can continue working, since the installer will be launched right after you close SmartClass.</source>
         <translation>The upgrade process is going to start as soon as you quit the program.
 You can continue working, since the installer will be launched right after you close SmartClass.</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="191"/>
+        <location filename="../frmabout.cpp" line="189"/>
         <source>Updating repository information...</source>
         <translation>Updating repository information...</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="192"/>
+        <location filename="../frmabout.cpp" line="190"/>
         <source>Downloading %1...</source>
         <translation>Downloading %1...</translation>
     </message>
     <message>
-        <location filename="../frmabout.cpp" line="198"/>
+        <location filename="../frmabout.cpp" line="196"/>
         <source>Upgrade process...</source>
         <translation>Upgrade process...</translation>
     </message>
@@ -1858,7 +1883,7 @@ Please, use either the export tool or dump the database in the host in order to 
     </message>
     <message>
         <location filename="../frmmain.cpp" line="868"/>
-        <location filename="../frmmain.cpp" line="1162"/>
+        <location filename="../frmmain.cpp" line="1164"/>
         <source>Critical error | SmartClass</source>
         <translation>Critical error | SmartClass</translation>
     </message>
@@ -1988,12 +2013,12 @@ Cancel : Cancel the current operation.</translation>
         <translation>Remove course</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="1158"/>
+        <location filename="../frmmain.cpp" line="1160"/>
         <source>_BackUp_SmartClass_DB.db</source>
         <translation>_BackUp_SmartClass_DB.db</translation>
     </message>
     <message>
-        <location filename="../frmmain.cpp" line="1163"/>
+        <location filename="../frmmain.cpp" line="1165"/>
         <source>The connection with the database could not be restored after the backup.
 Please, restart the program in order to have access it&apos;s functionalities.</source>
         <translation>The connection with the database could not be restored after the backup.

@@ -1,0 +1,21 @@
+Política de Privacidade SmartClass - Nintersoft
+1. Política de Privacidade SmartClass.
+1.1. Ao utilizar o SmartClass, você estará automaticamente concordando com os termos descritos nesta política.
+2. Armazenamento de dados.
+2.1. Todos os dados coletados pela aplicação SmartClass são armazenados no banco de dados que está sob responsabilidade da organização que o adquiriu e/ou o utiliza.
+2.2. A Nintersoft não se responsabiliza por quaisquer possíveis vazamentos de dados que possam ocorrer, mesmo os relacionados à aplicação.
+3. Coleta de dados.
+3.1. Todos os dados que forem coletados pela aplicação são de responsabilidade da empresa ou organização que adquiriu e/ou utiliza o SmartClass.
+3.2. O SmartClass não armazena dados confidenciais (tais como senha ou códigos de segurança).
+3.3. Os únicos dados coletados pelo SmartClass que não são fornecidos pelo usuário, são os dados de sistema operacional da máquina em que está sendo utilizado para fins de controle de acesso por parte do administrador do banco de dados (DBA ou qualquer outra pessoa responsável pelo controle de acesso).
+4. Compartilhamento de dados.
+4.1. O SmartClass não compartilha os dados gerados e coletados por esta aplicação com terceiros, nem mesmo com .
+4.2. A Nintersoft não se responsabiliza por dados compartilhados, uma vez que, como descrito no item 2 (e em seus respectivos sub itens), a Nintersoft também não se responsabiliza pelo processo de armazenamento de dados.
+5. Acompanhamento de política
+5.1. Todo subprojeto ou alterações realizadas por terceiros deverão incluir a cópia desta política como arquivo no formato “.pdf”, “.rtf” ou “.txt”, ambos inalterados.
+6. Dados da política.
+6.1. Versão da política (versão principal e revisão): 1.0
+6.2. Data de revisão: 24/01/2019.
+6.3. Disponibilidade da política: Política entregue juntamente com a versão de produção do SmartClass ou no repositório da aplicação e de seus derivados.
+7. Direitos Nintersoft.
+7.1. A Nintersoft reserva-se o direito de poder fazer quaisquer alterações nesta política a fim de melhor adequá-la aos programas por ela desenvolvidos.

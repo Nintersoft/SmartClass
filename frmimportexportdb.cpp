@@ -131,7 +131,7 @@ QVariantList frmImportExportDB::stringToVariant(const QStringList &sList, SmartC
             break;
         case SmartClassGlobal::SETTINGS:
             converted << sList[0]
-                      << (sList[1].isEmpty() ? QVariant() : sList[1])
+                      << (sList[1].isEmpty() ? QVariant() : sList[1].replace("$<new_line>$", "\n"))
                       << QVariant();
             break;
         case SmartClassGlobal::ACTIVECONNECTIONS:
@@ -961,7 +961,7 @@ void frmImportExportDB::exportDB(){
 
         for (int i = 0; i < settingsTable.size(); ++i){
             settingsTableOutput += settingsTable[i].at(0).toString() + ";";
-            settingsTableOutput += settingsTable[i].at(1).toString() + "\n";
+            settingsTableOutput += settingsTable[i].at(1).toString().replace(QRegExp("(\\n|\\r\\n)"), "$<new_line>$") + "\n";
 
             outFile.write(settingsTableOutput.toLocal8Bit());
         }
