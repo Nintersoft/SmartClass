@@ -21,10 +21,10 @@ win32 {
     QMAKE_TARGET_COMPANY = Nintersoft
     QMAKE_TARGET_PRODUCT = SmartClass
     QMAKE_TARGET_DESCRIPTION = SmartClass
-    QMAKE_TARGET_COPYRIGHT = Copyright (c) 2017 - Nintersoft
+    QMAKE_TARGET_COPYRIGHT = Copyright (c) 2019 - Nintersoft
 
     RC_ICONS = images\logos\Logo.ico
-#    RC_LANG = 0x0416
+    RC_LANG = 0x0800
 }
 else {
     VERSION = 1.0.0

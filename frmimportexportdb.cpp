@@ -131,7 +131,7 @@ QVariantList frmImportExportDB::stringToVariant(const QStringList &sList, SmartC
             break;
         case SmartClassGlobal::SETTINGS:
             converted << sList[0]
-                      << (sList[1].isEmpty() ? QVariant() : sList[1].replace("$<new_line>$", "\n"))
+                      << (sList[1].isEmpty() ? QVariant() : QString(sList[1]).replace("$<new_line>$", "\n"))
                       << QVariant();
             break;
         case SmartClassGlobal::ACTIVECONNECTIONS:

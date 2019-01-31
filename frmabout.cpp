@@ -43,7 +43,7 @@ frmAbout::frmAbout(QWidget *parent) :
 #ifdef _WIN32
     connect(ui->btUpgrade, SIGNAL(clicked(bool)), this, SLOT(upgradeProgram()));
     upgradeStep = 0;
-    upgradeVersion = 4;
+    upgradeVersion = 5;
 
     tempDir = QDir::homePath() + "/AppData/Roaming/Nintersoft/SmartClass/Downloads/";
 
